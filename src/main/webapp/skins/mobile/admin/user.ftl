@@ -249,7 +249,7 @@
                 <input type="text" id="userB3ClientAddCommentURL" name="userB3ClientAddCommentURL" value="${user.userB3ClientAddCommentURL}" />
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
     </div>
@@ -266,7 +266,7 @@
                 <input type="text" id="userEmail" name="userEmail" value="${user.userEmail}" />
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
             <br/>
 
@@ -275,7 +275,7 @@
                 <input type="text" name="userName" value="${user.userName}" />
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
     </div>
@@ -298,7 +298,7 @@
                 <input type="text" name="memo" value="" placeholder="${chargePointPlaceholderLabel}" />
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
     </div>
@@ -318,7 +318,7 @@
                 <input type="text" name="point" value="" />
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
     </div>
@@ -341,7 +341,7 @@
                 <input type="text" name="memo" value="" />
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
     </div>
@@ -357,7 +357,7 @@
                 <input type="text" name="userName" value="${user.userName}" readonly="readonly" />
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
     </div>

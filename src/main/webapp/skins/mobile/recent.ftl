@@ -13,12 +13,21 @@
         <#include "header.ftl">
         <div class="main">
             <@subNav 'recent' ''/>
-            <div class="content fn-clear">
-                <@list listData=stickArticles/>
-                <@list listData=latestArticles/>
+            <div class="content fn-clear" style="background:#FFF; margin:10px;">
+	            <ul class="module-list">
+	             	<#-- <@list listData=stickArticles/> -->
+		              <#list stickArticles as article>
+		                <#include "common/list-item.ftl">
+		              </#list>  
+	               	<#-- <@list listData=latestArticles/>-->
+	                 
+	                 <#list latestArticles as article>
+		                <#include "common/list-item.ftl">
+		             </#list> 
+	            </ul>
                 <@pagination url="${servePath}/recent"/>
-                <#if domains?size != 0>
-                <div class="wrapper">
+               <#-- <#if domains?size != 0>
+                  <div class="wrapper">
                     <div class="module">
                         <div class="module-header">
                             <h2>${domainNavLabel}</h2>
@@ -29,12 +38,12 @@
                                 <#list domains as domain>
                                 <#if domain.domainTags?size gt 0>
                                 <li>
-                                    <a rel="nofollow" class="slogan" href="${servePath}/domain/${domain.domainURI}">${domain.domainTitle}</a>
+                                   <a rel="nofollow" class="slogan" href="${servePath}/domain/${domain.domainURI}">${domain.domainTitle}</a>
                                     <div class="title">
                                         <#list domain.domainTags as tag>
                                         <a class="tag" rel="nofollow" href="${servePath}/tag/${tag.tagURI}">${tag.tagTitle}</a>
                                         </#list>
-                                    </div>
+                                   </div>
                                 </li>
                                 </#if>
                                 </#list>
@@ -42,11 +51,11 @@
                         </div>
                     </div>
                 </div>
-                </#if>
+                </#if>-->
             </div>
-            <div class="side wrapper">
+           <#--  <div class="side wrapper">
                 <#include "side.ftl">
-            </div>
+            </div> -->
         </div>
         <#include "footer.ftl">
         <@listScript/>

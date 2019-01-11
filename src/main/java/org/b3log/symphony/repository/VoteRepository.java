@@ -17,15 +17,23 @@
  */
 package org.b3log.symphony.repository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.b3log.latke.Keys;
-import org.b3log.latke.repository.*;
+import org.b3log.latke.repository.AbstractRepository;
+import org.b3log.latke.repository.CompositeFilter;
+import org.b3log.latke.repository.CompositeFilterOperator;
+import org.b3log.latke.repository.Filter;
+import org.b3log.latke.repository.FilterOperator;
+import org.b3log.latke.repository.PropertyFilter;
+import org.b3log.latke.repository.Query;
+import org.b3log.latke.repository.RepositoryException;
+import org.b3log.latke.repository.Transaction;
 import org.b3log.latke.repository.annotation.Repository;
 import org.b3log.symphony.model.Vote;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Vote repository.
@@ -62,9 +70,9 @@ public class VoteRepository extends AbstractRepository {
         }
 
         final JSONObject voteToRemove = array.optJSONObject(0);
-
+        
         remove(voteToRemove.optString(Keys.OBJECT_ID));
-
+        
         return voteToRemove.optInt(Vote.TYPE);
     }
 

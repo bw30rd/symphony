@@ -17,6 +17,9 @@
  */
 package org.b3log.symphony.service;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Keys;
 import org.b3log.latke.Latkes;
@@ -35,9 +38,6 @@ import org.b3log.symphony.repository.ArticleRepository;
 import org.b3log.symphony.repository.TagRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Short link query service.

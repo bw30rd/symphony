@@ -1,3 +1,4 @@
+<#--
 <#if ADLabel!="">
 <div class="module">
     <div class="module-header">
@@ -32,6 +33,7 @@
         </ul>
     </div>
 </div>
+-->
 <#--
 <#if navTrendTags?size!=0>
 <div class="module">
@@ -75,6 +77,8 @@
     </div>
 </div>
 </#if>
+
+<#--
 <#if sideTags?size!=0>
 <div class="module">
     <div class="module-header">
@@ -107,3 +111,4 @@
     </div>
 </div>
 </#if>
+-->

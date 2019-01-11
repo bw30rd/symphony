@@ -1,23 +1,23 @@
-<div class="ft-center">
-    <div id="avatarURLDom" class="avatar-big" title="${user.userName}" style="background-image:url('${user.userAvatarURL210}')"></div>
+<div class="side-center" >
+    <div id="avatarURLDom" class="avatar midSize" title="${user.userName}" style="background-image:url('${user.userAvatarURL48}')"></div>
     <div>
         <div class="user-name">
-            <div id="userNicknameDom"><b>${user.userNickname}</b></div>
-            <div class="ft-gray">${user.userName}</div>
-
-            <div>
-                <#if isLoggedIn && (currentUser.userName != user.userName)>
-                    <button class="green small" onclick="location.href = '${servePath}/post?type=1&at=${user.userName}'">
-                        ${privateMessageLabel}
-                    </button>
+            <div id="userNicknameDom"><b>${user.userNickname}</b><div class="ft-gray">${user.userName}</div></div>
+            <div class="side-userRank">
+                <span class="${user.userLevelType}" aria-label="等级"> ${user.userLevel}</span>
+                <span class="ft-gray">${pointLabel}</span>
+	           <#if isLoggedIn && (currentUser.userName == user.userName)> 
+	            <a onclick="window.location.href ='${servePath}/member/${user.userName}/points'" title="${user.userPoint?c}">
+	                <#if 0 == user.userAppRole>
+	                ${user.userPoint?c}
+	                <#else>
+	                <div class="painter-point" style="background-color: #${user.userPointCC}"></div>
+	                </#if>
+	            </a>
+                <#else>
+	            <span aria-label="${user.userPoint?c}">${user.userPoint?c}</span>
                 </#if>
-                <#if (isLoggedIn && ("adminRole" == currentUser.userRole || currentUser.userName == user.userName)) || 0 == user.userOnlineStatus>
-                    <span class="tooltipped tooltipped-n" aria-label="<#if user.userOnlineFlag>${onlineLabel}<#else>${offlineLabel}</#if>">
-                        <span class="<#if user.userOnlineFlag>online<#else>offline</#if>"><img src="${staticServePath}/images/H-20.png" /></span>
-                    </span>
-                </#if>
-                <span class="tooltipped tooltipped-n offline" aria-label="${roleLabel}"> ${user.roleName}</span>
-                <#if permissions["userAddPoint"].permissionGrant ||
+				<#if permissions["userAddPoint"].permissionGrant ||
                         permissions["userAddUser"].permissionGrant ||
                         permissions["userExchangePoint"].permissionGrant ||
                         permissions["userDeductPoint"].permissionGrant ||
@@ -27,30 +27,56 @@
                 </#if>
             </div>
 
-            <#if isLoggedIn && (currentUser.userName != user.userName)>
+			<#if user.userIntro!="">
+	        <div class="user-intro" id="userIntroDom" >
+	            ${user.userIntro}
+	        </div>
+	        </#if>
+
+			<#if isLoggedIn && (currentUser.userName != user.userName)>
                 <#if isFollowing>
-                    <button class="follow" onclick="Util.unfollow(this, '${followingId}', 'user')">
+                    <button class="followed" onclick="Util.unfollow(this, '${followingId}', 'user')">
                         ${unfollowLabel}
                     </button>
                     <#else>
-                        <button class="follow" onclick="Util.follow(this, '${followingId}', 'user')">
-                            ${followLabel}
-                        </button>
+                    <button class="follow" onclick="Util.follow(this, '${followingId}', 'user')">
+                        ${followLabel}
+                    </button>
                 </#if>
+			<#elseif isLoggedIn>
+				<#if !isDailyCheckin>
+		         <#--  <button class="ft-button daySign submitGreenBtn" onclick="window.location.href = 
+		         '<#if useCaptchaCheckin>${servePath}/activity/checkin<#else>${servePath}/activity/daily-checkin</#if>?checkinType=phone'">${dailyCheckinLabel}</button>
+		          -->
+		          <button class="ft-button daySign submitGreenBtn" onclick=" 
+         		<#if useCaptchaCheckin>window.location.href ='${servePath}/activity/checkin'<#else>Activity.checkin('${csrfToken}', 'phone')</#if>">${dailyCheckinLabel}</button>
+        
+		          
+		        <#else>
+		            
+		        <button class="ft-button daySign3 backWhiteBtn backWhiteBtn__grey">${checkinStreakLabel} ${currentUser.userCurrentCheckinStreak} 天</button>
+		
+		     	</#if>
+				<button onclick="window.location.href ='${servePath}/settings'" class="backWhiteBtn">设置</button>
             </#if>
-        </div>
+			<ul class="status fn-flex ulzq">
+				<li class="fn-pointer" onclick="window.location.href = '${servePath}/member/${user.userName}/followers'">
+                    <span class="ft-gray">粉丝</span>
+                    <strong style="font-size:14px; color:hsl(191, 100%, 30%);">${followerCnt?c}</strong>
+	            </li>
+	            <li class="fn-pointer" onclick="window.location.href = '${servePath}/member/${user.userName}/following/users'">
+                    <span class="ft-gray">Ta的关注</span>
+                    <strong style="font-size:14px; color:hsl(191, 100%, 30%);">${followingUserCnt?c}</strong
+	            </li>
+			</ur>
 
-        <#if user.userIntro!="">
-        <div class="user-intro" id="userIntroDom">
-            ${user.userIntro}
         </div>
-        </#if>
-        <div class="user-info">
-            <span class="ft-gray">${symphonyLabel}</span>
-            ${user.userNo?c}
-            <span class="ft-gray">${numVIPLabel}</span>, <#if 0 == user.userAppRole>${hackerLabel}<#else>${painterLabel}</#if>
-        </div>
-        <#if "" != user.userTags>
+        
+        <#--<div class="user-info">
+           <span class="ft-gray">个人邮箱:</span> ${user.userEmail}
+        </div>-->
+        
+       <#-- <#if "" != user.userTags>
         <div class="user-info">
             <span class="ft-gray">${selfTagLabel}</span>
             <span id='userTagsDom'>
@@ -64,44 +90,42 @@
         </div>
         </#if>
         <div class="user-info">
-            <span class="ft-gray">${pointLabel}</span>
-            <a href="${servePath}/member/${user.userName}/points" title="${user.userPoint?c}">
-                <#if 0 == user.userAppRole>
-                0x${user.userPointHex}
-                <#else>
-                <div class="painter-point" style="background-color: #${user.userPointCC}"></div>
-                </#if>
-            </a>
+            
         </div>
         <#if user.userURL!="">
         <div class="user-info">
             <a id="userURLDom" target="_blank" rel="friend" href="${user.userURL?html}">${user.userURL?html}</a>
         </div>
-        </#if>
-        <div class="user-info">
+        </#if> -->
+        
+        <#--<div class="user-info">
             <span class="ft-gray">${joinTimeLabel}</span> ${user.userCreateTime?string('yyyy-MM-dd HH:mm:ss')}
-        </div>
-        <div class="user-info">
+        </div>-->
+        
+       <#-- <div class="user-info">
             <span class="ft-gray">${checkinStreakPart0Label}</span>
             ${user.userLongestCheckinStreak?c} 
             <span class="ft-gray">${checkinStreakPart1Label}</span> 
             ${user.userCurrentCheckinStreak?c}
             <span class="ft-gray">${checkinStreakPart2Label}</span>
-        </div>
-        <div class="fn-hr10"></div>
+        </div>-->
+
+        <#--<div class="fn-hr10"></div>
         <ul class="status fn-flex">
-            <li>
-                <strong>${user.userTagCount?c}</strong>
-                <span class="ft-gray">${tagLabel}</span>
-            </li>
-            <li>
+            <li class="fn-pointer" onclick="window.location.href = '${servePath}/member/${user.userName}'">
                 <strong>${user.userArticleCount?c}</strong>
                 <span class="ft-gray">${articleLabel}</span>
             </li>
-            <li>
+            <li class="fn-pointer" onclick="window.location.href = '${servePath}/member/${user.userName}/comments'">
                 <strong>${user.userCommentCount?c}</strong>
-                <span class="ft-gray">${cmtLabel}</span>
+                <span class="ft-gray">回帖</span>
+            </li>
+            <li class="fn-pointer" onclick="window.location.href = '${servePath}/member/${user.userName}/following/articles'">
+                <strong>${followingArticleCnt?c}</strong>
+                <span class="ft-gray">收藏</span>
             </li>
         </ul>
-    </div>
+    	</div>-->
 </div>
+
+<script src="${staticServePath}/js/activity.js?${staticResourceVersion}"></script>

@@ -104,4 +104,6 @@
     <include path="/halt.html" />
     <include path="/opensearch.xml" />
     <include path="/CHANGE_LOGS.html" />
+    <include path="/aehealth" />
+    
 </static-files>

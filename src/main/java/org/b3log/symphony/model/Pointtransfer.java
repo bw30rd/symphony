@@ -360,6 +360,29 @@ public final class Pointtransfer {
      * Transfer sum - Update Comment.
      */
     public static final int TRANSFER_SUM_C_UPDATE_COMMENT = Symphonys.getInt("pointUpdateComment");
+    
+   
+    
+    /**
+     * Transfer type - Vote up to article or comment.
+     */
+    public static final int TRANSFER_TYPE_C_VOTE_UP = 50;
+
+    /**
+     * Transfer sum - Update Comment.
+     */
+    public static final int TRANSFER_SUM_C_VOTE_UP = Symphonys.getInt("pointVoteUp");
+    
+    /**
+     * Transfer type - Update Comment Outcome.
+     */
+    public static final int TRANSFER_TYPE_C_TO_VOTE_UP = 51;
+
+    /**
+     * Transfer sum - Update Comment.
+     */
+    public static final int TRANSFER_SUM_C_TO_VOTE_UP = Symphonys.getInt("pointToVoteUp");
+    
 
     /**
      * Private constructor.

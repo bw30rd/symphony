@@ -21,7 +21,7 @@
                 <label><input name="userAppRole" type="radio" value="1" /> ${designerLabel}</label>
 
                 <br/><br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
     </div>   

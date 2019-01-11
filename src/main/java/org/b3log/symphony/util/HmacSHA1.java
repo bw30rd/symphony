@@ -17,13 +17,14 @@
  */
 package org.b3log.symphony.util;
 
-import org.apache.commons.codec.binary.Base64;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * HmacSHA1 utilities.

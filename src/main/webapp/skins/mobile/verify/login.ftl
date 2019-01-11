@@ -1,18 +1,40 @@
 <#include "../macro-head.ftl">
 <!DOCTYPE html>
-<html>
+<html style="height:100%;">
     <head>
         <@head title="${loginLabel} - ${symphonyLabel}">
         <meta name="description" content="${registerLabel} ${symphonyLabel}"/>
         </@head>
+        <link rel="stylesheet" href="${staticServePath}/css/index.css?${staticResourceVersion}" />
         <link rel="canonical" href="${servePath}/register">
+        <style>
+            .ifr {
+                width: 100%;
+                height: 280px;
+                border: none;
+                display: block;
+                margin-top: 20px;
+                margin-left: 0px;
+            }
+            .verify .verify-wrap {
+                width: 100%;
+            }
+            .verify .intro {
+                width: 100%;
+                padding: 10px;
+            }
+            h1 {
+                text-align: center;
+            }
+        </style>
     </head>
-    <body>
+    <body class="mobileLoginBg" style="box-sizing: border-box;">
         <#include "../header.ftl">
         <div class="main">
-            <div class="wrapper verify">
+            <div class="wrapper">
                 <div class="verify-wrap">
-                    <div class="form">
+                
+                   <#-- <div class="form" style="display:none;">
                         ${logoIcon2}
                         <div class="input-wrap">
                             <span class="icon-userrole"></span>
@@ -37,14 +59,60 @@
                         <div id="loginTip" class="tip"></div>
                         <button class="green" onclick="Verify.login('${goto}')">${loginLabel}</button>
                         <button onclick="Util.goRegister()">${registerLabel}</button>
-                    </div>
+                    </div>-->
+
+
+					<a class="begeekLogoMobile"></a>
+                    <iframe src="/symphony/begeek" name="login_box" class="ifr"></iframe>
                 </div>
-                <div class="intro content-reset">
+                <#--<div class="intro content-reset">
                     ${introLabel}
-                </div>
+                </div>-->
             </div>
         </div>
-        <#include "../footer.ftl">
+        <script src="${staticServePath}/js/lib/compress/libs.min.js?${staticResourceVersion}"></script>
+        <script src="${staticServePath}/js/common.js?${staticResourceVersion}"></script>
+        <script>
+            var Label = {
+                invalidPasswordLabel: "${invalidPasswordLabel}",
+                loginNameErrorLabel: "${loginNameErrorLabel}",
+                followLabel: "${followLabel}",
+                unfollowLabel: "${unfollowLabel}",
+                symphonyLabel: "${symphonyLabel}",
+                visionLabel: "${visionLabel}",
+                cmtLabel: "${cmtLabel}",
+                collectLabel: "${collectLabel}",
+                uncollectLabel: "${uncollectLabel}",
+                desktopNotificationTemplateLabel: "${desktopNotificationTemplateLabel}",
+                servePath: "${servePath}",
+                staticServePath: "${staticServePath}",
+                isLoggedIn: ${isLoggedIn?c},
+                funNeedLoginLabel: '${funNeedLoginLabel}',
+                notificationCommentedLabel: '${notificationCommentedLabel}',
+                notificationReplyLabel: '${notificationReplyLabel}',
+                notificationAtLabel: '${notificationAtLabel}',
+                notificationFollowingLabel: '${notificationFollowingLabel}',
+                pointLabel: '${pointLabel}',
+                sameCityLabel: '${sameCityLabel}',
+                systemLabel: '${systemLabel}',
+                newFollowerLabel: '${newFollowerLabel}',
+                makeAsReadLabel: '${makeAsReadLabel}',
+                checkIcon: '${checkIcon}'<#if isLoggedIn>,
+                currentUserName: '${currentUser.userName}'</#if>
+            };
+            Util.init(${isLoggedIn?c});
+            
+            <#if isLoggedIn>
+            // Init [User] channel
+            Util.initUserChannel("${wsScheme}://${serverHost}:${serverPort}${contextPath}/user-channel");
+            </#if>
+        </script>
+        <#if algoliaEnabled>
+        <script src="${staticServePath}/js/lib/algolia/algolia.min.js"></script>
+        <script>
+            Util.initSearch('${algoliaAppId}', '${algoliaSearchKey}', '${algoliaIndex}');
+        </script>
+        </#if>
         <script src="${staticServePath}/js/verify${miniPostfix}.js?${staticResourceVersion}"></script>
         <script>
             Verify.init();
@@ -54,4 +122,18 @@
             Label.captchaErrorLabel = "${captchaErrorLabel}";
         </script>
     </body>
+    <script>
+        function findSession(){
+            if(window.localStorage.loginX == 1){
+                window.localStorage.loginX = 0 ;
+                window.location.reload(); 
+            }else{
+                setTimeout(function(){
+                    findSession();
+                },1000);
+            }
+        }
+        findSession();
+    </script>
 </html>
+

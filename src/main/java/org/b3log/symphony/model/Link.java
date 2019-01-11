@@ -17,11 +17,11 @@
  */
 package org.b3log.symphony.model;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * This class defines all link model relevant keys.

@@ -17,6 +17,12 @@
  */
 package org.b3log.symphony.processor;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.logging.Logger;
@@ -28,16 +34,20 @@ import org.b3log.latke.servlet.annotation.Before;
 import org.b3log.latke.servlet.annotation.RequestProcessing;
 import org.b3log.latke.servlet.annotation.RequestProcessor;
 import org.b3log.latke.util.Requests;
-import org.b3log.symphony.model.*;
+import org.b3log.symphony.model.Article;
+import org.b3log.symphony.model.Comment;
+import org.b3log.symphony.model.Common;
+import org.b3log.symphony.model.Notification;
+import org.b3log.symphony.model.Role;
+import org.b3log.symphony.model.Vote;
 import org.b3log.symphony.processor.advice.LoginCheck;
 import org.b3log.symphony.processor.advice.PermissionCheck;
-import org.b3log.symphony.service.*;
+import org.b3log.symphony.service.ArticleQueryService;
+import org.b3log.symphony.service.CommentQueryService;
+import org.b3log.symphony.service.NotificationMgmtService;
+import org.b3log.symphony.service.VoteMgmtService;
+import org.b3log.symphony.service.VoteQueryService;
 import org.json.JSONObject;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Vote processor.

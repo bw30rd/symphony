@@ -17,11 +17,14 @@
  */
 package org.b3log.symphony.model;
 
-import org.json.JSONObject;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.util.Set;
+
+import org.json.JSONObject;
 
 /**
  * This class defines all character model relevant keys.

@@ -73,7 +73,7 @@ public final class Notification {
     public static final int DATA_TYPE_C_AT = 2;
 
     /**
-     * Data type - commented.
+     * Data type - commented.（收到的回帖）
      */
     public static final int DATA_TYPE_C_COMMENTED = 3;
 
@@ -201,6 +201,11 @@ public final class Notification {
      * Data type - article vote down.
      */
     public static final int DATA_TYPE_C_ARTICLE_VOTE_DOWN = 28;
+    
+    /**
+     * Data type - user to upgrade.
+     */
+    public static final int DATA_TYPE_C_USER_TO_UPGRADE = 29;
 
     //// Transient ////
     /**

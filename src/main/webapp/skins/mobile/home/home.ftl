@@ -18,7 +18,7 @@
                     <#elseif 3 == article.articleType>
                     <span class="icon-video" title="${thoughtLabel}"></span>
                     </#if>
-                    <a rel="bookmark" href="${servePath}${article.articlePermalink}">${article.articleTitleEmoj}</a>
+                    <a rel="bookmark" href="${servePath}${article.articlePermalink}" style="color:#353535; font-weight:bold;">${article.articleTitleEmoj}</a>
                 </h2>
                 <span class="ft-gray">
                     <#list article.articleTagObjs as articleTag>

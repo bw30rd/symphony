@@ -17,20 +17,24 @@
  */
 package org.b3log.symphony.service;
 
+import java.net.URL;
+import java.net.UnknownHostException;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
 import org.b3log.latke.service.annotation.Service;
 import org.b3log.latke.servlet.HTTPRequestMethod;
-import org.b3log.latke.urlfetch.*;
+import org.b3log.latke.urlfetch.HTTPHeader;
+import org.b3log.latke.urlfetch.HTTPRequest;
+import org.b3log.latke.urlfetch.HTTPResponse;
+import org.b3log.latke.urlfetch.URLFetchService;
+import org.b3log.latke.urlfetch.URLFetchServiceFactory;
 import org.b3log.symphony.model.Article;
 import org.b3log.symphony.util.Markdowns;
 import org.b3log.symphony.util.Symphonys;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
-
-import java.net.URL;
-import java.net.UnknownHostException;
 
 /**
  * Search management service.
@@ -152,6 +156,7 @@ public class SearchMgmtService {
         }
     }
 
+    private static final HTTPHeader jsonHeader = new HTTPHeader("Content-type", "application/json");
     /**
      * Updates/Adds indexing the specified document in ES.
      *
@@ -168,8 +173,8 @@ public class SearchMgmtService {
             final JSONObject payload = new JSONObject();
             payload.put("doc", doc);
             payload.put("upsert", doc);
-
             request.setPayload(payload.toString().getBytes("UTF-8"));
+            request.addHeader(jsonHeader);
 
             URL_FETCH_SVC.fetchAsync(request);
         } catch (final Exception e) {

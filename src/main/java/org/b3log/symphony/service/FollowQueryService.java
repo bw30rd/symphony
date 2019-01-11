@@ -17,13 +17,23 @@
  */
 package org.b3log.symphony.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.Lifecycle;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
 import org.b3log.latke.model.Pagination;
-import org.b3log.latke.repository.*;
+import org.b3log.latke.repository.CompositeFilter;
+import org.b3log.latke.repository.CompositeFilterOperator;
+import org.b3log.latke.repository.Filter;
+import org.b3log.latke.repository.FilterOperator;
+import org.b3log.latke.repository.PropertyFilter;
+import org.b3log.latke.repository.Query;
+import org.b3log.latke.repository.RepositoryException;
+import org.b3log.latke.repository.SortDirection;
 import org.b3log.latke.service.ServiceException;
 import org.b3log.latke.service.annotation.Service;
 import org.b3log.latke.util.CollectionUtils;
@@ -34,9 +44,6 @@ import org.b3log.symphony.repository.FollowRepository;
 import org.b3log.symphony.repository.TagRepository;
 import org.b3log.symphony.repository.UserRepository;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Follow query service.
@@ -83,6 +90,18 @@ public class FollowQueryService {
     @Inject
     private AvatarQueryService avatarQueryService;
 
+    /**
+     * follow message service.
+     */
+    @Inject
+    private FollowMgmtService followMgmtService;
+    
+    /**
+	 * User Level service.
+	 */
+	@Inject
+	private UserLevelService userLevelService;
+    
     /**
      * Determines whether exists a follow relationship for the specified follower and the specified following entity.
      *
@@ -139,6 +158,12 @@ public class FollowQueryService {
                 final String followingId = follow.optString(Follow.FOLLOWING_ID);
                 final JSONObject user = userRepository.get(followingId);
 
+                user.put("userLevel", userLevelService.getUserLevel(user.optInt("userPoint")));
+                user.put("userLevelType", userLevelService.getUserLevelType(user.optInt("userPoint")));
+                
+                int followerCnt = followMgmtService.getFollowerCnt(user);
+                user.put("followerCnt", followerCnt);
+                
                 if (null == user) {
                     LOGGER.log(Level.WARN, "Not found user[id=" + followingId + ']');
 
@@ -410,12 +435,17 @@ public class FollowQueryService {
                 final String followerId = follow.optString(Follow.FOLLOWER_ID);
                 final JSONObject user = userRepository.get(followerId);
 
+                user.put("userLevel", userLevelService.getUserLevel(user.optInt("userPoint")));
+                user.put("userLevelType", userLevelService.getUserLevelType(user.optInt("userPoint")));
+                
                 if (null == user) {
                     LOGGER.log(Level.WARN, "Not found user[id=" + followerId + ']');
 
                     continue;
                 }
-
+                int followerCnt = followMgmtService.getFollowerCnt(user);
+                user.put("followerCnt", followerCnt);
+                
                 avatarQueryService.fillUserAvatarURL(avatarViewMode, user);
 
                 records.add(user);

@@ -17,6 +17,11 @@
  */
 package org.b3log.symphony.util;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Keys;
@@ -26,11 +31,6 @@ import org.b3log.latke.logging.Logger;
 import org.b3log.latke.model.User;
 import org.b3log.symphony.model.Common;
 import org.json.JSONObject;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  * Session utilities.

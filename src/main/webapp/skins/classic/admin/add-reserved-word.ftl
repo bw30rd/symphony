@@ -11,7 +11,7 @@
                 <input name="word" type="text" />
 
                 <br/><br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
     </div>   

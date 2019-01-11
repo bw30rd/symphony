@@ -17,16 +17,33 @@
  */
 package org.b3log.symphony.util;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateExceptionHandler;
-import jodd.http.HttpRequest;
-import jodd.http.HttpResponse;
-import org.apache.commons.lang.StringUtils;
-import org.b3log.latke.Keys;
-import org.b3log.latke.logging.Level;
-import org.b3log.latke.logging.Logger;
-import org.json.JSONObject;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.SimpleTimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -35,15 +52,23 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.*;
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+
+import org.apache.commons.lang.StringUtils;
+import org.b3log.latke.Keys;
+import org.b3log.latke.logging.Level;
+import org.b3log.latke.logging.Logger;
+import org.json.JSONObject;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateExceptionHandler;
+import jodd.http.HttpRequest;
+import jodd.http.HttpResponse;
 
 /**
  * Mail utilities.

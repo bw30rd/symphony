@@ -63,7 +63,7 @@
                 <textarea rows="20" id="tagCSS" name="tagCSS">${tag.tagCSS}</textarea>
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
     </div>

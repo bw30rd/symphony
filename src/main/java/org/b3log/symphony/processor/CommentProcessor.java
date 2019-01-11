@@ -17,6 +17,14 @@
  */
 package org.b3log.symphony.processor;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.inject.Inject;
@@ -32,7 +40,13 @@ import org.b3log.latke.servlet.annotation.Before;
 import org.b3log.latke.servlet.annotation.RequestProcessing;
 import org.b3log.latke.servlet.annotation.RequestProcessor;
 import org.b3log.latke.util.Requests;
-import org.b3log.symphony.model.*;
+import org.b3log.symphony.model.Article;
+import org.b3log.symphony.model.Client;
+import org.b3log.symphony.model.Comment;
+import org.b3log.symphony.model.Common;
+import org.b3log.symphony.model.Revision;
+import org.b3log.symphony.model.Reward;
+import org.b3log.symphony.model.UserExt;
 import org.b3log.symphony.processor.advice.CSRFCheck;
 import org.b3log.symphony.processor.advice.LoginCheck;
 import org.b3log.symphony.processor.advice.PermissionCheck;
@@ -41,19 +55,21 @@ import org.b3log.symphony.processor.advice.stopwatch.StopwatchStartAdvice;
 import org.b3log.symphony.processor.advice.validate.ClientCommentAddValidation;
 import org.b3log.symphony.processor.advice.validate.CommentAddValidation;
 import org.b3log.symphony.processor.advice.validate.CommentUpdateValidation;
-import org.b3log.symphony.service.*;
+import org.b3log.symphony.service.ArticleQueryService;
+import org.b3log.symphony.service.ClientMgmtService;
+import org.b3log.symphony.service.ClientQueryService;
+import org.b3log.symphony.service.CommentMgmtService;
+import org.b3log.symphony.service.CommentQueryService;
+import org.b3log.symphony.service.RevisionQueryService;
+import org.b3log.symphony.service.RewardQueryService;
+import org.b3log.symphony.service.ShortLinkQueryService;
+import org.b3log.symphony.service.UserLevelService;
+import org.b3log.symphony.service.UserQueryService;
 import org.b3log.symphony.util.Emotions;
 import org.b3log.symphony.util.MP3Players;
 import org.b3log.symphony.util.Markdowns;
 import org.b3log.symphony.util.StatusCodes;
 import org.json.JSONObject;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Comment processor.
@@ -145,6 +161,12 @@ public class CommentProcessor {
      */
     @Inject
     private ShortLinkQueryService shortLinkQueryService;
+    
+    /**
+	 * User Level service.
+	 */
+	@Inject
+	private UserLevelService userLevelService;
 
     /**
      * Removes a comment.
@@ -479,14 +501,15 @@ public class CommentProcessor {
                     return;
                 }
             }
-
+            
+            
             comment.put(Comment.COMMENT_AUTHOR_ID, currentUser.optString(Keys.OBJECT_ID));
             comment.put(Comment.COMMENT_T_COMMENTER, currentUser);
             comment.put(Comment.COMMENT_ANONYMOUS, isAnonymous
                     ? Comment.COMMENT_ANONYMOUS_C_ANONYMOUS : Comment.COMMENT_ANONYMOUS_C_PUBLIC);
 
             commentMgmtService.addComment(comment);
-
+            
             context.renderJSONValue(Keys.STATUS_CODE, StatusCodes.SUCC);
         } catch (final ServiceException e) {
             context.renderMsg(e.getMessage());

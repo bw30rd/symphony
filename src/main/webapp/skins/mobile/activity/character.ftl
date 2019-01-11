@@ -24,7 +24,7 @@
                             <div class="fn-right activity-char-btns">
                                 <button class="red" onclick="Activity.clearCharacter('charCanvas')">${clearLabel}</button>
                                 &nbsp;
-                                <button class="green" onclick="Activity.submitCharacter('charCanvas')">${submitLabel}</button>
+                                <button class="blue" onclick="Activity.submitCharacter('charCanvas')">${submitLabel}</button>
                             </div>
                         </div>
                         <canvas id="charCanvas" width="306" height="300"></canvas>

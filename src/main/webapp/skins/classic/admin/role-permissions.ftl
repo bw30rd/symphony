@@ -19,7 +19,7 @@
                             </li>
                         </#list>
                         <li class="fn-clear last">
-                            <button type="submit" class="green fn-right">${submitLabel}</button>
+                            <button type="submit" class="blue fn-right">${submitLabel}</button>
                         </li>
                     </ul>
                 </div>

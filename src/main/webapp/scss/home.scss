@@ -71,7 +71,7 @@
         left: 0;
         width: 2px;
         content: "";
-        background-color: $theme-accent;
+        background-color: #007d99;
     }
 }
 
@@ -121,9 +121,20 @@
     }
 
     button.follow {
-        font-size: 14px;
-        width: 100%;
+        font-size: 14px!important;
+        width: 100%!important;
         margin-top: 20px;
+        color: #fff !important;
+        background: #007D99;
+        padding:6px 12px !important;
+    }
+    button.followed {
+    	font-size: 14px!important;
+        width: 100%!important;
+        margin-top: 20px;
+        color: #fff !important;
+        background: #999;
+        padding:6px 12px !important;
     }
 }
 
@@ -188,6 +199,7 @@
     margin: 7px 15px 0 0;
     line-height: 20px;
     float: left;
+    vertical-align:middle;
 }
 
 .post {
@@ -370,14 +382,21 @@
 /* end home */
 
 /* start notifications */
-.notification .read {
+/*.notification .read {
     background-color: #FAFAFA;
     opacity: 0.5;
     filter: alpha(opacity=50);
+}*/
+
+.notification .read,
+.read h2>a,
+ .read div>span, 
+ .read p {
+    color: #ccc!important;
 }
 
 .notification li {
-    background-color: #F8F8FF;
+    background-color: #FFF;
 }
 
 .notification .content-reset > p {
@@ -402,6 +421,7 @@
 .admin {
     .form {
         padding: 8px 15px;
+        border-bottom: 1px solid #eee
     }
 
     .tags {
@@ -485,7 +505,7 @@
 }
 
 .points .sum.plus {
-    color: #569e3d;
+    color: #027d9c;
 }
 
 .points .balance {
@@ -533,4 +553,5 @@
 #pointBuyInvitecode {
     padding: 0;
 }
+
 /* end settings */

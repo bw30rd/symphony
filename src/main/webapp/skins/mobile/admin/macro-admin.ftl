@@ -76,15 +76,16 @@
                     <#if (type == "tags" || type == "addTag") && permissions["menuAdminTags"].permissionGrant>
                     ${tagAdminLabel}
                     </#if>
+
                     <#if (type == "reservedWords" || type == "addReservedWord") && permissions["menuAdminRWs"].permissionGrant>
                     ${reservedWordAdminLabel}
                     </#if>
-                    <#if type == "invitecodes" && permissions["menuAdminIcs"].permissionGrant>
+                    <#--<#if type == "invitecodes" && permissions["menuAdminIcs"].permissionGrant>
                     ${invitecodeAdminLabel}
-                    </#if>
-                    <#if type == "ad" && permissions["menuAdminAD"].permissionGrant>
+                    </#if>-->
+                    <#--<#if type == "ad" && permissions["menuAdminAD"].permissionGrant>
                     ${adAdminLabel}
-                    </#if>
+                    </#if>-->
                     <#if type == "roles" && permissions["menuAdminRoles"].permissionGrant>
                     ${rolesAdminLabel}
                     </#if>
@@ -116,12 +117,13 @@
                     <#if permissions["menuAdminRWs"].permissionGrant>
                     <li<#if type == "reservedWords" || type == "addReservedWord"> class="fn-none"</#if>><a href="${servePath}/admin/reserved-words">${reservedWordAdminLabel}</a></li>
                     </#if>
-                    <#if permissions["menuAdminIcs"].permissionGrant>
+
+                    <#--<#if permissions["menuAdminIcs"].permissionGrant>
                     <li<#if type == "invitecodes"> class="fn-none"</#if>><a href="${servePath}/admin/invitecodes">${invitecodeAdminLabel}</a></li>
                     </#if>
                     <#if permissions["menuAdminAD"].permissionGrant>
                     <li<#if type == "ad"> class="fn-none"</#if>><a href="${servePath}/admin/ad">${adAdminLabel}</a></li>
-                    </#if>
+                    </#if>-->
                     <#if permissions["menuAdminRoles"].permissionGrant>
                     <li<#if type == "roles"> class="fn-none"</#if>><a href="${servePath}/admin/roles">${rolesAdminLabel}</a></li>
                     </#if>

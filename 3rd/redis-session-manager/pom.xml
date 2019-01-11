@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Description: Symphony POM. Version: 2.15.6.57, May 18, 2017 Author: 
+	Liang Ding -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.bw.begeek</groupId>
+	<artifactId>redis-session-manager</artifactId>
+	<packaging>jar</packaging>
+	<version>1.2-SNAPSHOT</version>
+	<name>redis-session-manager</name>
+	<url>http://begeek.bwae.org</url>
+	<!-- Properties -->
+	<properties>
+	
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-catalina</artifactId>
+			<version>7.0.81</version>
+		</dependency>
+
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>ae-public</id>
+			<name>ae-public</name>
+			<url>http://ae.mvn.bw30.com/repository/ae-public/</url>
+			<layout>default</layout>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>central</id>
+			<name>bintray</name>
+			<url>http://jcenter.bintray.com</url>
+		</repository>
+	</repositories>
+</project>
+

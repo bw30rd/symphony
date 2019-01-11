@@ -17,10 +17,20 @@
  */
 package org.b3log.symphony.processor;
 
-import jodd.io.FileUtil;
-import jodd.upload.MultipartRequestInputStream;
-import jodd.util.MimeTypes;
-import jodd.util.URLDecoder;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.UUID;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Latkes;
@@ -31,13 +41,10 @@ import org.b3log.symphony.SymphonyServletListener;
 import org.b3log.symphony.util.Symphonys;
 import org.json.JSONObject;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.util.UUID;
+import jodd.io.FileUtil;
+import jodd.upload.MultipartRequestInputStream;
+import jodd.util.MimeTypes;
+import jodd.util.URLDecoder;
 
 /**
  * File upload to local.

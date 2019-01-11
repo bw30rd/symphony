@@ -14,9 +14,9 @@
                 <div class="intro content-reset">
                     <dl>
                         <dt class="current"><b>1. </b>${guideUploadAvatarLabel}</dt>
-                        <dt><b>2. </b>${guideFollowTagLabel}</dt>
-                        <dt><b>3. </b>${guideFollowUserLabel}</dt>
-                        <dt><b>4. </b>${guideStarProjectLabel}</dt>
+                        <#--<dt><b>2. </b>${guideFollowTagLabel}</dt>-->
+                        <dt><b>2. </b>${guideFollowUserLabel}</dt>
+                        <#--<dt><b>4. </b>${guideStarProjectLabel}</dt>-->
                     </dl>
                     <div class="fn-none">
                         ${introLabel}
@@ -24,7 +24,7 @@
                 </div>
                 <div class="verify-wrap">
                     <div class="step-btn fn-clear">
-                        <button class="fn-right green">${nextStepLabel}</button>
+                        <button class="fn-right blue">${nextStepLabel}</button>
                         <span class="fn-right"> &nbsp; &nbsp;</span>
                         <button class="red fn-right fn-none">${preStepLabel}</button>
                     </div>
@@ -60,7 +60,7 @@
                                 <#list users as follower>
                                     <li>
                                         <div class="fn-flex">
-                                            <a rel="nofollow" class="tooltipped tooltipped-se fn-left" aria-label="${follower.userName} <#if follower.userOnlineFlag>${onlineLabel}<#else>${offlineLabel}</#if>"
+                                            <a rel="nofollow" class="tooltipped tooltipped-se fn-left" aria-label="${follower.userName} <#--<#if follower.userOnlineFlag>${onlineLabel}<#else>${offlineLabel}</#if>-->"
                                                href="${servePath}/member/${follower.userName}" >
                                                 <div class="avatar" style="background-image:url('${follower.userAvatarURL}')"></div>
                                             </a>
@@ -95,14 +95,14 @@
                         </div>
                         <div class="fn-none list">
                             <ul>
-                                <li>
+                                <#--<li>
                                     <a href="${servePath}/about">${getStartLabel}</a>
                                     <span class="ft-gray">${getStartTipLabel}</span>
                                 </li>
                                 <li>
                                     <a href="${servePath}/tag/user_guide">${basicLabel}</a>
                                     <span class="ft-gray">${basicTipLabel}</span>
-                                </li>
+                                </li>-->
                                 <li>
                                     <a href="https://hacpai.com/article/1474030007391">${hotKeyLabel}</a>
                                     <span class="ft-gray">${hotKeyTipLabel}</span>
@@ -119,7 +119,7 @@
             </div>
         </div>
         <#include "../footer.ftl">
-        <script src="${staticServePath}/js/verify${miniPostfix}.js?${staticResourceVersion}"></script>
+        <script src="${staticServePath}/js/verify.js?${staticResourceVersion}"></script>
         <script src="${staticServePath}/js/settings${miniPostfix}.js?${staticResourceVersion}"></script>
         <script src="${staticServePath}/js/lib/jquery/file-upload-9.10.1/jquery.fileupload.min.js"></script>
         <script src="${staticServePath}/js/lib/jquery/isotope.pkgd.min.js"></script>
@@ -128,6 +128,8 @@
             Label.nextStepLabel = '${nextStepLabel}';
             Label.unfollowLabel = '${unfollowLabel}';
             Label.followLabel = '${followLabel}';
+            Label.subscribeToLabel = "${subscribeToLabel}";
+            Label.unsubscribeToLabel = "${unsubscribeToLabel}";
             Verify.initGuide(${currentUser.userGuideStep?c}, ${tags?size});
 
             Settings.initUploadAvatar({

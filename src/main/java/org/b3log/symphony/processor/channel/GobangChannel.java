@@ -17,6 +17,19 @@
  */
 package org.b3log.symphony.processor.channel;
 
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import javax.websocket.CloseReason;
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.LatkeBeanManager;
 import org.b3log.latke.ioc.Lifecycle;
@@ -29,13 +42,6 @@ import org.b3log.symphony.service.ActivityMgmtService;
 import org.b3log.symphony.service.UserQueryService;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import javax.websocket.*;
-import javax.websocket.server.ServerEndpoint;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 ;
 

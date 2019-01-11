@@ -1,0 +1,73 @@
+/*
+ * Symphony - A modern community (forum/SNS/blog) platform written in Java.
+ * Copyright (C) 2012-2017,  b3log.org & hacpai.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.b3log.symphony.repository;
+
+import org.b3log.latke.Keys;
+import org.b3log.latke.repository.AbstractRepository;
+import org.b3log.latke.repository.CompositeFilterOperator;
+import org.b3log.latke.repository.FilterOperator;
+import org.b3log.latke.repository.PropertyFilter;
+import org.b3log.latke.repository.Query;
+import org.b3log.latke.repository.RepositoryException;
+import org.b3log.latke.repository.annotation.Repository;
+import org.b3log.symphony.model.Liveness;
+import org.b3log.symphony.model.UserLiveness;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+/**
+ * Userliveness repository.
+ *
+ * @author Xu Chang
+ */
+@Repository
+public class UserlivenessRepository extends AbstractRepository {
+
+    
+
+    /**
+     * Public constructor.
+     */
+    public UserlivenessRepository() {
+        super(UserLiveness.USERLIVENESS);
+    }
+    
+    /**
+     * Gets a liveness by the specified user id and date.
+     *
+     * @param userId the specified user id
+     * @param date the specified date
+     * @return a liveness, {@code null} if not found
+     * @throws RepositoryException repository exception
+     */
+    public JSONObject getByUserAndDate(final String userId, final String date) throws RepositoryException {
+        final Query query = new Query().setFilter(CompositeFilterOperator.and(
+                new PropertyFilter(Liveness.LIVENESS_USER_ID, FilterOperator.EQUAL, userId),
+                new PropertyFilter(Liveness.LIVENESS_DATE, FilterOperator.EQUAL, date))).setPageCount(1);
+
+        final JSONObject result = get(query);
+        final JSONArray array = result.optJSONArray(Keys.RESULTS);
+
+        if (0 == array.length()) {
+            return null;
+        }
+
+        return array.optJSONObject(0);
+    }
+    
+}

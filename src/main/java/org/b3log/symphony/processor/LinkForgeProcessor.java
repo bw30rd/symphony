@@ -17,6 +17,14 @@
  */
 package org.b3log.symphony.processor;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.model.User;
@@ -43,13 +51,6 @@ import org.b3log.symphony.service.LinkForgeQueryService;
 import org.b3log.symphony.service.OptionQueryService;
 import org.b3log.symphony.util.Symphonys;
 import org.json.JSONObject;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Link forge processor.

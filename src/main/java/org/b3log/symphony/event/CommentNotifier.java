@@ -17,6 +17,10 @@
  */
 package org.b3log.symphony.event;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Keys;
 import org.b3log.latke.Latkes;
@@ -30,15 +34,33 @@ import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
 import org.b3log.latke.model.Pagination;
 import org.b3log.latke.model.User;
-import org.b3log.latke.repository.*;
+import org.b3log.latke.repository.CompositeFilterOperator;
+import org.b3log.latke.repository.FilterOperator;
+import org.b3log.latke.repository.PropertyFilter;
+import org.b3log.latke.repository.Query;
+import org.b3log.latke.repository.SortDirection;
 import org.b3log.latke.service.LangPropsService;
-import org.b3log.symphony.model.*;
+import org.b3log.symphony.model.Article;
+import org.b3log.symphony.model.Comment;
+import org.b3log.symphony.model.Common;
+import org.b3log.symphony.model.Notification;
+import org.b3log.symphony.model.Pointtransfer;
+import org.b3log.symphony.model.UserExt;
 import org.b3log.symphony.processor.advice.validate.UserRegisterValidation;
 import org.b3log.symphony.processor.channel.ArticleChannel;
 import org.b3log.symphony.processor.channel.ArticleListChannel;
 import org.b3log.symphony.repository.CommentRepository;
 import org.b3log.symphony.repository.UserRepository;
-import org.b3log.symphony.service.*;
+import org.b3log.symphony.service.ArticleQueryService;
+import org.b3log.symphony.service.AvatarQueryService;
+import org.b3log.symphony.service.CommentQueryService;
+import org.b3log.symphony.service.FollowQueryService;
+import org.b3log.symphony.service.NotificationMgmtService;
+import org.b3log.symphony.service.PointtransferMgmtService;
+import org.b3log.symphony.service.ShortLinkQueryService;
+import org.b3log.symphony.service.TimelineMgmtService;
+import org.b3log.symphony.service.UserLevelService;
+import org.b3log.symphony.service.UserQueryService;
 import org.b3log.symphony.util.Emotions;
 import org.b3log.symphony.util.JSONs;
 import org.b3log.symphony.util.Markdowns;
@@ -46,10 +68,6 @@ import org.b3log.symphony.util.Symphonys;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Sends a comment notification.
@@ -138,6 +156,12 @@ public class CommentNotifier extends AbstractEventListener<JSONObject> {
      */
     @Inject
     private FollowQueryService followQueryService;
+    
+    /**
+	 * User Level service.
+	 */
+	@Inject
+	private static UserLevelService userLevelService;
 
     @Override
     public void action(final Event<JSONObject> event) throws EventException {
@@ -159,7 +183,10 @@ public class CommentNotifier extends AbstractEventListener<JSONObject> {
             final String commentContent = originalComment.optString(Comment.COMMENT_CONTENT);
             final JSONObject commenter = userQueryService.getUser(commenterId);
             final String commenterName = commenter.optString(User.USER_NAME);
-
+            
+            commenter.put("userLevelType",userLevelService.getUserLevelType(commenter.optInt("userPoint")));
+            commenter.put("userLevel",userLevelService.getUserLevel(commenter.optInt("userPoint")));
+            
             // 0. Data channel (WebSocket)
             final JSONObject chData = JSONs.clone(originalComment);
             chData.put(Comment.COMMENT_T_COMMENTER, commenter);

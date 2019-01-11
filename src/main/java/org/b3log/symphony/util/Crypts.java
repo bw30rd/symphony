@@ -17,15 +17,16 @@
  */
 package org.b3log.symphony.util;
 
-import org.apache.commons.codec.binary.Hex;
-import org.b3log.latke.logging.Level;
-import org.b3log.latke.logging.Logger;
+import java.security.SecureRandom;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.SecureRandom;
+
+import org.apache.commons.codec.binary.Hex;
+import org.b3log.latke.logging.Level;
+import org.b3log.latke.logging.Logger;
 
 /**
  * Cryptology utilities.

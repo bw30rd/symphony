@@ -17,6 +17,10 @@
  */
 package org.b3log.symphony.processor.advice.validate;
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.LatkeBeanManager;
@@ -37,9 +41,6 @@ import org.b3log.symphony.service.CommentQueryService;
 import org.b3log.symphony.service.OptionQueryService;
 import org.b3log.symphony.util.StatusCodes;
 import org.json.JSONObject;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
  * Validates for comment updating locally.

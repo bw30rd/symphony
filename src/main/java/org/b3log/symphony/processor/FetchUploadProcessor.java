@@ -17,11 +17,13 @@
  */
 package org.b3log.symphony.processor;
 
-import com.qiniu.storage.UploadManager;
-import com.qiniu.util.Auth;
-import jodd.http.HttpRequest;
-import jodd.http.HttpResponse;
-import jodd.util.MimeTypes;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Keys;
@@ -44,11 +46,12 @@ import org.b3log.symphony.service.OptionQueryService;
 import org.b3log.symphony.util.Symphonys;
 import org.json.JSONObject;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.UUID;
+import com.qiniu.storage.UploadManager;
+import com.qiniu.util.Auth;
+
+import jodd.http.HttpRequest;
+import jodd.http.HttpResponse;
+import jodd.util.MimeTypes;
 
 /**
  * Fetch file and upload processor.

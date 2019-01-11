@@ -1,6 +1,7 @@
 <#include "macro-head.ftl">
 <#include "macro-list.ftl">
 <#include "macro-pagination.ftl">
+<#include "common/sub-nav.ftl">
 <!DOCTYPE html>
 <html>
     <head>
@@ -11,41 +12,47 @@
     </head>
     <body>
         <#include "header.ftl">
+        <@subNav '' ''/>
         <div class="main tag-articles">
-            <div class="content">
-                <div class="fn-clear title wrapper">
-                    <#if tag.tagIconPath != "">
+            <div class="content tagArticlesBox">
+                <div class="fn-clear title wrapper mobileTagArticleArea">
+                    <#-- <#if tag.tagIconPath != "">
                     <div class="avatar fn-left" style="background-image:url('${staticServePath}/images/tags/${tag.tagIconPath}')" alt="${tag.tagTitle}"></div>
                     </#if>
+
                     <h1 class="fn-inline">
                         <a rel="tag" 
                            title="${tag.tagURI}" 
                            href="${servePath}/tag/${tag.tagURI}">${tag.tagTitle}</a>
-                    </h1> 
-                    <#if tag.tagDomains?size gt 0>/</#if>
+                    </h1>
+                    <#if tag.tagDomains?size gt 0></#if>
                     <#list tag.tagDomains as domain>
                     <a class="ft-gray" href="${servePath}/domain/${domain.domainURI}">${domain.domainTitle}</a>
-                    </#list>
-                    <span class="article-action">
-                    <span class='fn-right'>
-                        <#if isLoggedIn && isFollowing>
-                        <span class="ft-red" onclick="Util.unfollow(this, '${tag.oId}', 'tag', ${tag.tagFollowerCount})"><span class="icon-star"></span> ${tag.tagFollowerCount}</span>
-                        <#else>
-                        <span onclick="Util.follow(this, '${tag.oId}', 'tag', ${tag.tagFollowerCount})"><span class="icon-star"></span> ${tag.tagFollowerCount}</span>
-                        </#if>
-                        <#if permissions["tagUpdateTagBasic"].permissionGrant> &nbsp;
-                        <a href="${servePath}/admin/tag/${tag.oId}"><span class="icon-setting"></span></a>
-                        </#if>
-                    </span>
+                    </#list>-->
+                    <span class="article-action"> 
+	                    <span class='article-actions action-btns'>
+	                        <#if isLoggedIn && isFollowing>
+	                        <span class="tag-followed" onclick="Util.unfollow(this, '${tag.oId}', 'tag', ${tag.tagFollowerCount})">- 已订阅</span>
+	                        <#else>
+	                        <span class="tag-follow" onclick="Util.follow(this, '${tag.oId}', 'tag', ${tag.tagFollowerCount})">+ 订阅</span>
+	                        </#if>
+	                        <#if tag.isDomainAdmin>
+                            <span class="tooltipped tooltipped-n ft-red tag-follow" aria-label="领域管理" onclick="window.location ='${servePath}/domainAdmin/${tag.tagURI}'">领域管理</span>
+                            </#if>
+	                        <#if permissions["tagUpdateTagBasic"].permissionGrant> &nbsp;
+	                        <a class="tooltipped tooltipped-n" href="${servePath}/admin/tag/${tag.oId}"><span class="icon-setting"></span></a>
+	                        </#if>
+	                    </span>
                     </span>
                 </div>
-                <#if tag.tagIconPath != "">
+               <#--   <#if tag.tagIconPath != "">
                 <div class="fn-hr10"></div>
                 <div class="wrapper content-reset">
                     ${tag.tagDescription}
                 </div>
-                </#if>
-                <ul class="tag-desc fn-clear tag-articles-tag-desc">
+                </#if>-->
+                
+                <#-- <ul class="tag-desc fn-clear tag-articles-tag-desc">
                     <#list tag.tagRelatedTags as relatedTag>
                     <li>
                         <a rel="tag" href="${servePath}/tag/${relatedTag.tagURI}">
@@ -63,8 +70,9 @@
                         </div>
                     </li>
                     </#list>
-                </ul>
-                <div>
+                </ul> -->
+                
+                <#-- <div>
                     <ul class="status fn-flex">
                         <li>
                             <strong>${tag.tagReferenceCount?c}</strong>
@@ -98,15 +106,22 @@
                             </#list>
                         </div>
                     </div>
-                </div>
-                <div class="fn-clear">
-                    <@list listData=articles/>
-                    <@pagination url="${servePath}/tag/${tag.tagURI}"/>
+                </div> -->
+                
+                <div class="fn-clear tagArticlesBoxBox">
+                	<ul class="module-list">
+	                	<#list articles as article>
+	                            <#include "common/list-item.ftl">
+	                    </#list>
+					</ul>
+
+                    <#--<@list listData=articles/>
+                    <@pagination url="${servePath}/tag/${tag.tagURI}"/>-->
                 </div>
             </div> 
-            <div class="side wrapper">
+            <#-- <div class="side wrapper">
                 <#include "side.ftl">
-            </div>
+            </div> -->
         </div>
         <#include "footer.ftl">
         <@listScript/>
@@ -114,6 +129,8 @@
             <#if (isLoggedIn && !tag.isReserved) || (tag.isReserved && isAdminLoggedIn)>
             $('.person-info .btn.red').attr('onclick', 'window.location = "/post?tags=${tag.tagURI}&type=0"');
             </#if>
+
+            
         </script>
     </body>
 </html>

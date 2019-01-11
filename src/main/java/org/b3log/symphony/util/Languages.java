@@ -34,7 +34,7 @@ public final class Languages {
      * Available languages.
      */
     private static final List<String> LANGUAGES = Arrays.asList(
-            Locale.US.toString(),
+//            Locale.US.toString(),
             Locale.SIMPLIFIED_CHINESE.toString()
     );
 

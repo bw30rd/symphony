@@ -6,7 +6,7 @@
         <br>
         ${articleLabel}${colonLabel}${currentUser.userArticleCount}&nbsp;&nbsp;&nbsp;&nbsp;
         ${cmtLabel}${colonLabel}${currentUser.userCommentCount}
-        <button class="green fn-right" onclick="Settings.exportPosts()">${exportLabel}</button>
+        <button class="blue fn-right submitGreenBtn" onclick="Settings.exportPosts()">${exportLabel}</button>
     </div>
 </div>
 </@home>

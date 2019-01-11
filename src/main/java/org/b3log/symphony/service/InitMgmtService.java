@@ -17,6 +17,12 @@
  */
 package org.b3log.symphony.service;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import java.util.Set;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.Latkes;
 import org.b3log.latke.ioc.inject.Inject;
@@ -30,13 +36,20 @@ import org.b3log.latke.service.annotation.Service;
 import org.b3log.latke.util.Ids;
 import org.b3log.latke.util.Locales;
 import org.b3log.latke.util.MD5;
-import org.b3log.symphony.model.*;
-import org.b3log.symphony.repository.*;
+import org.b3log.symphony.model.Article;
+import org.b3log.symphony.model.Option;
+import org.b3log.symphony.model.Permission;
+import org.b3log.symphony.model.Role;
+import org.b3log.symphony.model.Tag;
+import org.b3log.symphony.model.UserExt;
+import org.b3log.symphony.repository.OptionRepository;
+import org.b3log.symphony.repository.PermissionRepository;
+import org.b3log.symphony.repository.RolePermissionRepository;
+import org.b3log.symphony.repository.RoleRepository;
+import org.b3log.symphony.repository.TagRepository;
 import org.b3log.symphony.util.Languages;
 import org.b3log.symphony.util.Symphonys;
 import org.json.JSONObject;
-
-import java.util.*;
 
 /**
  * Initialization management service.
@@ -217,7 +230,7 @@ public class InitMgmtService {
             System.exit(0);
         }
 
-        LOGGER.info("It's your first time setup Sym, initializes Sym....");
+        LOGGER.info("It's your first time setup Begeek, initializes Begeek....");
 
         try {
             LOGGER.log(Level.INFO, "Database [{0}], creating all tables", Latkes.getRuntimeDatabase());
@@ -571,7 +584,7 @@ public class InitMgmtService {
 
             // Init admin
             final JSONObject admin = new JSONObject();
-            admin.put(User.USER_EMAIL, "sym@b3log.org");
+            admin.put(User.USER_EMAIL, "begeek@bw30.com");
             admin.put(User.USER_NAME, "admin");
             admin.put(User.USER_PASSWORD, MD5.hash("admin"));
 
@@ -607,26 +620,28 @@ public class InitMgmtService {
             tag.put(Tag.TAG_URI, "announcement");
             tagMgmtService.updateTag(tagId, tag);
 
-            tagTitle = "Sym";
-            tagId = tagMgmtService.addTag(adminId, tagTitle);
-            tag = tagRepository.get(tagId);
-            tag.put(Tag.TAG_URI, "Sym");
-            tag.put(Tag.TAG_ICON_PATH, "sym.png");
-            tag.put(Tag.TAG_DESCRIPTION, "[Sym](https://github.com/b3log/symphony) 是一个用 [Java] 实现的现代化社区（论坛/社交网络/博客）平台，“下一代的社区系统，为未来而构建”。");
-            tagMgmtService.updateTag(tagId, tag);
+//            tagTitle = "Sym";
+//            tagId = tagMgmtService.addTag(adminId, tagTitle);
+//            tag = tagRepository.get(tagId);
+//            tag.put(Tag.TAG_URI, "Sym");
+//            tag.put(Tag.TAG_ICON_PATH, "sym.png");
+//            tag.put(Tag.TAG_DESCRIPTION, "[Sym](https://github.com/b3log/symphony) 是一个用 [Java] 实现的现代化社区（论坛/社交网络/博客）平台，“下一代的社区系统，为未来而构建”。");
+//            tagMgmtService.updateTag(tagId, tag);
 
-            tagTitle = "B3log";
-            tagId = tagMgmtService.addTag(adminId, tagTitle);
-            tag = tagRepository.get(tagId);
-            tag.put(Tag.TAG_URI, "B3log");
-            tag.put(Tag.TAG_ICON_PATH, "b3log.png");
-            tag.put(Tag.TAG_DESCRIPTION, "[B3log](http://b3log.org) 是一个开源组织，名字来源于“Bulletin Board Blog”缩写，目标是将独立博客与论坛结合，形成一种新的网络社区体验，详细请看 [B3log 构思](https://hacpai.com/b3log)。目前 B3log 已经开源了多款产品： [Solo] 、 [Sym] 、 [Wide] 。");
-            tagMgmtService.updateTag(tagId, tag);
+//            tagTitle = "B3log";
+//            tagId = tagMgmtService.addTag(adminId, tagTitle);
+//            tag = tagRepository.get(tagId);
+//            tag.put(Tag.TAG_URI, "B3log");
+//            tag.put(Tag.TAG_ICON_PATH, "b3log.png");
+//            tag.put(Tag.TAG_DESCRIPTION, "[B3log](http://b3log.org) 是一个开源组织，名字来源于“Bulletin Board Blog”缩写，目标是将独立博客与论坛结合，形成一种新的网络社区体验，详细请看 [B3log 构思](https://hacpai.com/b3log)。目前 B3log 已经开源了多款产品： [Solo] 、 [Sym] 、 [Wide] 。");
+//            tagMgmtService.updateTag(tagId, tag);
 
             // Hello World!
             final JSONObject article = new JSONObject();
-            article.put(Article.ARTICLE_TITLE, "Welcome to Sym community &hearts;");
-            article.put(Article.ARTICLE_TAGS, "Sym,Announcement");
+//            article.put(Article.ARTICLE_TITLE, "Welcome to Sym community &hearts;");
+//            article.put(Article.ARTICLE_TAGS, "Sym,Announcement");
+            article.put(Article.ARTICLE_TITLE, "Welcome to Begeek community &hearts;");
+            article.put(Article.ARTICLE_TAGS, "Announcement");
             article.put(Article.ARTICLE_CONTENT, "Hello, everyone!");
             article.put(Article.ARTICLE_EDITOR_TYPE, 0);
             article.put(Article.ARTICLE_AUTHOR_ID, admin.optString(Keys.OBJECT_ID));
@@ -634,9 +649,9 @@ public class InitMgmtService {
 
             articleMgmtService.addArticle(article);
 
-            LOGGER.info("Initialized Sym, have fun :)");
+            LOGGER.info("Initialized Begeek, have fun :)");
         } catch (final Exception e) {
-            LOGGER.log(Level.ERROR, "Initializes Sym failed", e);
+            LOGGER.log(Level.ERROR, "Initializes Begeek failed", e);
 
             System.exit(0);
         }

@@ -17,7 +17,21 @@
  */
 package org.b3log.symphony.processor.channel;
 
-import freemarker.template.Template;
+import java.io.StringWriter;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.websocket.CloseReason;
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
+
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Keys;
 import org.b3log.latke.Latkes;
@@ -31,7 +45,12 @@ import org.b3log.latke.service.LangPropsService;
 import org.b3log.latke.service.LangPropsServiceImpl;
 import org.b3log.latke.util.Locales;
 import org.b3log.latke.util.Strings;
-import org.b3log.symphony.model.*;
+import org.b3log.symphony.model.Article;
+import org.b3log.symphony.model.Comment;
+import org.b3log.symphony.model.Common;
+import org.b3log.symphony.model.Permission;
+import org.b3log.symphony.model.Role;
+import org.b3log.symphony.model.UserExt;
 import org.b3log.symphony.processor.SkinRenderer;
 import org.b3log.symphony.repository.ArticleRepository;
 import org.b3log.symphony.service.RoleQueryService;
@@ -42,14 +61,7 @@ import org.b3log.symphony.util.Symphonys;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 
-import javax.websocket.*;
-import javax.websocket.server.ServerEndpoint;
-import java.io.StringWriter;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import freemarker.template.Template;
 
 /**
  * Article channel.
@@ -82,23 +94,28 @@ public class ArticleChannel {
      *                "articleId": "",
      *                "operation": "" // "+"/"-"
      */
-    public static void notifyHeat(final JSONObject message) {
-        message.put(Common.TYPE, Article.ARTICLE_T_HEAT);
+	public static void notifyHeat(final JSONObject message) {
+		message.put(Common.TYPE, Article.ARTICLE_T_HEAT);
 
-        final String msgStr = message.toString();
+		final String msgStr = message.toString();
 
-        for (final Session session : SESSIONS) {
-            final String viewingArticleId = (String) Channels.getHttpParameter(session, Article.ARTICLE_T_ID);
-            if (Strings.isEmptyOrNull(viewingArticleId)
-                    || !viewingArticleId.equals(message.optString(Article.ARTICLE_T_ID))) {
-                continue;
+		for (final Session session : SESSIONS) {
+			final String viewingArticleId = (String) Channels.getHttpParameter(session, Article.ARTICLE_T_ID);
+			try {
+				if (Strings.isEmptyOrNull(viewingArticleId)
+						|| !viewingArticleId.equals(message.optString(Article.ARTICLE_T_ID))) {
+					continue;
+				}
+				if (session.isOpen()) {
+					session.getAsyncRemote().sendText(msgStr);
+				}
+			}catch (final Exception e) {
+                LOGGER.log(Level.ERROR, "Notify article heat error", e);
+            } finally {
+                JdbcRepository.dispose();
             }
-
-            if (session.isOpen()) {
-                session.getAsyncRemote().sendText(msgStr);
-            }
-        }
-    }
+		}
+	}
 
     /**
      * Notifies the specified comment message to browsers.
@@ -169,7 +186,7 @@ public class ArticleChannel {
                 message.put(Comment.COMMENT_T_VOTE, -1);
                 message.put(Common.REWARDED, false);
                 message.put(Comment.COMMENT_REVISION_COUNT, 1);
-
+                
                 final Map dataModel = new HashMap();
                 dataModel.put(Common.IS_LOGGED_IN, isLoggedIn);
                 dataModel.put(Common.CURRENT_USER, user);

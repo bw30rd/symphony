@@ -17,6 +17,12 @@
  */
 package org.b3log.symphony.processor;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.Latkes;
 import org.b3log.latke.ioc.inject.Inject;
@@ -30,19 +36,24 @@ import org.b3log.latke.servlet.annotation.RequestProcessor;
 import org.b3log.latke.servlet.renderer.freemarker.AbstractFreeMarkerRenderer;
 import org.b3log.latke.util.Strings;
 import org.b3log.symphony.cache.DomainCache;
-import org.b3log.symphony.model.*;
+import org.b3log.symphony.model.Article;
+import org.b3log.symphony.model.Common;
+import org.b3log.symphony.model.Domain;
+import org.b3log.symphony.model.Option;
+import org.b3log.symphony.model.Tag;
+import org.b3log.symphony.model.UserExt;
 import org.b3log.symphony.processor.advice.AnonymousViewCheck;
 import org.b3log.symphony.processor.advice.PermissionGrant;
 import org.b3log.symphony.processor.advice.stopwatch.StopwatchEndAdvice;
 import org.b3log.symphony.processor.advice.stopwatch.StopwatchStartAdvice;
-import org.b3log.symphony.service.*;
+import org.b3log.symphony.service.ArticleQueryService;
+import org.b3log.symphony.service.DataModelService;
+import org.b3log.symphony.service.DomainQueryService;
+import org.b3log.symphony.service.OptionQueryService;
+import org.b3log.symphony.service.UserLevelService;
+import org.b3log.symphony.service.UserQueryService;
 import org.b3log.symphony.util.Symphonys;
 import org.json.JSONObject;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Domain processor.
@@ -89,6 +100,12 @@ public class DomainProcessor {
      */
     @Inject
     private DataModelService dataModelService;
+    
+    /**
+     * User Level service.
+     */
+    @Inject
+    private UserLevelService userLevelService;
 
     /**
      * Domain cache.
@@ -153,11 +170,11 @@ public class DomainProcessor {
         if (null != user) {
             pageSize = user.optInt(UserExt.USER_LIST_PAGE_SIZE);
 
-            if (!UserExt.finshedGuide(user)) {
-                response.sendRedirect(Latkes.getServePath() + "/guide");
-
-                return;
-            }
+//            if (!UserExt.finshedGuide(user)) {
+//                response.sendRedirect(Latkes.getServePath() + "/guide");
+//
+//                return;
+//            }
         }
 
         final JSONObject domain = domainQueryService.getByURI(domainURI);
@@ -193,7 +210,7 @@ public class DomainProcessor {
         dataModel.put(Pagination.PAGINATION_CURRENT_PAGE_NUM, pageNum);
         dataModel.put(Pagination.PAGINATION_PAGE_COUNT, pageCount);
         dataModel.put(Pagination.PAGINATION_PAGE_NUMS, pageNums);
-
+        
         dataModelService.fillHeaderAndFooter(request, response, dataModel);
         dataModelService.fillRandomArticles(avatarViewMode, dataModel);
         dataModelService.fillSideHotArticles(avatarViewMode, dataModel);

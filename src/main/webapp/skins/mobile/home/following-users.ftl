@@ -11,21 +11,22 @@
             </a>
             <div class="fn-flex-1">
                 <h3 class="fn-inline">
-                    <a rel="nofollow" href="${servePath}/member/${followingUser.userName}" >${followingUser.userName}</a>
+                    <a rel="nofollow" href="${servePath}/member/${followingUser.userName}" ><#if followingUser.userNickname != ''>${followingUser.userNickname}<#else>${followingUser.userName}</#if></a>
+                	<a class="${followingUser.userLevelType}">${followingUser.userLevel}</a>
                 </h3> &nbsp;
                 <#if isLoggedIn && (currentUser.userName != followingUser.userName)>
                 <#if followingUser.isFollowing>
-                <button class="red small fn-right" onclick="Util.unfollow(this, '${followingUser.oId}', 'user')"> 
+                <button class="small fn-right followed" onclick="Util.unfollow(this, '${followingUser.oId}', 'user')"> 
                     ${unfollowLabel}
                 </button>
                 <#else>
-                <button class="green small fn-right" onclick="Util.follow(this, '${followingUser.oId}', 'user')"> 
+                <button class="blue small fn-right follow" onclick="Util.follow(this, '${followingUser.oId}', 'user')"> 
                     ${followLabel}
                 </button>
                 </#if>
                 </#if>
                 <div>
-                    <#if followingUser.userArticleCount == 0>
+                    <#--<#if followingUser.userArticleCount == 0>
                     <#if followingUser.userURL != "">
                     <a class="ft-gray" target="_blank" rel="friend" href="${followingUser.userURL?html}">${followingUser.userURL?html}</a>
                     <#else>
@@ -36,7 +37,10 @@
                     <#else>
                     <span class="ft-gray">${articleLabel}</span> ${followingUser.userArticleCount?c} &nbsp;
                     <span class="ft-gray">${tagLabel}</span> ${followingUser.userTagCount?c}
-                    </#if>
+                    </#if>-->
+					<span class="ft-gray">${articleLabel}</span> ${followingUser.userArticleCount?c} &nbsp;
+                    <span class="ft-gray">${followersLabel}</span> ${followingUser.followerCnt?c}
+                       
                 </div>
             </div>
         </li>

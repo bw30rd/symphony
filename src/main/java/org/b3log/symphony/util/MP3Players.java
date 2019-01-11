@@ -17,11 +17,11 @@
  */
 package org.b3log.symphony.util;
 
-import org.apache.commons.lang.StringUtils;
-import org.b3log.latke.util.MD5;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang.StringUtils;
+import org.b3log.latke.util.MD5;
 
 /**
  * MP3 player utilities.

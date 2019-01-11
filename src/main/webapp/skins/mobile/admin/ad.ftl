@@ -12,7 +12,7 @@
                 <textarea rows="20" name="sideFullAd">${sideFullAd}</textarea>
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
 
@@ -22,7 +22,7 @@
                 <textarea rows="20" name="headerBanner">${headerBanner}</textarea>
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
     </div>

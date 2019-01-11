@@ -2,30 +2,59 @@
     class="<#if comment.commentStatus == 1>cmt-shield</#if><#if comment.commentNice> cmt-perfect</#if><#if comment.commentReplyCnt != 0> cmt-selected</#if>">
     <div class="fn-flex">
         <#if !comment.fromClient>
-            <div>
-                <#if comment.commentAnonymous == 0>
-                    <a rel="nofollow" href="${servePath}/member/${comment.commentAuthorName}"></#if>
-                <div class="avatar tooltipped tooltipped-se"
-                     aria-label="${comment.commentAuthorName}" style="background-image:url('${comment.commentAuthorThumbnailURL}')"></div>
-                <#if comment.commentAnonymous == 0></a></#if>
-            </div>
+            <#if comment.commentAnonymous == 1 && (!isLoggedIn || comment.commentAuthorId != currentUser.oId)>
+            	<div class="avatar tooltipped tooltipped-se"  aria-label="匿名用户" 
+		                 style="background-image:url('${comment.commentAuthorThumbnailURL}')"></div>
             <#else>
-                <div class="avatar tooltipped tooltipped-se"
-                     aria-label="${comment.commentAuthorName}" style="background-image:url('${comment.commentAuthorThumbnailURL}')"></div>
+                <#if comment.commentAnonymous == 1 && isLoggedIn && comment.commentAuthorId == currentUser.oId>
+                    <a rel="nofollow" href="${servePath}/member/${currentUser.userName}">
+                    <div class="avatar tooltipped tooltipped-se"  
+                    	aria-label="${currentUser.userName}" 
+		                style="background-image:url('${currentUser.userAvatarURL48}')">
+	                </div></a>
+                <#else>
+                    <a rel="nofollow" href="${servePath}/member/${comment.commentAuthorName}">
+		            <div class="avatar tooltipped tooltipped-se"
+		                 aria-label="${comment.commentAuthorName}" 
+		                 style="background-image:url('${comment.commentAuthorThumbnailURL}')">
+	                 </div></a>
+                </#if>
+            </#if>
+        
+        <#else>
+            <span class="ft-gray">${comment.commenter.userNickname}</span>
+            <a class="${comment.commenter.userLevelType}">${comment.commenter.userLevel}</a>
         </#if>
+        
         <div class="fn-flex-1">
             <div class="comment-get-comment list"></div>
             <div class="fn-clear comment-info">
                 <span class="fn-left ft-smaller">
                     <#if !comment.fromClient>
-                    <#if comment.commentAnonymous == 0><a rel="nofollow" href="${servePath}/member/${comment.commentAuthorName}" class="ft-gray"></#if><span class="ft-gray">${comment.commentAuthorName}</span><#if comment.commentAnonymous == 0></a></#if>
-                    <#else><span class="ft-gray">${comment.commentAuthorName}</span>
-                    <span class="ft-fade"> • </span>
-                    <a rel="nofollow" class="ft-green" href="https://hacpai.com/article/1457158841475">API</a>
+	                    <#if comment.commentAnonymous == 1 && (!isLoggedIn || comment.commentAuthorId != currentUser.oId)>
+	                    	<span class="ft-gray">匿名用户</span>
+	                    <#else>
+		                    <#if comment.commentAnonymous == 1 && isLoggedIn && comment.commentAuthorId == currentUser.oId>
+			                    <a rel="nofollow" href="${servePath}/member/${currentUser.userName}" class="ft-gray">
+			                    	<span class="ft-gray">${comment.commenter.userNickname} (已匿名)</span>
+			                    </a>
+		                    <#else>
+			                    <a rel="nofollow" href="${servePath}/member/${comment.commentAuthorName}" class="ft-gray">
+			                    	<span class="ft-gray">${comment.commenter.userNickname}</span>
+			                    </a>
+		                    </#if>
+	                    	<a class="${comment.commenter.userLevelType}">${comment.commenter.userLevel}</a>
+	                    </#if>
+                    
+                    <#else>
+	                    <span class="ft-gray">${comment.commenter.userNickname}</span>
+	                    <a class="${comment.commenter.userLevelType}">${comment.commenter.userLevel}</a>
                     </#if>
+					
                     <span class="ft-fade">• ${comment.timeAgo}</span>
                     <#if 0 == comment.commenter.userUAStatus><span class="cmt-via ft-fade hover-show fn-hidden" data-ua="${comment.commentUA}"></span></#if>
                 </span>
+                
                 <span class="fn-right">
                     <#if isLoggedIn && comment.commentAuthorName == currentUser.userName && permissions["commonRemoveComment"].permissionGrant>
                         <span onclick="Comment.remove('${comment.oId}')" aria-label="${removeCommentLabel}"
@@ -43,7 +72,7 @@
                            aria-label="${editLabel}"><span class="icon-edit"></span></span> &nbsp;
                     </#if>
                     <#if permissions["commentUpdateCommentBasic"].permissionGrant>
-                    <a class="tooltipped tooltipped-n ft-a-title hover-show fn-hidden" href="${servePath}/admin/comment/${comment.oId}"
+                    <a class="tooltipped tooltipped-n ft-a-title hover-show fn-hidden" href="${servePath}/<#if isArticleAdmin ?? && isArticleAdmin>domainAdmin<#else>admin</#if>/comment/${comment.oId}"
                        aria-label="${adminLabel}"><span class="icon-setting"></span></a> &nbsp;
                     </#if>
                     <#if comment.commentOriginalCommentId != ''>

@@ -7,12 +7,12 @@
             <h2>${addDomainLabel}</h2>
         </div>
         <div class="module-panel form fn-clear">
-            <form action="${servePath}/admin/add-domain" method="POST">
+            <form action="${servePath}/admin/add-domain" method="POST" accept-charset="utf-8" onsubmit="document.charset='utf-8';">
                 <label>${titleLabel}</label>
                 <input name="domainTitle" type="text" />
 
                 <br/><br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
     </div>

@@ -33,7 +33,6 @@ public final class Liveness {
      * Liveness.
      */
     public static final String LIVENESS = "liveness";
-
     /**
      * Key of user id.
      */

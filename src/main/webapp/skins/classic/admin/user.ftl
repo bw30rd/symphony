@@ -215,13 +215,20 @@
                     <option value="1"<#if 1 == user.userJoinUsedPointRank> selected</#if>>${privateLabel}</option>
                 </select>
 
-                <label>${roleLabel}</label>
-                <select id="userRole" name="userRole">
+                <label id="userRoleLabel">${roleLabel}<br>
+                <#-- <select id="userRole" name="userRole" >
                     <#list roles as role>
                         <option value=${role.oId}<#if role.oId == user.userRole> selected</#if>>${role.roleName}</option>
                     </#list>
-                </select>
-
+                </select> -->
+                <input id="userRole" name="userRole" type="hidden" value="${user.userRole}">
+                
+                <#list roles as role>
+                <input type="checkbox" <#if user.userRole?contains(role.oId)>checked</#if> value="${role.oId}"
+	                > ${role.roleName} &nbsp; &nbsp;
+				</#list>
+				</label>
+				
                 <label>${appRoleLabel}</label>
                 <select id="userAppRole" name="userAppRole">
                     <option value="0"<#if 0 == user.userAppRole> selected</#if>>${hackerLabel}</option>
@@ -255,10 +262,18 @@
                 <input type="text" id="userB3ClientAddCommentURL" name="userB3ClientAddCommentURL" value="${user.userB3ClientAddCommentURL}" />
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right"
+                	onclick="var roles=''; 
+							$.each($('#userRoleLabel input:checkbox:checked'),function(){
+							     roles += ($(this).val()+',');
+							});
+	                		$('#userRole').attr('value',roles.substring(0,roles.length-1)); "
+        		>${submitLabel}</button>
             </form>
+            
         </div>
     </div>
+    
     </#if>
 
     <#if permissions["userUpdateUserAdvanced"].permissionGrant>
@@ -272,7 +287,7 @@
                 <input type="text" id="userEmail" name="userEmail" value="${user.userEmail}" />
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
             <br/>
 
@@ -281,7 +296,7 @@
                 <input type="text" name="userName" value="${user.userName}" />
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
     </div>
@@ -304,7 +319,7 @@
                 <input type="text" name="memo" value="" placeholder="${chargePointPlaceholderLabel}" />
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
     </div>
@@ -324,7 +339,7 @@
                 <input type="text" name="point" value="" />
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
     </div>
@@ -347,7 +362,7 @@
                 <input type="text" name="memo" value="" />
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
     </div>
@@ -363,7 +378,7 @@
                 <input type="text" name="userName" value="${user.userName}" readonly="readonly" />
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
     </div>

@@ -35,5 +35,8 @@
   "dependencies": {
     "gulp": "^3.9.1",
     "marked": "^0.3.6"
+  },
+  "scripts": {
+    "build": "gulp"
   }
 }

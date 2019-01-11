@@ -1,5 +1,8 @@
 <div class="footer">
-    <div class="wrapper ft-smaller">
+
+	<div style="text-align:center;">Copyright &COPY; ${year}&nbsp;<a rel="copyright" href="http://www.bisp.com" target="_blank" class="buleGreenLink">北纬科技</a>&nbsp;版权所有</div>
+	
+    <#--<div class="wrapper ft-smaller">
         <div class="footer-nav">
             <span class="ft-fade">&COPY; ${year}</span>
             <a rel="copyright" href="https://hacpai.com" target="_blank">hacpai.com</a>
@@ -15,7 +18,7 @@
                 <a href="https://github.com/b3log/symphony" class="ft-gray" target="_blank">Sym</a>
                 ${version} • ${elapsed?c}ms</span>
         </div>
-    </div>
+    </div>-->
 </div>
 <script src="${staticServePath}/js/lib/compress/libs.min.js?${staticResourceVersion}"></script>
 <script src="${staticServePath}/js/common${miniPostfix}.js?${staticResourceVersion}"></script>
@@ -25,6 +28,8 @@
         loginNameErrorLabel: "${loginNameErrorLabel}",
         followLabel: "${followLabel}",
         unfollowLabel: "${unfollowLabel}",
+        subscribeToLabel: "${subscribeToLabel}",
+        unsubscribeToLabel: "${unsubscribeToLabel}",
         symphonyLabel: "${symphonyLabel}",
         visionLabel: "${visionLabel}",
         cmtLabel: "${cmtLabel}",
@@ -33,7 +38,7 @@
         desktopNotificationTemplateLabel: "${desktopNotificationTemplateLabel}",
         servePath: "${servePath}",
         staticServePath: "${staticServePath}",
-        isLoggedIn: ${isLoggedIn?c},
+        isLoggedIn: "${isLoggedIn?c}",
         funNeedLoginLabel: '${funNeedLoginLabel}',
         notificationCommentedLabel: '${notificationCommentedLabel}',
         notificationReplyLabel: '${notificationReplyLabel}',
@@ -45,9 +50,10 @@
         newFollowerLabel: '${newFollowerLabel}',
         makeAsReadLabel: '${makeAsReadLabel}',
         checkIcon: '${checkIcon}'<#if isLoggedIn>,
-        currentUserName: '${currentUser.userName}'</#if>
+        currentUserName: '${currentUser.userName}'<#if userRoleName??>,
+        userRoleName:'${userRoleName}'</#if></#if>
     };
-    Util.init(${isLoggedIn?c});
+    Util.init("${isLoggedIn?c}");
     
     <#if isLoggedIn>
     // Init [User] channel

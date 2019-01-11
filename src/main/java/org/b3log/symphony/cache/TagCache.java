@@ -17,6 +17,13 @@
  */
 package org.b3log.symphony.cache;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.LatkeBeanManager;
@@ -25,7 +32,13 @@ import org.b3log.latke.ioc.inject.Named;
 import org.b3log.latke.ioc.inject.Singleton;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
-import org.b3log.latke.repository.*;
+import org.b3log.latke.repository.CompositeFilterOperator;
+import org.b3log.latke.repository.FilterOperator;
+import org.b3log.latke.repository.PropertyFilter;
+import org.b3log.latke.repository.Query;
+import org.b3log.latke.repository.RepositoryException;
+import org.b3log.latke.repository.SortDirection;
+import org.b3log.latke.repository.Transaction;
 import org.b3log.latke.util.CollectionUtils;
 import org.b3log.symphony.model.Tag;
 import org.b3log.symphony.repository.TagRepository;
@@ -33,9 +46,6 @@ import org.b3log.symphony.service.ShortLinkQueryService;
 import org.b3log.symphony.util.JSONs;
 import org.b3log.symphony.util.Symphonys;
 import org.json.JSONObject;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Tag cache.

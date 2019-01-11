@@ -88,36 +88,44 @@
                     <span class="icon-chevron-down fn-right"></span>
                 </div>
                 <div class="fn-hr5"></div>
-                <ul class="tab fn-clear fn-none">
+                <ul class="tab fn-clear fn-none topTabZq">
                     <li<#if type == "home"> class="fn-none"</#if>>
-                        <a href="${servePath}/member/${user.userName}">${articleLabel}</a>
+                        <!-- <a href="${servePath}/member/${user.userName}">${articleLabel}</a> -->
+                        <a onclick="window.location='${servePath}/member/${user.userName}'">${articleLabel}</a>
                     </li>
                     <li<#if type == "comments"> class="fn-none"</#if>>
-                        <a href="${servePath}/member/${user.userName}/comments">${cmtLabel}</a>
+                        <!-- <a href="${servePath}/member/${user.userName}/comments">${cmtLabel}</a> -->
+                        <a onclick="window.location='${servePath}/member/${user.userName}/comments'">${cmtLabel}</a>
                     </li>
                     <li<#if type == "watchingArticles"> class="fn-none"</#if>>
-                    <a href="${servePath}/member/${user.userName}/watching/articles">${watchingArticlesLabel}</a>
+                        <!-- <a href="${servePath}/member/${user.userName}/watching/articles">${watchingArticlesLabel}</a> -->
+                        <a onclick="window.location='${servePath}/member/${user.userName}/watching/articles'">${watchingArticlesLabel}</a>
                     </li>
-                    <li<#if type == "followingUsers"> class="fn-none"</#if>>
+                    <#--<li<#if type == "followingUsers"> class="fn-none"</#if>>
                         <a href="${servePath}/member/${user.userName}/following/users">${followingUsersLabel}</a>
-                    </li>
-                    <li<#if type == "followingTags"> class="fn-none"</#if>>
-                        <a href="${servePath}/member/${user.userName}/following/tags">${followingTagsLabel}</a>
+                    </li>-->
+                   	<li<#if type == "followingTags"> class="fn-none"</#if>>
+                        <!-- <a href="${servePath}/member/${user.userName}/following/tags">${followingTagsLabel}</a> -->
+                        <a onclick="window.location='${servePath}/member/${user.userName}/following/tags'">${followingTagsLabel}</a>
                     </li>
                     <li<#if type == "followingArticles"> class="fn-none"</#if>>
-                        <a href="${servePath}/member/${user.userName}/following/articles">${followingArticlesLabel}</a>
+                        <!-- <a href="${servePath}/member/${user.userName}/following/articles">${followingArticlesLabel}</a> -->
+                        <a onclick="window.location='${servePath}/member/${user.userName}/following/articles'">${followingArticlesLabel}</a>
                     </li>
-                    <li<#if type == "followers"> class="fn-none"</#if>>
+                   <#--<li<#if type == "followers"> class="fn-none"</#if>>
                         <a href="${servePath}/member/${user.userName}/followers">${followersLabel}</a>
                     </li>
                     <li<#if type == "points"> class="fn-none"</#if>>
                         <a href="${servePath}/member/${user.userName}/points">${pointLabel}</a>
-                    </li>
-                    <li<#if type == "linkForge"> class="fn-none"</#if>>
+                    </li>-->
+                    
+                    <#-- <li<#if type == "linkForge"> class="fn-none"</#if>>
                     <a href="${servePath}/member/${user.userName}/forge/link">${linkForgeLabel}</a>
-                    </li>
+                    </li>-->
+                    
                     <#if currentUser?? && currentUser.userName == user.userName>
-                    <li<#if type == "articlesAnonymous"> class="current"</#if>>
+                   
+                    <#--<li<#if type == "articlesAnonymous"> class="current"</#if>>
                         <a href="${servePath}/member/${user.userName}/articles/anonymous">${anonymousArticleLabel}</a>
                     </li>
                     <li<#if type == "commentsAnonymous"> class="current"</#if>>
@@ -125,22 +133,25 @@
                     </li>
                     <li<#if type == "settings"> class="fn-none"</#if>>
                         <a href="${servePath}/settings"><b class="ft-red">${settingsLabel}</b></a>
-                    </li>
+                    </li>-->
                     </#if>
                 </ul>
-            </div>
-            <div class="fn-clear">
-                <#nested>
             </div>
             <div class="side">
                 <#include "home-side.ftl">
             </div>
+            <div class="fn-clear" style="background:#FFF; margin:10px; margin-top:0px;">
+                <#nested>
+            </div>
+            
         </div>
         <#include "../footer.ftl">
         <script src="${staticServePath}/js/settings${miniPostfix}.js?${staticResourceVersion}"></script>
         <script>
             Label.followLabel = "${followLabel}";
             Label.unfollowLabel = "${unfollowLabel}";
+            Label.subscribeToLabel = "${subscribeToLabel}";
+            Label.unsubscribeToLabel = "${unsubscribeToLabel}";
             Label.invalidPasswordLabel = "${invalidPasswordLabel}";
             Label.amountNotEmpty = "${amountNotEmpty}";
             Label.invalidUserNameLabel = "${invalidUserNameLabel}";

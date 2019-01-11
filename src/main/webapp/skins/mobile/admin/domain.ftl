@@ -26,7 +26,7 @@
                 <input type="text" name="tagTitle" />
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
             </#if>
 
@@ -36,7 +36,7 @@
                 <input type="text" name="tagTitle" />
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
             </#if>
         </div>
@@ -67,10 +67,15 @@
                 <label for="domainType">${typeLabel}</label>
                 <input type="text" id="domainType" name="domainType" value="${domain.domainType}" />
 
-                <label>${statusLabel}</label>
+                <#-- <label>${statusLabel}</label>
                 <select id="domainStatus" name="domainStatus">
                     <option value="0"<#if 0 == domain.domainStatus> selected</#if>>${validLabel}</option>
                     <option value="1"<#if 1 == domain.domainStatus> selected</#if>>${banLabel}</option>
+                </select> -->
+                <label>匿名功能</label>
+                <select id="domainStatus" name="domainStatus">
+                    <option value="0"<#if 0 == domain.domainStatus> selected</#if>>${closeLabel}</option>
+                    <option value="1"<#if 1 == domain.domainStatus> selected</#if>>${openLabel}</option>
                 </select>
 
                 <label for="domainSeoTitle">${seoTitleLabel}</label>
@@ -86,7 +91,7 @@
                 <textarea rows="20" id="domainCSS" name="domainCSS">${domain.domainCSS}</textarea>
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
     </div>
@@ -103,7 +108,7 @@
                 <input type="text" id="domainId" name="domainId" value="${domain.oId}" readonly="readonly"/>
 
                 <br/><br/>
-                <button type="submit" class="green fn-right" >${submitLabel}</button>
+                <button type="submit" class="blue fn-right" >${submitLabel}</button>
             </form>
         </div>
     </div>

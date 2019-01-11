@@ -17,18 +17,23 @@
  */
 package org.b3log.symphony.repository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.model.User;
-import org.b3log.latke.repository.*;
+import org.b3log.latke.repository.AbstractRepository;
+import org.b3log.latke.repository.CompositeFilterOperator;
+import org.b3log.latke.repository.FilterOperator;
+import org.b3log.latke.repository.PropertyFilter;
+import org.b3log.latke.repository.Query;
+import org.b3log.latke.repository.RepositoryException;
 import org.b3log.latke.repository.annotation.Repository;
 import org.b3log.symphony.model.Link;
 import org.b3log.symphony.model.Tag;
 import org.b3log.symphony.model.UserExt;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Tag-User-Link relation repository.

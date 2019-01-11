@@ -17,6 +17,9 @@
  */
 package org.b3log.symphony.event;
 
+import java.util.List;
+import java.util.Set;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.Latkes;
 import org.b3log.latke.event.AbstractEventListener;
@@ -40,9 +43,6 @@ import org.b3log.symphony.service.UserQueryService;
 import org.b3log.symphony.util.Emotions;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * Sends article update related notifications.

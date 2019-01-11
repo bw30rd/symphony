@@ -17,10 +17,11 @@
  */
 package org.b3log.symphony.util;
 
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import org.testng.annotations.Test;
 
 /**

@@ -4,8 +4,10 @@
 <div class="tabs-sub fn-clear">
     <a pjax-title="${watchingArticlesLabel} - ${user.userName} - ${symphonyLabel}"  href="${servePath}/member/${user.userName}/watching/articles"<#if type == "watchingUsers"> class="current"</#if>>${watchingArticlesLabel}</a>
     <a pjax-title="${followingUsersLabel} - ${user.userName} - ${symphonyLabel}"  href="${servePath}/member/${user.userName}/following/users"<#if type == "followingUsers"> class="current"</#if>>${followingUsersLabel}</a>
+   
     <a pjax-title="${followingTagsLabel} - ${user.userName} - ${symphonyLabel}"  href="${servePath}/member/${user.userName}/following/tags"<#if type == "followingTags"> class="current"</#if>>${followingTagsLabel}</a>
-    <a pjax-title="${followingArticlesLabel} - ${user.userName} - ${symphonyLabel}"  href="${servePath}/member/${user.userName}/following/articles"<#if type == "followingArticles"> class="current"</#if>>${followingArticlesLabel} &nbsp;<span class="count">${paginationRecordCount}</span></a>
+   
+	<a pjax-title="${followingArticlesLabel} - ${user.userName} - ${symphonyLabel}"  href="${servePath}/member/${user.userName}/following/articles"<#if type == "followingArticles"> class="current"</#if>>${followingArticlesLabel} &nbsp;<span class="count">${paginationRecordCount}</span></a>
     <a pjax-title="${followersLabel} - ${user.userName} - ${symphonyLabel}"  href="${servePath}/member/${user.userName}/followers"<#if type == "followers"> class="current"</#if>>${followersLabel}</a>
 </div>
 <#if 0 == user.userFollowingArticleStatus || (isLoggedIn && ("adminRole" == currentUser.userRole || currentUser.userName == user.userName))>
@@ -46,9 +48,9 @@
             </div>
             <#if isLoggedIn>
             <#if article.isFollowing>
-            <button class="mid" onclick="Util.unfollow(this, '${article.oId}', 'article')">${uncollectLabel}</button>
+            <button class="mid followed" onclick="Util.unfollow(this, '${article.oId}', 'article')">${uncollectLabel}</button>
             <#else>
-            <button class="mid" onclick="Util.follow(this, '${article.oId}', 'article')">${followLabel}</button>
+            <button class="mid follow" onclick="Util.follow(this, '${article.oId}', 'article')">${collectLabel}</button>
             </#if>
             </#if>
         </li>

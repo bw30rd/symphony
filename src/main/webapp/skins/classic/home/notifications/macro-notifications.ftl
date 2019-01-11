@@ -16,7 +16,7 @@
             <div class="wrapper">
                 <div class="content">
                     <div class="list module">
-                        <#nested>
+                        <#nested>  
                     </div>
                 </div>
                 <div class="side fn-none"></div>
@@ -79,12 +79,13 @@
                                     <span class="count">${unreadPointNotificationCnt}</span>
                                     </#if>
                                 </a>
-                                <a href="${servePath}/notifications/broadcast"<#if type == "broadcast"> class="current"</#if>>
+                                
+                              <#--  <a href="${servePath}/notifications/broadcast"<#if type == "broadcast"> class="current"</#if>>
                                    <span>${sameCityLabel}</span>
                                     <#if unreadBroadcastNotificationCnt &gt; 0>
                                     <span class="count">${unreadBroadcastNotificationCnt}</span>
                                     </#if>
-                                </a>
+                                </a>-->
                                 <a href="${servePath}/notifications/sys-announce"<#if type == "sysAnnounce"> class="current"</#if>>
                                    <span>${systemLabel}</span>
                                     <#if unreadSysAnnounceNotificationCnt &gt; 0>

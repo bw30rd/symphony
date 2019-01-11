@@ -1,2 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context antiJARLocking="true" path="/"/>
+<Context antiJARLocking="true" path="/">
+    <Valve className="com.radiadesign.catalina.session.RedisSessionHandlerValve" />  
+    <Manager className="com.radiadesign.catalina.session.RedisSessionManager"  
+            host="${AE_BS_REDIS_BEGEEK_REDIS1_HOST}"
+            port="${AE_BS_REDIS_BEGEEK_REDIS1_PORT}"
+            password="${AE_BS_REDIS_BEGEEK_REDIS1_PASSWORD}"
+            database="0"   
+            maxInactiveInterval="60" />
+</Context>

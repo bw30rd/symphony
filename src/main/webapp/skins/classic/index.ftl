@@ -1,4 +1,6 @@
 <#include "macro-head.ftl">
+<#include "macro-list.ftl">
+<#include "macro-pagination.ftl">
 <!DOCTYPE html>
 <html>
     <head>
@@ -14,19 +16,31 @@
         <div class="main">
             <div class="wrapper">
                 <div class="index-main">
-                    <div class="index-tabs fn-flex" id="articles">
+                    <#if isLoggedIn>
+                        <a href="${servePath}/post?type=0" class="tooltipped tooltipped-w radio-btn-addFile" aria-label="发帖"></a>
+                    </#if>
+                    <div class="index-tabs fn-flex tab_zq" id="articles">
                         <span class="current" data-index="0">
-                            <span class="icon-clock"></span> ${latestLabel}
+                            <span class="icon-00"></span> ${latestLabel}
                         </span>
-                        <span class="tags" data-index="1">
-                            <span class="icon-tags"></span>
+                        <#if isLoggedIn>
+                        <span class="watch" data-index="1">
+                            <span class="icon-11"></span>
+                            ${watchingArticlesLabel}
+                        </span>
+                        </#if>
+                        <span class="perfect" data-index="2">
+                        	<span class="icon-22"></span>
+                            ${perfectLabel}
+                        </span>
+                        <#if isLoggedIn>
+                        <span class="tags" data-index="3">
+                            <span class="icon-33"></span>
                             ${followingTagsLabel}
                         </span>
-                        <span class="users" data-index="2">
-                            <span class="icon-userrole"></span>
-                            ${followingUsersLabel}
-                        </span>
+                        </#if>
                     </div>
+					
                     <div class="index-tabs-panels list article-list">
                         <ul>
                             <#list recentArticles as article>
@@ -41,6 +55,47 @@
                                 <a class="more" href="${servePath}/recent">${moreRecentArticleLabel}</a>
                             </li>
                         </ul>
+                        
+                        <ul class="fn-none">
+                            <#list followingArticles as article>
+                                <#include "common/list-item.ftl">
+                            </#list>
+                            <#if isLoggedIn && followingArticles?size == 0>
+                                <li class="ft-center">
+                                    ${noFollowingArticleLabel}<br>
+                                 <#--   ${noFollowingTagTipLabel}<br> -->
+                                    <img src="${staticServePath}/images/404/6.gif"/>     
+                                </li>  
+                            </#if>
+                            <#if !isLoggedIn>
+                                <li class="ft-center">
+                                    ${noLoginLabel}<br>
+                                    ${noLoginTipLabel}<br> 
+                                    <img src="${staticServePath}/images/404/6.gif"/>     
+                                </li>  
+                            </#if>
+                            <li>
+                                <a class="more" href="${servePath}/recent">${moreRecentArticleLabel}</a>
+                            </li>
+                        </ul>
+                        
+                        <ul class="fn-none">
+                            <#list perfectArticles as article>
+                            	<#include "common/list-item.ftl">
+                            	
+                           <#--<li>
+                                <a rel="nofollow" href="${servePath}/member/${article.articleAuthorName}">
+                                    <span class="avatar-small tooltipped tooltipped-se" aria-label="${article.articleAuthorName}" style="background-image:url('${article.articleAuthorThumbnailURL48}')"></span>
+                                </a>
+                                <a rel="nofollow" class="fn-ellipsis ft-a-title" href="${servePath}${article.articlePermalink}">${article.articleTitleEmoj}</a>
+                                <a class="fn-right count ft-gray ft-smaller" href="${servePath}${article.articlePermalink}">${article.articleViewCount}</a>
+                            </li>-->
+                            </#list>
+                            <#if perfectArticles?size == 0>
+                                <li>${chickenEggLabel}</li>
+                            </#if>
+                        </ul>
+                        
                         <ul class="fn-none">
                             <#list followingTagArticles as article>
                                 <#include "common/list-item.ftl">
@@ -63,174 +118,27 @@
                                 <a class="more" href="${servePath}/recent">${moreRecentArticleLabel}</a>
                             </li>
                         </ul>
-                        <ul class="fn-none">
-                            <#list followingUserArticles as article>
-                                <#include "common/list-item.ftl">
-                            </#list>
-                            <#if isLoggedIn && followingUserArticles?size == 0>
-                                <li class="ft-center">
-                                    ${noFollowingUserLabel}<br>
-                                    ${noFollowingUserTipLabel}<br> 
-                                    <img src="${staticServePath}/images/404/2.gif"/>     
-                                </li> 
-                            </#if>
-                            <#if !isLoggedIn>
-                                <li class="ft-center">
-                                    ${noLoginLabel}<br>
-                                    ${noLoginTipLabel}<br> 
-                                    <img src="${staticServePath}/images/404/2.gif"/>     
-                                </li>   
-                            </#if>
-                            <li>
-                                <a class="more" href="${servePath}/recent">${moreRecentArticleLabel}</a>
-                            </li>
-                        </ul>
+                        
                     </div>
                 </div>
+                
+                
+                <#if isLoggedIn>
                 <div class="index-side">
-                    <div class="index-tabs fn-flex">
-                        <span class="perfect current">
-                            <svg height="16" viewBox="3 2 11 12" width="14">${perfectIcon}</svg>
-                            ${perfectLabel}
-                        </span>
-                        <span class="check">
-                            <#if isLoggedIn && !isDailyCheckin>
-                            <a href="<#if useCaptchaCheckin>${servePath}/activity/checkin<#else>${servePath}/activity/daily-checkin</#if>">${dailyCheckinLabel}</a>
-                            <#else>
-                            <a href="${servePath}/activities">
-                                ${activityLabel}
-                            </a>
-                            </#if>
-                        </span>
-                        <span class="post"><a href="${servePath}/pre-post">${postArticleLabel}</a></span>
-                    </div>
-                    <div class="perfect-panel list">
-                        <ul>
-                            <#list perfectArticles as article>
-                            <li>
-                                <a rel="nofollow" href="${servePath}/member/${article.articleAuthorName}">
-                                    <span class="avatar-small tooltipped tooltipped-se" aria-label="${article.articleAuthorName}" style="background-image:url('${article.articleAuthorThumbnailURL48}')"></span>
-                                </a>
-                                <a rel="nofollow" class="fn-ellipsis ft-a-title" href="${servePath}${article.articlePermalink}">${article.articleTitleEmoj}</a>
-                                <a class="fn-right count ft-gray ft-smaller" href="${servePath}${article.articlePermalink}">${article.articleViewCount}</a>
-                            </li>
-                            </#list>
-                            <#if perfectArticles?size == 0>
-                                <li>${chickenEggLabel}</li>
-                            </#if>
-                        </ul>
-                    </div>
+               	 	<#include "common/begeekUser-info.ftl">
                 </div>
+                </#if>
+
             </div>
-            <div class="index__bottom">
-                <div class="wrapper">
-                    <div class="index-main">
-                        <div class="metro-line fn-flex">
-                            <div class="metro-item">
-                                <a class="preview" href="${servePath}/tag/${tag0.tagURI}">
-                                    <img src="${staticServePath}/images/tags/${tag0.tagIconPath}" alt="${tag0.tagTitle}">
-                                    <b>${tag0.tagTitle}</b>
-                                </a>
-                            </div>
-                            <div class="metro-item mid">
-                                <a class="preview" href="${servePath}/tag/${tag1.tagURI}">
-                                    <img src="${staticServePath}/images/tags/${tag1.tagIconPath}" alt="${tag1.tagTitle}">
-                                    <b>${tag1.tagTitle}</b>
-                                </a>
-                            </div>
-                            <div class="metro-item">
-                                <a class="preview" href="${servePath}/tag/${tag2.tagURI}">
-                                    <img src="${staticServePath}/images/tags/${tag2.tagIconPath}" alt="${tag2.tagTitle}">
-                                    <b>${tag2.tagTitle}</b>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="metro-line fn-flex">
-                            <div class="metro-item">
-                                <a class="preview" href="${servePath}/tag/${tag3.tagURI}">
-                                    <img src="${staticServePath}/images/tags/${tag3.tagIconPath}" alt="${tag3.tagTitle}">
-                                    <b>${tag3.tagTitle}</b>
-                                </a>
-                            </div>
-                            <div class="metro-item mid">
-                                <a class="preview" href="${servePath}/tag/${tag4.tagURI}">
-                                    <img src="${staticServePath}/images/tags/${tag4.tagIconPath}" alt="${tag4.tagTitle}">
-                                    <b>${tag4.tagTitle}</b>
-                                </a>
-                            </div>
-                            <div class="metro-item">
-                                <a class="preview" href="${servePath}/tag/${tag5.tagURI}">
-                                    <img src="${staticServePath}/images/tags/${tag5.tagIconPath}" alt="${tag5.tagTitle}">
-                                    <b>${tag5.tagTitle}</b>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="metro-line fn-flex">
-                            <div class="metro-item">
-                                <a class="preview" href="${servePath}/tag/${tag6.tagURI}">
-                                    <img src="${staticServePath}/images/tags/${tag6.tagIconPath}" alt="${tag6.tagTitle}">
-                                    <b>${tag6.tagTitle}</b>
-                                </a>
-                            </div>
-                            <div class="metro-item mid">
-                                <a class="preview" href="${servePath}/tag/${tag7.tagURI}">
-                                    <img src="${staticServePath}/images/tags/${tag7.tagIconPath}" alt="${tag7.tagTitle}">
-                                    <b>${tag7.tagTitle}</b>
-                                </a>
-                            </div>
-                            <div class="metro-item">
-                                <a class="preview" href="${servePath}/tag/${tag8.tagURI}">
-                                    <img src="${staticServePath}/images/tags/${tag8.tagIconPath}" alt="${tag8.tagTitle}">
-                                    <b>${tag8.tagTitle}</b>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="metro-border fn-flex">
-                            <div></div>
-                            <div class="green"></div>
-                            <div class="yellow"></div>
-                        </div>
-                    </div>
-                    <div class="index-side down">
-                        <div class="list timeline ft-gray single-line">
-                            <ul>
-                                <#if timelines?size <= 0>
-                                <li id="emptyTimeline">${emptyTimelineLabel}</li>
-                                </#if>
-                                <#list timelines as article>
-                                <#if article_index < 20>
-                                <li>
-                                    ${article.content}
-                                </li>
-                                </#if>
-                            </#list>
-                        </ul>
-                    </div>
-                    <div class="metro-line fn-flex">
-                        <div class="metro-item">
-                            <!-- ${ADLabel} -->
-                            <a class="preview" href="https://hacpai.com/man">
-                                <img width="44px" src="${staticServePath}/images/tags/shell.png" alt="${sponsorLabel}">
-                                <b>Hacker's Manual</b>
-                            </a>
-                        </div>
-                        <div class="metro-item last">
-                            <a class="preview" href="https://hacpai.com/article/1460083956075">
-                                <img width="44px" src="${staticServePath}/emoji/graphics/heart.png" alt="${sponsorLabel}">
-                                <b>${adDeliveryLabel}</b>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="metro-border fn-flex">
-                        <div></div>
-                        <div class="purple"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        </div>  
+         
     <#include "footer.ftl">   
+    <!-- <#if isLoggedIn>
+        <a href="${servePath}/post?type=0" class="tooltipped tooltipped-w radio-btn-addFile" aria-label="发帖"></a>
+    </#if> -->
+    
     <script src="${staticServePath}/js/channel${miniPostfix}.js?${staticResourceVersion}"></script>
+    <script src="${staticServePath}/js/begeek${miniPostfix}.js?${staticResourceVersion}"></script>
     <script type="text/javascript">
         $('.metro-item').height($('.metro-item').width());
         $('.timeline ul').outerHeight($('.metro-item').width() * 2 + 2);
@@ -240,13 +148,14 @@
             var $it = $(this);
             $('#articles span').removeClass('current');
             $it.addClass('current');
-            $it.addClass('current');
 
             $(".index-tabs-panels.article-list ul").hide();
-            if ($it.hasClass('tags')) {
+            if ($it.hasClass('watch')) {
                 $(".index-tabs-panels.article-list ul:eq(1)").show();
-            } else if ($it.hasClass('users')) {
+            } else if ($it.hasClass('perfect')) {
                 $(".index-tabs-panels.article-list ul:eq(2)").show();
+            } else if ($it.hasClass('tags')){
+                $(".index-tabs-panels.article-list ul:eq(3)").show();
             } else {
                 $(".index-tabs-panels.article-list ul:eq(0)").show();
             }
@@ -273,9 +182,15 @@
             localStorage.setItem('indexTab', 0);
         }
         
-
+        $('.progressIn_zq').width(((parseInt($('#upCount').html())/parseInt($('#downCount').html())).toFixed(2)*100)+'%');
+        
         // Init [Timeline] channel
         TimelineChannel.init("${wsScheme}://${serverHost}:${serverPort}${contextPath}/timeline-channel", 20);
+        
+        $('body').click(function () {
+			$("#points_explanation").hide();
+			$("#userLevel_explanation").hide();
+		});
     </script>
-</body>
+</body> 
 </html>

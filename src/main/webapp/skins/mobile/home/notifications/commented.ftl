@@ -20,7 +20,7 @@
                     <#elseif notification.commentArticleType == 2>
                     <span class="icon-feed" title="${cityBroadcastLabel}"></span>
                     </#if>
-                    <a rel="bookmark" href="${notification.commentSharpURL}"> ${notification.commentArticleTitle}</a>
+                    <a rel="bookmark" href="${servePath}${notification.commentSharpURL}"> ${notification.commentArticleTitle}</a>
                 </h2>
                 <span class="ft-gray fn-sub">
                     <span class="icon-date"></span>

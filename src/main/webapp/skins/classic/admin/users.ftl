@@ -5,7 +5,7 @@
     <div class="module list">
         <form method="GET" action="${servePath}/admin/users" class="form">
             <input name="userNameOrEmail" type="text" placeholder="${userNameLabel}/${userEmailLabel}"/>
-            <button type="submit" class="green">${searchLabel}</button> &nbsp;
+            <button type="submit" class="blue">${searchLabel}</button> &nbsp;
             <#if permissions["userAddUser"].permissionGrant>
             <button type="button" class="btn red" onclick="window.location = '${servePath}/admin/add-user'">${addUserLabel}</button>
             </#if>

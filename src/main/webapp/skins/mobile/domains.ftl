@@ -34,7 +34,9 @@
                     </div>
                     </#list>
                 </div>
-                <div class="side">
+                
+                
+               <#-- <div class="side">
                     <#if ADLabel!="">
                     <div class="module">
                         <div class="module-header">
@@ -69,7 +71,8 @@
                             </ul>
                         </div>
                     </div>
-                </div>
+                </div>-->
+                
             </div>
         </div>
         <#include "footer.ftl">

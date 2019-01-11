@@ -5,7 +5,7 @@
     <div class="module list">
         <form method="GET" action="${servePath}/admin/articles" class="form">
             <input name="id" type="text" placeholder="${articleLabel} Id"/>
-            <button type="submit" class="green">${searchLabel}</button>
+            <button type="submit" class="blue">${searchLabel}</button>
             <#if (esEnabled || algoliaEnabled) && permissions["articleReindexArticles"].permissionGrant>
                 &nbsp;
             <button type="button" class="btn red" onclick="searchIndex();">${searchIndexLabel}</button>
@@ -30,7 +30,7 @@
                                 <font class="ft-red">${banLabel}</font>
                             </#if>
                             <#if 0 < item.articleStick>
-                            <#if 9223372036854775807 <= item.articleStick><font class="ft-green">${adminLabel}</font></#if><font class="ft-green">${stickLabel}</font>
+                            <font class="ft-blue">${stickLabel}</font>
                             </#if>
                             </span>
                         </h2>
@@ -51,7 +51,7 @@
 <script>
     function searchIndex() {
         $.ajax({
-            url: "/admin/search/index",
+            url: "${servePath}/admin/search/index",
             type: "POST",
             cache: false,
             success: function (result, textStatus) {

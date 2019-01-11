@@ -17,6 +17,8 @@
  */
 package org.b3log.symphony.event.other;
 
+import java.net.URL;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.Latkes;
 import org.b3log.latke.RuntimeMode;
@@ -35,7 +37,11 @@ import org.b3log.latke.urlfetch.URLFetchService;
 import org.b3log.latke.urlfetch.URLFetchServiceFactory;
 import org.b3log.latke.util.Strings;
 import org.b3log.symphony.event.EventTypes;
-import org.b3log.symphony.model.*;
+import org.b3log.symphony.model.Article;
+import org.b3log.symphony.model.Client;
+import org.b3log.symphony.model.Comment;
+import org.b3log.symphony.model.Common;
+import org.b3log.symphony.model.UserExt;
 import org.b3log.symphony.service.AvatarQueryService;
 import org.b3log.symphony.service.ClientQueryService;
 import org.b3log.symphony.service.ShortLinkQueryService;
@@ -45,8 +51,6 @@ import org.b3log.symphony.util.Markdowns;
 import org.b3log.symphony.util.Networks;
 import org.b3log.symphony.util.Symphonys;
 import org.json.JSONObject;
-
-import java.net.URL;
 
 /**
  * Sends comment to client.

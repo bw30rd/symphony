@@ -17,15 +17,20 @@
  */
 package org.b3log.symphony.api.v2;
 
+import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Latkes;
 import org.b3log.latke.model.Pagination;
 import org.b3log.latke.model.User;
-import org.b3log.symphony.model.*;
+import org.b3log.symphony.model.Article;
+import org.b3log.symphony.model.Comment;
+import org.b3log.symphony.model.Common;
+import org.b3log.symphony.model.Domain;
+import org.b3log.symphony.model.Tag;
+import org.b3log.symphony.model.UserExt;
 import org.json.JSONObject;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * V2 API related constants and utilities.

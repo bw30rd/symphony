@@ -21,7 +21,11 @@ import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
-import org.b3log.latke.repository.*;
+import org.b3log.latke.repository.CompositeFilterOperator;
+import org.b3log.latke.repository.FilterOperator;
+import org.b3log.latke.repository.PropertyFilter;
+import org.b3log.latke.repository.Query;
+import org.b3log.latke.repository.RepositoryException;
 import org.b3log.latke.repository.annotation.Transactional;
 import org.b3log.latke.service.ServiceException;
 import org.b3log.latke.service.annotation.Service;
@@ -157,7 +161,7 @@ public class DomainMgmtService {
             record.put(Domain.DOMAIN_TITLE, domain.optString(Domain.DOMAIN_TITLE));
             record.put(Domain.DOMAIN_URI, domain.optString(Domain.DOMAIN_URI));
             record.put(Domain.DOMAIN_TAG_COUNT, 0);
-            record.put(Domain.DOMAIN_TYPE, "");
+            record.put(Domain.DOMAIN_TYPE, domain.optString(Domain.DOMAIN_TYPE));
             record.put(Domain.DOMAIN_SORT, 10);
 
             final JSONObject domainCntOption = optionRepository.get(Option.ID_C_STATISTIC_DOMAIN_COUNT);

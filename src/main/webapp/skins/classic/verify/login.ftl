@@ -13,7 +13,7 @@
         <div class="main">
             <div class="wrapper verify">
                 <div class="verify-wrap">
-                    <div class="form">
+                    <div class="form" style="display:none;">
                         ${logoIcon2}
                         <div class="input-wrap">
                             <span class="icon-userrole"></span>
@@ -31,14 +31,16 @@
                         <div class="fn-clear">
                             <div class="fn-hr5"></div>
                             <input type="checkbox" id="rememberLogin" checked /> ${rememberLoginStatusLabel}
-                            <a href="${servePath}/forget-pwd" class="fn-right">${forgetPwdLabel}</a>
+                            <#--<a href="${servePath}/forget-pwd" class="fn-right">${forgetPwdLabel}</a>-->
                             <div class="fn-hr5"></div>
                         </div>
-                        
                         <div id="loginTip" class="tip"></div>
-                        <button class="green" onclick="Verify.login('${goto}')">${loginLabel}</button>
-                        <button onclick="Util.goRegister()">${registerLabel}</button>
+                        <#--<button class="green" onclick="Verify.login('${goto}')">${loginLabel}</button>-->
+                        <#--<button onclick="Util.goRegister()">${registerLabel}</button>-->
+						<#--<iframe src="http://localhost:8080/symphony/begeek"></iframe>-->
                     </div>
+                    <a class="begeekLogo"></a>
+                    <iframe src="/symphony/begeek" name="login_box" class="ifr"></iframe>
                 </div>
                 <div class="intro content-reset">
                     ${introLabel}
@@ -53,6 +55,24 @@
             Label.invalidEmailLabel = "${invalidEmailLabel}";
             Label.confirmPwdErrorLabel = "${confirmPwdErrorLabel}";
             Label.captchaErrorLabel = "${captchaErrorLabel}";
+            
+            $(document).ready(function(){
+				$(".ifr").attr("src","/symphony/begeek");
+			});
+            
         </script>
     </body>
+    <script>
+        function findSession(){
+            if(window.localStorage.loginX == 1){
+                window.localStorage.loginX = 0 ;
+                window.location.reload(); 
+            }else{
+                setTimeout(function(){
+                    findSession();
+                },1000);
+            }
+        }
+        findSession();
+    </script>
 </html>

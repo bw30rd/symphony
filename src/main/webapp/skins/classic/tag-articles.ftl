@@ -14,10 +14,10 @@
         <#include "header.ftl">
         <div class="main tag-articles">
             <div class="wrapper">
-                <div class="content" id="tag-pjax-container">
+                <div class="content contentUserHome" id="tag-pjax-container">
                     <#if pjax><!---- pjax {#tag-pjax-container} start ----></#if><div class="module">
                         ${tag.tagCSS}
-                        <div class="article-info fn-flex">
+                     <#--  <div class="article-info fn-flex">
                             <#if tag.tagIconPath != "">
                             <div class="avatar" style="background-image:url('${staticServePath}/images/tags/${tag.tagIconPath}')" alt="${tag.tagTitle}"></div>
                             </#if>
@@ -36,9 +36,9 @@
 
                             <span class="article-actions action-btns">
                                 <#if isLoggedIn && isFollowing>
-                                <span class="tooltipped tooltipped-n ft-red" aria-label="${unfollowLabel} ${tag.tagFollowerCount}" onclick="Util.unfollow(this, '${tag.oId}', 'tag', ${tag.tagFollowerCount})"><span class="icon-star"></span> ${tag.tagFollowerCount}</span>
+                                <span class="tooltipped tooltipped-n ft-red followed" aria-label="${unfollowLabel} ${tag.tagFollowerCount}" onclick="Util.unfollow(this, '${tag.oId}', 'tag', ${tag.tagFollowerCount})">- 已关注</span>
                                 <#else>
-                                <span class="tooltipped tooltipped-n" aria-label="${followLabel} ${tag.tagFollowerCount}" onclick="Util.follow(this, '${tag.oId}', 'tag', ${tag.tagFollowerCount})"><span class="icon-star"></span> ${tag.tagFollowerCount}</span>
+                                <span class="tooltipped tooltipped-n follow" aria-label="${followLabel} ${tag.tagFollowerCount}" onclick="Util.follow(this, '${tag.oId}', 'tag', ${tag.tagFollowerCount})">+ 关注</span>
                                 </#if>
                                 <#if permissions["tagUpdateTagBasic"].permissionGrant> &nbsp;
                                 <a class="tooltipped tooltipped-n" href="${servePath}/admin/tag/${tag.oId}" aria-label="${adminLabel}"><span class="icon-setting"></span></a>
@@ -68,35 +68,54 @@
                                 </div>
                             </li>
                             </#list>
-                        </ul>
+                        </ul>-->
+                </div>
+                <#if articles?size != 0>
+                <div class="module">
+                    <div class="module-header fn-clear">
+                    
+                        <span class="article-actions action-btns">
+                            <#if isLoggedIn && isFollowing>
+                            <span class="tooltipped tooltipped-n ft-red tag-followed" aria-label="${unsubscribeToLabel} ${tag.tagFollowerCount}" onclick="Util.unfollow(this, '${tag.oId}', 'tag', ${tag.tagFollowerCount})">- 已订阅</span>
+                            <#else>
+                            <span class="tooltipped tooltipped-n tag-follow" aria-label="${subscribeToLabel} ${tag.tagFollowerCount}" onclick="Util.follow(this, '${tag.oId}', 'tag', ${tag.tagFollowerCount})">+ 订阅</span>
+                            </#if>
+                            <#if tag.isDomainAdmin>
+                            <span class="tooltipped tooltipped-n ft-red tag-follow" aria-label="领域管理" onclick="window.location ='${servePath}/domainAdmin/${tag.tagURI}'">领域管理</span>
+                            </#if>
+                            <#if permissions["tagUpdateTagBasic"].permissionGrant> &nbsp;
+                            <a class="tooltipped tooltipped-n" href="${servePath}/admin/tag/${tag.oId}" aria-label="${adminLabel}"><span class="icon-setting"></span></a>
+                            </#if>
+                        </span>
+                        
+                        <span class="fn-right ft-fade">
+                            <a pjax-Title="${tag.tagTitle} - ${tagLabel} - ${symphonyLabel}" class="<#if "" == current>ft-gray</#if>" href="${servePath}/tag/${tag.tagURI}">${defaultLabel}</a>
+                            /
+                            <a pjax-Title="${tag.tagTitle} - ${tagLabel} - ${symphonyLabel}" class="<#if "/hot" == current>ft-gray</#if>" href="${servePath}/tag/${tag.tagURI}/hot">${hotArticlesLabel}</a>
+                            /
+                            <a pjax-Title="${tag.tagTitle} - ${tagLabel} - ${symphonyLabel}" class="<#if "/good" == current>ft-gray</#if>" href="${servePath}/tag/${tag.tagURI}/good">${goodCmtsLabel}</a>
+                            /
+                            <a pjax-Title="${tag.tagTitle} - ${tagLabel} - ${symphonyLabel}" class="<#if "/perfect" == current>ft-gray</#if>" href="${servePath}/tag/${tag.tagURI}/perfect"><svg height="16" viewBox="3 2 11 12" width="14">${perfectIcon}</svg> ${perfectLabel}</a>
+                            /
+                            <a pjax-Title="${tag.tagTitle} - ${tagLabel} - ${symphonyLabel}" class="<#if "/reply" == current>ft-gray</#if>" href="${servePath}/tag/${tag.tagURI}/reply">${recentCommentLabel}</a>
+                        </span>
                     </div>
-                    <#if articles?size != 0>
-                    <div class="module">
-                        <div class="module-header fn-clear">
-                            <span class="fn-right ft-fade">
-                                <a pjax-Title="${tag.tagTitle} - ${tagLabel} - ${symphonyLabel}" class="<#if "" == current>ft-gray</#if>" href="${servePath}/tag/${tag.tagURI}">${defaultLabel}</a>
-                                /
-                                <a pjax-Title="${tag.tagTitle} - ${tagLabel} - ${symphonyLabel}" class="<#if "/hot" == current>ft-gray</#if>" href="${servePath}/tag/${tag.tagURI}/hot">${hotArticlesLabel}</a>
-                                /
-                                <a pjax-Title="${tag.tagTitle} - ${tagLabel} - ${symphonyLabel}" class="<#if "/good" == current>ft-gray</#if>" href="${servePath}/tag/${tag.tagURI}/good">${goodCmtsLabel}</a>
-                                /
-                                <a pjax-Title="${tag.tagTitle} - ${tagLabel} - ${symphonyLabel}" class="<#if "/perfect" == current>ft-gray</#if>" href="${servePath}/tag/${tag.tagURI}/perfect"><svg height="16" viewBox="3 2 11 12" width="14">${perfectIcon}</svg> ${perfectLabel}</a>
-                                /
-                                <a pjax-Title="${tag.tagTitle} - ${tagLabel} - ${symphonyLabel}" class="<#if "/reply" == current>ft-gray</#if>" href="${servePath}/tag/${tag.tagURI}/reply">${recentCommentLabel}</a>
-                            </span>
-                        </div>
-                        <@list listData=articles/>
-                        <@pagination url="${servePath}/tag/${tag.tagURI}${current}" pjaxTitle="${tag.tagTitle} - ${tagLabel} - ${symphonyLabel}"/>
-                    </div>
-                    </#if><#if pjax><!---- pjax {#tag-pjax-container} end ----></#if>
+                    <@list listData=articles/>
+                    <@pagination url="${servePath}/tag/${tag.tagURI}${current}" pjaxTitle="${tag.tagTitle} - ${tagLabel} - ${symphonyLabel}"/>
+                </div>
+                </#if><#if pjax><!---- pjax {#tag-pjax-container} end ----></#if>
                 </div> 
                 <div class="side">
                     <#include "side.ftl">
                 </div>
+                <#if isLoggedIn>
+                        <a href="${servePath}/post?type=0" class="tooltipped tooltipped-w radio-btn-addFile" aria-label="发帖"></a>
+           	    </#if>
             </div>
         </div>
         <#include "footer.ftl">
         <@listScript/>
+		
         <script>
             <#if (isLoggedIn && !tag.isReserved) || (tag.isReserved && isAdminLoggedIn)>
             $('.person-info .btn.red').attr('onclick', 'window.location = "/post?tags=${tag.tagURI}&type=0"');
@@ -128,7 +147,7 @@
                 });
             })();
 
-            $.pjax({
+            /*$.pjax({
                 selector: 'a',
                 container: '#tag-pjax-container',
                 show: '',
@@ -146,7 +165,25 @@
             });
             $('#tag-pjax-container').bind('pjax.end', function(){
                 NProgress.done();
-            });
+            });*/
+
+            // $('body').on('click','.navTabs',function(){
+            //     $(this).parent().find('a').removeClass('current');
+            //     $(this).addClass('current');
+            // });
+            /* $('.navTabs')
+            if(window.location.href.indexOf('notice')>-1){
+                $($('.navTabs')[0]).addClass('current')
+            }else if(window.location.href.indexOf('techblog')>-1){
+                $($('.navTabs')[1]).addClass('current')
+            }else if(window.location.href.indexOf('resources')>-1){
+                $($('.navTabs')[2]).addClass('current')
+            }else if(window.location.href.indexOf('qaa')>-1){
+                $($('.navTabs')[3]).addClass('current')
+            }else if(window.location.href.indexOf('tweet')>-1){
+                $($('.navTabs')[4]).addClass('current')
+            }*/
+            
         </script>
     </body>
 </html>

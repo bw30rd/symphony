@@ -24,15 +24,17 @@
                     ${notificationFollowingLabel}
                     <#elseif type == "point">
                     ${pointLabel}
-                    <#elseif type == "broadcast">
-                    ${sameCityLabel}
+
+                   <#-- <#elseif type == "broadcast">
+                    ${sameCityLabel}-->
+
                     <#elseif type == "sysAnnounce">
                     ${systemLabel}
                     </#if>
                     <span class="icon-chevron-down fn-right"></span>
                 </div>
                 <div class="fn-hr5"></div>
-                <ul class="tab fn-clear fn-none notification-tab">
+                <ul class="tab fn-clear fn-none notification-tab topTabZq">
                     <li<#if type == "commented"> class="fn-none"</#if>>
                         <a href="${servePath}/notifications/commented">
                             <span>${notificationCommentedLabel}</span>
@@ -85,14 +87,15 @@
                             </#if>
                         </a>
                     </li>
-                    <li<#if type == "broadcast"> class="fn-none"</#if>>
+                    
+                    <#--<li<#if type == "broadcast"> class="fn-none"</#if>>
                         <a href="${servePath}/notifications/broadcast">
                             <span>${sameCityLabel}</span>
                             <#if unreadBroadcastNotificationCnt &gt; 0>
                             <span class="count">${unreadBroadcastNotificationCnt}</span>
                             </#if>
                         </a>
-                    </li>
+                    </li>-->
                     <li<#if type == "sysAnnounce"> class="fn-none"</#if>>
                         <a href="${servePath}/notifications/sys-announce">
                             <span>${systemLabel}</span>

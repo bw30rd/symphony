@@ -17,6 +17,8 @@
  */
 package org.b3log.symphony.event.solo;
 
+import java.net.URL;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.Latkes;
 import org.b3log.latke.RuntimeMode;
@@ -43,8 +45,6 @@ import org.b3log.symphony.service.ClientQueryService;
 import org.b3log.symphony.service.UserQueryService;
 import org.b3log.symphony.util.Networks;
 import org.json.JSONObject;
-
-import java.net.URL;
 
 /**
  * Sends comment to client.

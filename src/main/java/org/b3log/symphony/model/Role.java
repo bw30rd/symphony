@@ -67,7 +67,17 @@ public final class Role {
      * Role name - admin.
      */
     public static final String ROLE_ID_C_ADMIN = "adminRole";
+    
+    /**
+     * Role name - domain admin.
+     */
+    public static final String ROLE_ID_C_DOMAIN_ADMIN = "DomainAdmin";
 
+    /**
+     * Role name - AEAdmin.
+     */
+    public static final String ROLE_ID_C_AEADMIN = "1507862358525";
+    
     /**
      * Role name - leader.
      */

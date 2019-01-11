@@ -17,6 +17,10 @@
  */
 package org.b3log.symphony.processor.advice;
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Keys;
 import org.b3log.latke.Latkes;
@@ -31,9 +35,6 @@ import org.b3log.latke.servlet.advice.RequestProcessAdviceException;
 import org.b3log.symphony.model.Common;
 import org.b3log.symphony.util.Sessions;
 import org.json.JSONObject;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
  * CSRF check.
@@ -66,10 +67,10 @@ public class CSRFCheck extends BeforeRequestProcessAdvice {
         exception.put(Keys.STATUS_CODE, false);
 
         // 1. Check Referer
-        final String referer = request.getHeader("Referer");
-        if (!StringUtils.startsWith(referer, Latkes.getServePath())) {
-            throw new RequestProcessAdviceException(exception);
-        }
+//        final String referer = request.getHeader("Referer");
+//        if (!StringUtils.startsWith(referer, Latkes.getServePath())) {
+//            throw new RequestProcessAdviceException(exception);
+//        }
 
         // 2. Check Token
         final String clientToken = request.getHeader(Common.CSRF_TOKEN);

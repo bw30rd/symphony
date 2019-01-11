@@ -17,6 +17,9 @@
  */
 package org.b3log.symphony.service;
 
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Keys;
 import org.b3log.latke.event.Event;
@@ -34,14 +37,28 @@ import org.b3log.latke.service.ServiceException;
 import org.b3log.latke.service.annotation.Service;
 import org.b3log.latke.util.Ids;
 import org.b3log.symphony.event.EventTypes;
-import org.b3log.symphony.model.*;
-import org.b3log.symphony.repository.*;
+import org.b3log.symphony.model.Article;
+import org.b3log.symphony.model.Comment;
+import org.b3log.symphony.model.Common;
+import org.b3log.symphony.model.Notification;
+import org.b3log.symphony.model.Option;
+import org.b3log.symphony.model.Pointtransfer;
+import org.b3log.symphony.model.Revision;
+import org.b3log.symphony.model.Reward;
+import org.b3log.symphony.model.Role;
+import org.b3log.symphony.model.Tag;
+import org.b3log.symphony.model.UserExt;
+import org.b3log.symphony.repository.ArticleRepository;
+import org.b3log.symphony.repository.CommentRepository;
+import org.b3log.symphony.repository.NotificationRepository;
+import org.b3log.symphony.repository.OptionRepository;
+import org.b3log.symphony.repository.RevisionRepository;
+import org.b3log.symphony.repository.TagArticleRepository;
+import org.b3log.symphony.repository.TagRepository;
+import org.b3log.symphony.repository.UserRepository;
 import org.b3log.symphony.util.Emotions;
 import org.b3log.symphony.util.Symphonys;
 import org.json.JSONObject;
-
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Comment management service.
@@ -125,6 +142,12 @@ public class CommentMgmtService {
     private PointtransferMgmtService pointtransferMgmtService;
 
     /**
+     * Pointacquire management service.
+     */
+    @Inject
+    private PointacquireMgmtService pointacquireMgmtService;
+    
+    /**
      * Reward management service.
      */
     @Inject
@@ -181,12 +204,12 @@ public class CommentMgmtService {
         final int ups = comment.optInt(Comment.COMMENT_GOOD_CNT);
         final int downs = comment.optInt(Comment.COMMENT_BAD_CNT);
         if (ups > 0 || downs > 0) {
-            throw new ServiceException("removeCommentFoundWatchEtcLabel");
+            throw new ServiceException(langPropsService.get("removeCommentFoundWatchEtcLabel"));
         }
 
         final int thankCnt = (int) rewardQueryService.rewardedCount(commentId, Reward.TYPE_C_COMMENT);
         if (thankCnt > 0) {
-            throw new ServiceException("removeCommentFoundThankLabel");
+            throw new ServiceException(langPropsService.get("removeCommentFoundThankLabel"));
         }
 
         // Perform removal
@@ -258,9 +281,12 @@ public class CommentMgmtService {
 
             final String rewardId = Ids.genTimeMillisId();
 
+            /**14号：被感谢 +3*/
             if (Comment.COMMENT_ANONYMOUS_C_PUBLIC == comment.optInt(Comment.COMMENT_ANONYMOUS)) {
-                final boolean succ = null != pointtransferMgmtService.transfer(senderId, receiverId,
-                        Pointtransfer.TRANSFER_TYPE_C_COMMENT_REWARD, rewardPoint, rewardId, System.currentTimeMillis());
+                /*final boolean succ = null != pointtransferMgmtService.transfer(senderId, receiverId,
+                        Pointtransfer.TRANSFER_TYPE_C_COMMENT_REWARD, rewardPoint, rewardId, System.currentTimeMillis());*/
+                final boolean succ = null != pointacquireMgmtService.acquire(senderId,receiverId,
+                		Pointtransfer.TRANSFER_TYPE_C_COMMENT_REWARD, rewardPoint, rewardId, System.currentTimeMillis());
 
                 if (!succ) {
                     throw new ServiceException(langPropsService.get("transferFailLabel"));
@@ -281,7 +307,10 @@ public class CommentMgmtService {
 
             notificationMgmtService.addCommentThankNotification(notification);
 
-            livenessMgmtService.incLiveness(senderId, Liveness.LIVENESS_THANK);
+            //liveness
+//            livenessMgmtService.incLiveness(senderId, Liveness.LIVENESS_THANK);
+            livenessMgmtService.incLiveness(receiverId, rewardPoint);
+            
         } catch (final RepositoryException e) {
             LOGGER.log(Level.ERROR, "Thanks a comment[id=" + commentId + "] failed", e);
 
@@ -341,15 +370,17 @@ public class CommentMgmtService {
 
             final int balance = commenter.optInt(UserExt.USER_POINT);
 
-            if (Comment.COMMENT_ANONYMOUS_C_ANONYMOUS == commentAnonymous) {
-                final int anonymousPoint = Symphonys.getInt("anonymous.point");
-                if (balance < anonymousPoint) {
-                    String anonymousEnabelPointLabel = langPropsService.get("anonymousEnabelPointLabel");
-                    anonymousEnabelPointLabel
-                            = anonymousEnabelPointLabel.replace("${point}", String.valueOf(anonymousPoint));
-                    throw new ServiceException(anonymousEnabelPointLabel);
-                }
-            }
+			// if (Comment.COMMENT_ANONYMOUS_C_ANONYMOUS == commentAnonymous) {
+			// final int anonymousPoint = Symphonys.getInt("anonymous.point");
+			// if (balance < anonymousPoint) {
+			// String anonymousEnabelPointLabel =
+			// langPropsService.get("anonymousEnabelPointLabel");
+			// anonymousEnabelPointLabel
+			// = anonymousEnabelPointLabel.replace("${point}",
+			// String.valueOf(anonymousPoint));
+			// throw new ServiceException(anonymousEnabelPointLabel);
+			// }
+			// }
 
             article = articleRepository.get(articleId);
 
@@ -382,6 +413,14 @@ public class CommentMgmtService {
             }
             article.put(Article.ARTICLE_LATEST_CMT_TIME, currentTimeMillis);
 
+            //update a perfect article.
+            if (article.optInt(Article.ARTICLE_VIEW_CNT) >= 50
+					&& article.optInt(Article.ARTICLE_COMMENT_CNT) >= 15
+					&& article.optInt(Article.ARTICLE_GOOD_CNT) >= 30) {
+				article.put("articlePerfect", 1);
+			}
+            
+            
             final String ret = Ids.genTimeMillisId();
             final JSONObject comment = new JSONObject();
             comment.put(Keys.OBJECT_ID, ret);
@@ -490,7 +529,9 @@ public class CommentMgmtService {
                     && !TuringQueryService.ROBOT_NAME.equals(commenterName)) {
                 // Point
                 final String articleAuthorId = article.optString(Article.ARTICLE_AUTHOR_ID);
-                if (articleAuthorId.equals(commentAuthorId)) {
+                
+                /**3号：回帖：+1*/
+                /*if (articleAuthorId.equals(commentAuthorId)) {
                     pointtransferMgmtService.transfer(commentAuthorId, Pointtransfer.ID_C_SYS,
                             Pointtransfer.TRANSFER_TYPE_C_ADD_COMMENT, Pointtransfer.TRANSFER_SUM_C_ADD_SELF_ARTICLE_COMMENT,
                             commentId, System.currentTimeMillis());
@@ -498,9 +539,20 @@ public class CommentMgmtService {
                     pointtransferMgmtService.transfer(commentAuthorId, articleAuthorId,
                             Pointtransfer.TRANSFER_TYPE_C_ADD_COMMENT, Pointtransfer.TRANSFER_SUM_C_ADD_COMMENT,
                             commentId, System.currentTimeMillis());
+                }*/
+                
+                if (!articleAuthorId.equals(commentAuthorId)) {
+                	pointacquireMgmtService.acquire(commentAuthorId,articleAuthorId,Pointtransfer.TRANSFER_TYPE_C_ADD_COMMENT, Pointtransfer.TRANSFER_SUM_C_ADD_COMMENT,
+                			commentId, System.currentTimeMillis());
+                	
+                	livenessMgmtService.incLiveness(commentAuthorId, Pointtransfer.TRANSFER_SUM_C_ADD_COMMENT);
+                	livenessMgmtService.incLiveness(articleAuthorId, Pointtransfer.TRANSFER_SUM_C_ADD_COMMENT);
+                }else {
+                	pointacquireMgmtService.acquire(commentAuthorId,Pointtransfer.ID_C_SYS,Pointtransfer.TRANSFER_TYPE_C_ADD_COMMENT, Pointtransfer.TRANSFER_SUM_C_ADD_SELF_ARTICLE_COMMENT,
+                			commentId, System.currentTimeMillis());
+                	
                 }
 
-                livenessMgmtService.incLiveness(commentAuthorId, Liveness.LIVENESS_COMMENT);
             }
 
             // Event
@@ -573,7 +625,7 @@ public class CommentMgmtService {
             final int articleAnonymous = article.optInt(Article.ARTICLE_ANONYMOUS);
             final int commentAnonymous = comment.optInt(Comment.COMMENT_ANONYMOUS);
 
-            if (Comment.COMMENT_ANONYMOUS_C_PUBLIC == commentAnonymous
+           /* if (Comment.COMMENT_ANONYMOUS_C_PUBLIC == commentAnonymous
                     && Article.ARTICLE_ANONYMOUS_C_PUBLIC == articleAnonymous) {
                 // Point
                 final long now = System.currentTimeMillis();
@@ -583,7 +635,7 @@ public class CommentMgmtService {
                             Pointtransfer.TRANSFER_TYPE_C_UPDATE_COMMENT,
                             Pointtransfer.TRANSFER_SUM_C_UPDATE_COMMENT, commentId, now);
                 }
-            }
+            }*/
 
             final boolean fromClient = comment.has(Comment.COMMENT_CLIENT_COMMENT_ID);
 

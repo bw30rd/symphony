@@ -20,11 +20,11 @@ package org.b3log.symphony.util;
 import java.io.FileReader;
 import java.net.URL;
 
+import org.apache.commons.io.IOUtils;
+import org.b3log.latke.Latkes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.testng.Assert;
-import org.apache.commons.io.IOUtils;
-import org.b3log.latke.Latkes;
 import org.testng.annotations.Test;
 
 /**

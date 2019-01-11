@@ -24,7 +24,7 @@
                         </div>
                         <div id="fpwdTip" class="tip"></div>
                         <button onclick="Verify.forgetPwd()">${forgetPwdLabel}</button>
-                        <button class="green" onclick="Util.goLogin()">${loginLabel}</button>
+                        <button class="blue" onclick="Util.goLogin()">${loginLabel}</button>
                     </div>
                 </div>
                 <div class="intro content-reset">

@@ -17,6 +17,9 @@
  */
 package org.b3log.symphony.processor;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.logging.Logger;
@@ -32,9 +35,6 @@ import org.b3log.symphony.processor.channel.ChatRoomChannel;
 import org.b3log.symphony.service.OptionQueryService;
 import org.b3log.symphony.util.Symphonys;
 import org.json.JSONObject;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Running status processor.

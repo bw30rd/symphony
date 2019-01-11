@@ -17,6 +17,9 @@
  */
 package org.b3log.symphony.service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.logging.Level;
@@ -29,9 +32,6 @@ import org.b3log.symphony.model.Emotion;
 import org.b3log.symphony.repository.EmotionRepository;
 import org.b3log.symphony.util.Emotions;
 import org.json.JSONObject;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Emotion management service.

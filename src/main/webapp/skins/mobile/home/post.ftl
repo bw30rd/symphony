@@ -14,28 +14,26 @@
             <div class="wrapper post">
                 <div class="fn-hr10"></div>
                 <div class="form fn-flex-1 fn-clear">
+                	<h3>标题</h3>
                     <input type="text" id="articleTitle" tabindex="1"
                            value="<#if article??>${article.articleTitle}</#if>" placeholder="${titleLabel}" />
                     <div class="fn-hr10"></div>
-                    <div class="fn-hr10"></div>
-                    <div class="article-content">
-                        <textarea id="articleContent" tabindex="2"
-                                  placeholder="<#if !article?? && 1 == articleType>${addDiscussionEditorPlaceholderLabel}</#if>${addArticleEditorPlaceholderLabel}"><#if article??>${article.articleContent}</#if><#if at??>@${at}</#if></textarea>
+                    <h3>${tagLabel}</h3>
+                    <div class="tags-input"><span class="tags-selected"></span>
+                    	<input id="articleTags" type="text" tabindex="3" 
+                           value="<#if article??>${article.articleTags}<#else>${tags}</#if>" placeholder="${tagSeparatorTipLabel}" autocomplete="off" />
                     </div>
+                    
                     <div class="tags-wrap">
-                        <div class="tags-input"><span class="tags-selected"></span>
-                        <input id="articleTags" type="text" tabindex="3" 
-                               value="<#if article??>${article.articleTags}<#else>${tags}</#if>" placeholder="${tagLabel}（${tagSeparatorTipLabel}）" autocomplete="off" />
-                        </div>
                         <#if addArticleDomains?size != 0>
-                        <div class="domains-tags">
+                        <div class="domains-tags domains-tags_zq">
                             <#list addArticleDomains as domain>
                                 <#if domain.domainTags?size gt 0>
                                     <span data-id="${domain.oId}" class="btn small<#if 0 == domain_index> current</#if>">${domain.domainTitle}</span>&nbsp;
                                 </#if>
                             </#list>
-                            <div class="fn-hr5"></div>
-                            <#list addArticleDomains as domain>
+                           <#-- <div class="fn-hr5"></div>-->
+                           <#-- <#list addArticleDomains as domain>
                                 <#if domain.domainTags?size gt 0>
                                 <div id="tags${domain.oId}" class="domain-tags<#if 0 != domain_index> fn-none</#if>">
                                     <#list domain.domainTags as tag>
@@ -43,14 +41,22 @@
                                     </#list>
                                 </div>
                                 </#if>
-                            </#list>
+                            </#list>-->
                         </div>
                         </#if>
-                        <br/>
                     </div>
-                    <button id="showReward" class="fn-ellipsis" onclick="$(this).next().show(); $(this).hide()">
+                    
+                    <div class="fn-hr10"></div>
+                    <div class="fn-hr10"></div>
+                    <div class="article-content">
+                        <textarea id="articleContent" tabindex="2"
+                                  placeholder="<#if !article?? && 1 == articleType>${addDiscussionEditorPlaceholderLabel}</#if>${addArticleEditorPlaceholderLabel}"><#if article??>${article.articleContent}</#if><#if at??>@${at}</#if></textarea>
+                    </div>
+                    
+                    
+                   <#-- <button id="showReward" class="fn-ellipsis" onclick="$(this).next().show(); $(this).hide()">
                         ${rewardEditorPlaceholderLabel} &dtrif;
-                    </button>
+                    </button>-->
                     <div class="fn-none">
                         <div class="fn-clear article-reward-content">
                             <textarea id="articleRewardContent" tabindex="4"
@@ -61,6 +67,25 @@
                                    <#if article?? && 0 < article.articleRewardPoint>data-orval="${article.articleRewardPoint}"</#if> 
                                    value="<#if article?? && 0 < article.articleRewardPoint>${article.articleRewardPoint}</#if>" placeholder="${rewardPointLabel}" />
                         </div>
+                    </div>
+                    <div class="fn-clear">
+                            <#if !articleType??>
+                            <#assign articleType=article.articleType>
+                            </#if>
+                            <#if 0 == articleType>
+                         <#--   <span class="icon-article"></span> ${articleLabel} -->
+                            <span class="ft-gray"><span class="ft-green">${addNormalArticleTipLabel}</span>
+                            <#elseif 1 == articleType>
+                            <span class="icon-locked"></span> ${discussionLabel}
+                            <span class="ft-gray">${addDiscussionArticleTipLabel}</span>
+                            <#elseif 2 == articleType>
+                            <span class="icon-feed"></span> ${cityBroadcastLabel}
+                            <span class="ft-gray">${addCityArticleTipLabel} <i>${broadcastPoint}</i> ${pointLabel}</span>
+                            <#elseif 3 == articleType>
+                            <span class="icon-video"></span> ${thoughtLabel}
+                            <span class="ft-gray">${addThoughtArticleTipLabel}
+                                <a href="https://hacpai.com/article/1441942422856" target="_blank">(?)</a></span>
+                            </#if>
                     </div>
                     <div class="fn-hr10"></div>
                     <div class="tip" id="addArticleTip"></div>
@@ -87,7 +112,7 @@
                         <input class="fn-none" type="radio" name="articleType" value="${article.articleType}" checked="checked"/> 
                         </#if>
                     </div>
-                    <div class="fn-clear">
+                    <div class="fn-clear anonymous">
                         <#if article?? && permissions["commonRemoveArticle"].permissionGrant>
                             <label class="ft-red fn-pointer" tabindex="11" onclick="AddArticle.remove('${csrfToken}', this)">${removeArticleLabel} &nbsp; &nbsp;</label>
                         </#if>
@@ -96,41 +121,21 @@
                                 <#if article??> disabled="disabled"<#if article.syncWithSymphonyClient> checked</#if></#if>
                                 type="checkbox" id="syncWithSymphonyClient"></label>
                         </#if>
-                        <#if permissions["commonAddArticleAnonymous"].permissionGrant>
-                            <label class="article-anonymous">&nbsp;  ${anonymousLabel}<input
+                        
+                            <label class="article-anonymous" <#if !permissions["commonAddArticleAnonymous"].permissionGrant>style="display: none;"</#if>>&nbsp;  ${anonymousLabel}<input
                                 <#if article??> disabled="disabled"<#if 1 == article.articleAnonymous> checked</#if></#if>
                                 type="checkbox" id="articleAnonymous"></label>
-                        </#if>
+                       
 
                         <#if article??>
                             <#if permissions["commonUpdateArticle"].permissionGrant>
-                                <button class="fn-right" tabindex="10" onclick="AddArticle.add('${csrfToken}', this)">${submitLabel}</button>
+                                <button class="fn-right submitGreenBtn" tabindex="10" onclick="AddArticle.add('${csrfToken}', this)" style="width:100%">${submitLabel}</button>
                             </#if>
                         <#else>
                             <#if permissions["commonAddArticle"].permissionGrant>
-                                <button class="fn-right" tabindex="10" onclick="AddArticle.add('${csrfToken}', this)">${postLabel}</button>
+                                <button class="fn-right submitGreenBtn" tabindex="10" onclick="AddArticle.add('${csrfToken}', this)" style="width:100%">${postLabel}</button>
                             </#if>
                         </#if>
-                    </div>
-                    <br/>
-                    <div class="fn-clear">
-                            <#if !articleType??>
-                            <#assign articleType=article.articleType>
-                            </#if>
-                            <#if 0 == articleType>
-                            <span class="icon-article"></span> ${articleLabel} 
-                            <span class="ft-gray"><span class="ft-green">${addNormalArticleTipLabel}</span>
-                            <#elseif 1 == articleType>
-                            <span class="icon-locked"></span> ${discussionLabel}
-                            <span class="ft-gray">${addDiscussionArticleTipLabel}</span>
-                            <#elseif 2 == articleType>
-                            <span class="icon-feed"></span> ${cityBroadcastLabel}
-                            <span class="ft-gray">${addCityArticleTipLabel} <i>${broadcastPoint}</i> ${pointLabel}</span>
-                            <#elseif 3 == articleType>
-                            <span class="icon-video"></span> ${thoughtLabel}
-                            <span class="ft-gray">${addThoughtArticleTipLabel}
-                                <a href="https://hacpai.com/article/1441942422856" target="_blank">(?)</a></span>
-                            </#if>
                     </div>
                 </div>
             </div>
@@ -168,9 +173,16 @@
             Label.qiniuDomain = '${qiniuDomain}';
             Label.qiniuUploadToken = '${qiniuUploadToken}';
             Label.commonAtUser = '${permissions["commonAtUser"].permissionGrant?c}';
+            Label.commonAddArticleAnonymous = '${permissions["commonAddArticleAnonymous"].permissionGrant?c}';
             <#if article??>Label.articleOId = '${article.oId}' ;</#if>
             Label.articleType = ${articleType};
             Label.confirmRemoveLabel = '${confirmRemoveLabel}';
+            
+            var domains = new Array();
+            <#list addArticleDomains as domain>
+            	domains.push(eval(${domain}));        	
+            </#list>
+            Label.domains = domains;
         </script>
         <script src="${staticServePath}/js/add-article${miniPostfix}.js?${staticResourceVersion}"></script>
         <script>

@@ -296,6 +296,16 @@ public final class Article {
      * Key of article author intro.
      */
     public static final String ARTICLE_T_AUTHOR_INTRO = "articleAuthorIntro";
+    
+    /**
+     * Key of article author level.
+     */
+    public static final String ARTICLE_T_AUTHOR_LEVEL = "articleAuthorLevel";
+    
+    /**
+     * Key of article author level type.
+     */
+    public static final String ARTICLE_T_AUTHOR_LEVEL_TYPE = "articleAuthorLevelType";
 
     /**
      * Key of article comments.

@@ -28,6 +28,7 @@ import org.b3log.latke.service.annotation.Service;
 import org.b3log.latke.util.Stopwatchs;
 import org.b3log.symphony.model.Liveness;
 import org.b3log.symphony.repository.LivenessRepository;
+import org.b3log.symphony.repository.UserlivenessRepository;
 import org.json.JSONObject;
 
 /**
@@ -50,6 +51,12 @@ public class LivenessMgmtService {
      */
     @Inject
     private LivenessRepository livenessRepository;
+    
+    /**
+     * Liveness repository.
+     */
+    @Inject
+    private UserlivenessRepository userlivenessRepository;
 
     /**
      * Increments a field of the specified liveness.
@@ -57,10 +64,11 @@ public class LivenessMgmtService {
      * @param userId the specified user id
      * @param field the specified field
      */
+    
     @Transactional
-    public void incLiveness(final String userId, final String field) {
-        Stopwatchs.start("Inc liveness");
-        final String date = DateFormatUtils.format(System.currentTimeMillis(), "yyyyMMdd");
+    public void incLiveness(final String userId, final int userPoints) {
+    	Stopwatchs.start("Inc liveness");
+    	final String date = DateFormatUtils.format(System.currentTimeMillis(), "yyyyMMdd");
 
         try {
             JSONObject liveness = livenessRepository.getByUserAndDate(userId, date);
@@ -82,13 +90,14 @@ public class LivenessMgmtService {
                 livenessRepository.add(liveness);
             }
 
-            liveness.put(field, liveness.optInt(field) + 1);
+            liveness.put(Liveness.LIVENESS_POINT, liveness.optInt(Liveness.LIVENESS_POINT) + userPoints);
 
             livenessRepository.update(liveness.optString(Keys.OBJECT_ID), liveness);
         } catch (final RepositoryException e) {
-            LOGGER.log(Level.ERROR, "Updates a liveness [" + date + "] field [" + field + "] failed", e);
+            LOGGER.log(Level.ERROR, "Updates a liveness [" + date + "]  failed", e);
         } finally {
-            Stopwatchs.end();
+        	Stopwatchs.end();
         }
     }
+    
 }

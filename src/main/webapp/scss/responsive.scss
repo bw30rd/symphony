@@ -41,6 +41,12 @@
     }
 }
 
+@media (max-width: 1440px) {
+    #articleToC {
+        display: none;
+    }
+}
+
 @media (max-width: 768px) {
     /* start itself */
     /* framework */

@@ -17,6 +17,12 @@
  */
 package org.b3log.symphony.processor;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.servlet.HTTPRequestContext;
@@ -34,11 +40,6 @@ import org.b3log.symphony.processor.advice.stopwatch.StopwatchStartAdvice;
 import org.b3log.symphony.service.DataModelService;
 import org.b3log.symphony.service.ManQueryService;
 import org.json.JSONObject;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Man processor.

@@ -13,7 +13,7 @@
         <br/> <br/>
         <input id="pointTransferAmount" type="number" placeholder="${amountLabel}"/> <br/><br/>
         <div id="pointTransferTip" class="tip"></div> <br/>
-        <button class="red fn-right" onclick="Settings.pointTransfer('${csrfToken}')">${confirmTransferLabel}</button>
+        <button class="red fn-right submitGreenBtn" onclick="Settings.pointTransfer('${csrfToken}')">${confirmTransferLabel}</button>
     </div>
 </div>
 </@home>

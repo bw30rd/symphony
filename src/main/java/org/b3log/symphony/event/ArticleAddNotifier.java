@@ -17,6 +17,11 @@
  */
 package org.b3log.symphony.event;
 
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.b3log.latke.Keys;
@@ -32,7 +37,11 @@ import org.b3log.latke.logging.Logger;
 import org.b3log.latke.model.Pagination;
 import org.b3log.latke.model.User;
 import org.b3log.latke.service.LangPropsService;
-import org.b3log.symphony.model.*;
+import org.b3log.symphony.model.Article;
+import org.b3log.symphony.model.Common;
+import org.b3log.symphony.model.Notification;
+import org.b3log.symphony.model.Tag;
+import org.b3log.symphony.model.UserExt;
 import org.b3log.symphony.service.FollowQueryService;
 import org.b3log.symphony.service.NotificationMgmtService;
 import org.b3log.symphony.service.TimelineMgmtService;
@@ -42,11 +51,6 @@ import org.b3log.symphony.util.Symphonys;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
-
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Sends article add related notifications.

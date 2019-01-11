@@ -52,12 +52,19 @@
                     <input id="userFollowerStatus" <#if 0 == currentUser.userFollowerStatus> checked="checked"</#if> type="checkbox" />
                 </label>
             </div>
+            
             <div>
+                <label>
+                    ${displayUALabel}
+                    <input id="userUAStatus" <#if 0 == currentUser.userUAStatus> checked="checked"</#if> type="checkbox" /> 
+                </label>
+            </div>
+          <#-- <div>
                 <label>
                     ${userForgeLinkStatusLabel}
                     <input id="userForgeLinkStatus" <#if 0 == currentUser.userForgeLinkStatus> checked="checked"</#if> type="checkbox" />
                 </label>
-            </div>
+            </div> -->
         </div>
         <div class="fn-clear settings-secret">
             <div>
@@ -73,7 +80,8 @@
                 </label>
             </div>
         </div>
-        <div class="fn-clear settings-secret">
+        
+     <#--   <div class="fn-clear settings-secret">
             <div>
                 <label>
                     ${displayUALabel}
@@ -100,7 +108,7 @@
                     <input id="joinUsedPointRank" <#if 0 == currentUser.userJoinUsedPointRank> checked="checked"</#if> type="checkbox" /> 
                 </label>
             </div>
-        </div>
+        </div>-->
 
         <div id="privacyTip" class="tip"></div>
         <div class="fn-hr5"></div>

@@ -115,7 +115,7 @@
                 </select>
 
                 <br/><br/>
-                <button type="submit" class="green fn-right" >${submitLabel}</button>
+                <button type="submit" class="blue fn-right" >${submitLabel}</button>
             </form>
         </div>
     </div>
@@ -132,7 +132,7 @@
                 <input type="text" id="articleId" name="articleId" value="${article.oId}" readonly="readonly"/>
 
                 <br/><br/>
-                <button type="submit" class="green fn-right" >${submitLabel}</button>
+                <button type="submit" class="blue fn-right" >${submitLabel}</button>
             </form>
         </div>
     </div>
@@ -149,7 +149,7 @@
                 <input type="text" id="articleId" name="articleId" value="${article.oId}" readonly="readonly"/>
 
                 <br/><br/>
-                <button type="submit" class="green fn-right" >${submitLabel}</button>
+                <button type="submit" class="blue fn-right" >${submitLabel}</button>
             </form>
         </div>
     </div>
@@ -166,7 +166,7 @@
                 <input type="text" id="articleId" name="articleId" value="${article.oId}" readonly="readonly"/>
 
                 <br/><br/>
-                <button type="submit" class="green fn-right" >${submitLabel}</button>
+                <button type="submit" class="blue fn-right" >${submitLabel}</button>
             </form>
         </div>
     </div>
@@ -183,7 +183,7 @@
                 <input type="text" id="articleId" name="articleId" value="${article.oId}" readonly="readonly"/>
 
                 <br/><br/>
-                <button type="submit" class="green fn-right" >${submitLabel}</button>
+                <button type="submit" class="blue fn-right" >${submitLabel}</button>
             </form>
         </div>
     </div>

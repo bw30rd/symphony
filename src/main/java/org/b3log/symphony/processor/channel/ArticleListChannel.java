@@ -17,15 +17,23 @@
  */
 package org.b3log.symphony.processor.channel;
 
-import org.apache.commons.lang.StringUtils;
-import org.b3log.latke.logging.Logger;
-import org.b3log.symphony.model.Article;
-import org.json.JSONObject;
-
-import javax.websocket.*;
-import javax.websocket.server.ServerEndpoint;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.websocket.CloseReason;
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
+
+import org.apache.commons.lang.StringUtils;
+import org.b3log.latke.logging.Level;
+import org.b3log.latke.logging.Logger;
+import org.b3log.latke.repository.jdbc.JdbcRepository;
+import org.b3log.symphony.model.Article;
+import org.json.JSONObject;
 
 /**
  * Article list channel.
@@ -107,17 +115,21 @@ public class ArticleListChannel {
         final String articleId = message.optString(Article.ARTICLE_T_ID);
         final String msgStr = message.toString();
 
-        for (final Map.Entry<Session, String> entry : SESSIONS.entrySet()) {
-            final Session session = entry.getKey();
-            final String articleIds = entry.getValue();
-
-            if (!StringUtils.contains(articleIds, articleId)) {
-                continue;
-            }
-
-            if (session.isOpen()) {
-                session.getAsyncRemote().sendText(msgStr);
-            }
-        }
+		for (final Map.Entry<Session, String> entry : SESSIONS.entrySet()) {
+			final Session session = entry.getKey();
+			final String articleIds = entry.getValue();
+			try {
+				if (!StringUtils.contains(articleIds, articleId)) {
+					continue;
+				}
+				if (session.isOpen()) {
+					session.getAsyncRemote().sendText(msgStr);
+				}
+			} catch (final Exception e) {
+				LOGGER.log(Level.ERROR, "Notify article heat error", e);
+			} finally {
+				JdbcRepository.dispose();
+			}
+		}
     }
 }

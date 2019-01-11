@@ -20,5 +20,5 @@
 <#else>
 <p class="ft-center ft-gray home-invisible">${setinvisibleLabel}</p>
 </#if>
-<#include "../common/ranking.ftl">
+<#--<#include "../common/ranking.ftl">-->
 </@home>

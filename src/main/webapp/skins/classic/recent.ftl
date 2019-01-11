@@ -13,9 +13,9 @@
         <#include "header.ftl">
         <div class="main">
             <div class="wrapper">
-                <div class="content fn-clear" id="recent-pjax-container">
+                <div class="content fn-clear contentUserHome" id="recent-pjax-container">
                     <#if pjax><!---- pjax {#recent-pjax-container} start ----></#if><#if 0 < stickArticles?size>
-                    <div class="module">
+                    <div class="module person-info">
                         <div class="article-list list">
                             <ul class="stick">
                                 <#list stickArticles as article>
@@ -25,7 +25,7 @@
                         </div>
                     </div>
                     </#if>
-                    <div class="module">
+                    <div class="module person-info">
                         <div class="module-header fn-clear">
                             <span class="fn-right ft-fade">
                                 <a pjax-title="${latestLabel} - ${symphonyLabel}" class="<#if "" == current>ft-gray</#if>" href="${servePath}/recent">${defaultLabel}</a>
@@ -42,13 +42,14 @@
                     </div><#if pjax><!---- pjax {#recent-pjax-container} end ----></#if>
 
                 </div>
-
-                <div class="side">
+                
+               <div class="side">
+                    <#--<#include "common/domain-info.ftl">-->
                     <#include "side.ftl">
                 </div>
             </div>
         </div>
-        <#include "common/domains.ftl">
+        <!-- <#include "common/domains.ftl"> -->
         <#include "footer.ftl">
         <@listScript/>
         <script>

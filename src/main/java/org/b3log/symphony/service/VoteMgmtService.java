@@ -17,25 +17,25 @@
  */
 package org.b3log.symphony.service;
 
+import java.util.List;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
 import org.b3log.latke.repository.RepositoryException;
+import org.b3log.latke.repository.Transaction;
 import org.b3log.latke.repository.annotation.Transactional;
 import org.b3log.latke.service.ServiceException;
 import org.b3log.latke.service.annotation.Service;
 import org.b3log.symphony.model.Article;
 import org.b3log.symphony.model.Comment;
-import org.b3log.symphony.model.Liveness;
 import org.b3log.symphony.model.Vote;
 import org.b3log.symphony.repository.ArticleRepository;
 import org.b3log.symphony.repository.CommentRepository;
 import org.b3log.symphony.repository.TagArticleRepository;
 import org.b3log.symphony.repository.VoteRepository;
 import org.json.JSONObject;
-
-import java.util.List;
 
 /**
  * Vote management service.
@@ -47,330 +47,400 @@ import java.util.List;
 @Service
 public class VoteMgmtService {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOGGER = Logger.getLogger(VoteMgmtService.class.getName());
+	/**
+	 * Logger.
+	 */
+	private static final Logger LOGGER = Logger.getLogger(VoteMgmtService.class.getName());
 
-    /**
-     * Vote repository.
-     */
-    @Inject
-    private VoteRepository voteRepository;
+	/**
+	 * Vote repository.
+	 */
+	@Inject
+	private VoteRepository voteRepository;
 
-    /**
-     * Article repository.
-     */
-    @Inject
-    private ArticleRepository articleRepository;
+	/**
+	 * Article repository.
+	 */
+	@Inject
+	private ArticleRepository articleRepository;
 
-    /**
-     * Tag-Article repository.
-     */
-    @Inject
-    private TagArticleRepository tagArticleRepository;
+	/**
+	 * Tag-Article repository.
+	 */
+	@Inject
+	private TagArticleRepository tagArticleRepository;
 
-    /**
-     * Comment repository.
-     */
-    @Inject
-    private CommentRepository commentRepository;
+	/**
+	 * Comment repository.
+	 */
+	@Inject
+	private CommentRepository commentRepository;
 
-    /**
-     * Liveness management service.
-     */
-    @Inject
-    private LivenessMgmtService livenessMgmtService;
+	/**
+	 * Liveness management service.
+	 */
+	@Inject
+	private LivenessMgmtService livenessMgmtService;
 
-    /**
-     * Cancels the vote.
-     *
-     * @param userId the specified user id
-     * @param dataId the specified data id
-     * @param dataType the specified data type
-     */
-    @Transactional
-    public void voteCancel(final String userId, final String dataId, final int dataType) {
-        try {
-            final int oldType = voteRepository.removeIfExists(userId, dataId, dataType);
+	/**
+	 * Pointacquire management service.
+	 */
+	@Inject
+	private PointacquireMgmtService pointacquireMgmtService;
 
-            if (Vote.DATA_TYPE_C_ARTICLE == dataType) {
-                final JSONObject article = articleRepository.get(dataId);
-                if (null == article) {
-                    LOGGER.log(Level.ERROR, "Not found article [id={0}] to vote cancel", dataId);
+	/**
+	 * Cancels the vote.
+	 *
+	 * @param userId
+	 *            the specified user id
+	 * @param dataId
+	 *            the specified data id
+	 * @param dataType
+	 *            the specified data type
+	 */
+	@Transactional
+	public void voteCancel(final String userId, final String dataId, final int dataType) {
+		try {
+			final int oldType = voteRepository.removeIfExists(userId, dataId, dataType);
 
-                    return;
-                }
+			if (Vote.DATA_TYPE_C_ARTICLE == dataType) {
+				final JSONObject article = articleRepository.get(dataId);
+				if (null == article) {
+					LOGGER.log(Level.ERROR, "Not found article [id={0}] to vote cancel", dataId);
 
-                if (Vote.TYPE_C_UP == oldType) {
-                    article.put(Article.ARTICLE_GOOD_CNT, article.optInt(Article.ARTICLE_GOOD_CNT) - 1);
-                } else if (Vote.TYPE_C_DOWN == oldType) {
-                    article.put(Article.ARTICLE_BAD_CNT, article.optInt(Article.ARTICLE_BAD_CNT) - 1);
-                }
+					return;
+				}
 
-                final int ups = article.optInt(Article.ARTICLE_GOOD_CNT);
-                final int downs = article.optInt(Article.ARTICLE_BAD_CNT);
-                final long t = article.optLong(Keys.OBJECT_ID) / 1000;
+				if (Vote.TYPE_C_UP == oldType) {
+					article.put(Article.ARTICLE_GOOD_CNT, article.optInt(Article.ARTICLE_GOOD_CNT) - 1);
+				} else if (Vote.TYPE_C_DOWN == oldType) {
+					article.put(Article.ARTICLE_BAD_CNT, article.optInt(Article.ARTICLE_BAD_CNT) - 1);
+				}
 
-                final double redditScore = redditArticleScore(ups, downs, t);
-                article.put(Article.REDDIT_SCORE, redditScore);
+				final int ups = article.optInt(Article.ARTICLE_GOOD_CNT);
+				final int downs = article.optInt(Article.ARTICLE_BAD_CNT);
+				final long t = article.optLong(Keys.OBJECT_ID) / 1000;
 
-                updateTagArticleScore(article);
+				final double redditScore = redditArticleScore(ups, downs, t);
+				article.put(Article.REDDIT_SCORE, redditScore);
 
-                articleRepository.update(dataId, article);
-            } else if (Vote.DATA_TYPE_C_COMMENT == dataType) {
-                final JSONObject comment = commentRepository.get(dataId);
-                if (null == comment) {
-                    LOGGER.log(Level.ERROR, "Not found comment [id={0}] to vote cancel", dataId);
+				updateTagArticleScore(article);
 
-                    return;
-                }
+				articleRepository.update(dataId, article);
+			} else if (Vote.DATA_TYPE_C_COMMENT == dataType) {
+				final JSONObject comment = commentRepository.get(dataId);
+				if (null == comment) {
+					LOGGER.log(Level.ERROR, "Not found comment [id={0}] to vote cancel", dataId);
 
-                if (Vote.TYPE_C_UP == oldType) {
-                    comment.put(Comment.COMMENT_GOOD_CNT, comment.optInt(Comment.COMMENT_GOOD_CNT) - 1);
-                } else if (Vote.TYPE_C_DOWN == oldType) {
-                    comment.put(Comment.COMMENT_BAD_CNT, comment.optInt(Comment.COMMENT_BAD_CNT) - 1);
-                }
+					return;
+				}
 
-                final int ups = comment.optInt(Comment.COMMENT_GOOD_CNT);
-                final int downs = comment.optInt(Comment.COMMENT_BAD_CNT);
+				if (Vote.TYPE_C_UP == oldType) {
+					comment.put(Comment.COMMENT_GOOD_CNT, comment.optInt(Comment.COMMENT_GOOD_CNT) - 1);
+				} else if (Vote.TYPE_C_DOWN == oldType) {
+					comment.put(Comment.COMMENT_BAD_CNT, comment.optInt(Comment.COMMENT_BAD_CNT) - 1);
+				}
 
-                final double redditScore = redditCommentScore(ups, downs);
-                comment.put(Comment.COMMENT_SCORE, redditScore);
+				final int ups = comment.optInt(Comment.COMMENT_GOOD_CNT);
+				final int downs = comment.optInt(Comment.COMMENT_BAD_CNT);
 
-                commentRepository.update(dataId, comment);
-            } else {
-                LOGGER.warn("Wrong data type [" + dataType + "]");
-            }
-        } catch (final RepositoryException e) {
-            LOGGER.log(Level.ERROR, e.getMessage());
-        }
-    }
+				final double redditScore = redditCommentScore(ups, downs);
+				comment.put(Comment.COMMENT_SCORE, redditScore);
 
-    /**
-     * The specified user vote up the specified article/comment.
-     *
-     * @param userId the specified user id
-     * @param dataId the specified article/comment id
-     * @param dataType the specified data type
-     * @throws ServiceException service exception
-     */
-    @Transactional
-    public void voteUp(final String userId, final String dataId, final int dataType) throws ServiceException {
-        try {
-            up(userId, dataId, dataType);
-        } catch (final RepositoryException e) {
-            final String msg = "User[id=" + userId + "] vote up an [" + dataType + "][id=" + dataId + "] failed";
-            LOGGER.log(Level.ERROR, msg, e);
+				commentRepository.update(dataId, comment);
+			} else {
+				LOGGER.warn("Wrong data type [" + dataType + "]");
+			}
+		} catch (final RepositoryException e) {
+			LOGGER.log(Level.ERROR, e.getMessage());
+		}
+	}
 
-            throw new ServiceException(msg);
-        }
+	/**
+	 * The specified user vote up the specified article/comment.
+	 *
+	 * @param userId
+	 *            the specified user id
+	 * @param dataId
+	 *            the specified article/comment id
+	 * @param dataType
+	 *            the specified data type
+	 * @throws ServiceException
+	 *             service exception
+	 */
+	public void voteUp(final String userId, final String dataId, final int dataType) throws ServiceException {
+		try {
+			up(userId, dataId, dataType);
+		} catch (final RepositoryException e) {
+			final String msg = "User[id=" + userId + "] vote up an [" + dataType + "][id=" + dataId + "] failed";
+			LOGGER.log(Level.ERROR, msg, e);
 
-        livenessMgmtService.incLiveness(userId, Liveness.LIVENESS_VOTE);
-    }
+			throw new ServiceException(msg);
+		}
 
-    /**
-     * The specified user vote down the specified article、comment.
-     *
-     * @param userId the specified user id
-     * @param dataId the specified article id
-     * @throws ServiceException service exception
-     */
-    @Transactional
-    public void voteDown(final String userId, final String dataId, final int dataType) throws ServiceException {
-        try {
-            down(userId, dataId, dataType);
-        } catch (final RepositoryException e) {
-            final String msg = "User[id=" + userId + "] vote down an [" + dataType + "][id=" + dataId + "] failed";
-            LOGGER.log(Level.ERROR, msg, e);
+		// livenessMgmtService.incLiveness(userId, Liveness.LIVENESS_VOTE);
+	}
 
-            throw new ServiceException(msg);
-        }
+	/**
+	 * The specified user vote down the specified article、comment.
+	 *
+	 * @param userId
+	 *            the specified user id
+	 * @param dataId
+	 *            the specified article id
+	 * @throws ServiceException
+	 *             service exception
+	 */
+	@Transactional
+	public void voteDown(final String userId, final String dataId, final int dataType) throws ServiceException {
+		try {
+			down(userId, dataId, dataType);
+		} catch (final RepositoryException e) {
+			final String msg = "User[id=" + userId + "] vote down an [" + dataType + "][id=" + dataId + "] failed";
+			LOGGER.log(Level.ERROR, msg, e);
 
-        livenessMgmtService.incLiveness(userId, Liveness.LIVENESS_VOTE);
-    }
+			throw new ServiceException(msg);
+		}
 
-    /**
-     * The specified user vote up the specified data entity with the specified data type.
-     *
-     * @param userId the specified user id
-     * @param dataId the specified data entity id
-     * @param dataType the specified data type
-     * @throws RepositoryException repository exception
-     */
-    private void up(final String userId, final String dataId, final int dataType) throws RepositoryException {
-        final int oldType = voteRepository.removeIfExists(userId, dataId, dataType);
+		// livenessMgmtService.incLiveness(userId, Liveness.LIVENESS_VOTE);
+	}
 
-        if (Vote.DATA_TYPE_C_ARTICLE == dataType) {
-            final JSONObject article = articleRepository.get(dataId);
-            if (null == article) {
-                LOGGER.log(Level.ERROR, "Not found article [id={0}] to vote up", dataId);
+	/**
+	 * The specified user vote up the specified data entity with the specified data
+	 * type.
+	 *
+	 * @param userId
+	 *            the specified user id
+	 * @param dataId
+	 *            the specified data entity id
+	 * @param dataType
+	 *            the specified data type
+	 * @throws RepositoryException
+	 *             repository exception
+	 */
+	private void up(final String userId, final String dataId, final int dataType) throws RepositoryException {
+		final Transaction transaction = voteRepository.beginTransaction();
+		
+		final int oldType = voteRepository.removeIfExists(userId, dataId, dataType);
+		
+		
+		if (Vote.DATA_TYPE_C_ARTICLE == dataType) {
+			final JSONObject article = articleRepository.get(dataId);
+			if (null == article) {
+				LOGGER.log(Level.ERROR, "Not found article [id={0}] to vote up", dataId);
 
-                return;
-            }
+				return;
+			}
 
-            if (-1 == oldType) {
-                article.put(Article.ARTICLE_GOOD_CNT, article.optInt(Article.ARTICLE_GOOD_CNT) + 1);
-            } else if (Vote.TYPE_C_DOWN == oldType) {
-                article.put(Article.ARTICLE_BAD_CNT, article.optInt(Article.ARTICLE_BAD_CNT) - 1);
-                article.put(Article.ARTICLE_GOOD_CNT, article.optInt(Article.ARTICLE_GOOD_CNT) + 1);
-            }
+			if (-1 == oldType) {
+				article.put(Article.ARTICLE_GOOD_CNT, article.optInt(Article.ARTICLE_GOOD_CNT) + 1);
+			} else if (Vote.TYPE_C_DOWN == oldType) {
+				article.put(Article.ARTICLE_BAD_CNT, article.optInt(Article.ARTICLE_BAD_CNT) - 1);
+				article.put(Article.ARTICLE_GOOD_CNT, article.optInt(Article.ARTICLE_GOOD_CNT) + 1);
+			}
+			
+			//update a perfect article.
+            if (article.optInt(Article.ARTICLE_VIEW_CNT) >= 50
+					&& article.optInt(Article.ARTICLE_COMMENT_CNT) >= 15
+					&& article.optInt(Article.ARTICLE_GOOD_CNT) >= 30) {
+				article.put("articlePerfect", 1);
+			}else {
+				article.put("articlePerfect", 0);
+			}
 
-            final int ups = article.optInt(Article.ARTICLE_GOOD_CNT);
-            final int downs = article.optInt(Article.ARTICLE_BAD_CNT);
-            final long t = article.optLong(Keys.OBJECT_ID) / 1000;
+			final int ups = article.optInt(Article.ARTICLE_GOOD_CNT);
+			final int downs = article.optInt(Article.ARTICLE_BAD_CNT);
+			final long t = article.optLong(Keys.OBJECT_ID) / 1000;
 
-            final double redditScore = redditArticleScore(ups, downs, t);
-            article.put(Article.REDDIT_SCORE, redditScore);
+			final double redditScore = redditArticleScore(ups, downs, t);
+			article.put(Article.REDDIT_SCORE, redditScore);
 
-            updateTagArticleScore(article);
+			updateTagArticleScore(article);
 
-            articleRepository.update(dataId, article);
-        } else if (Vote.DATA_TYPE_C_COMMENT == dataType) {
-            final JSONObject comment = commentRepository.get(dataId);
-            if (null == comment) {
-                LOGGER.log(Level.ERROR, "Not found comment [id={0}] to vote up", dataId);
+			articleRepository.update(dataId, article);
 
-                return;
-            }
+		} else if (Vote.DATA_TYPE_C_COMMENT == dataType) {
+			final JSONObject comment = commentRepository.get(dataId);
+			if (null == comment) {
+				LOGGER.log(Level.ERROR, "Not found comment [id={0}] to vote up", dataId);
 
-            if (-1 == oldType) {
-                comment.put(Comment.COMMENT_GOOD_CNT, comment.optInt(Comment.COMMENT_GOOD_CNT) + 1);
-            } else if (Vote.TYPE_C_DOWN == oldType) {
-                comment.put(Comment.COMMENT_BAD_CNT, comment.optInt(Comment.COMMENT_BAD_CNT) - 1);
-                comment.put(Comment.COMMENT_GOOD_CNT, comment.optInt(Comment.COMMENT_GOOD_CNT) + 1);
-            }
+				return;
+			}
 
-            final int ups = comment.optInt(Comment.COMMENT_GOOD_CNT);
-            final int downs = comment.optInt(Comment.COMMENT_BAD_CNT);
+			if (-1 == oldType) {
+				comment.put(Comment.COMMENT_GOOD_CNT, comment.optInt(Comment.COMMENT_GOOD_CNT) + 1);
+			} else if (Vote.TYPE_C_DOWN == oldType) {
+				comment.put(Comment.COMMENT_BAD_CNT, comment.optInt(Comment.COMMENT_BAD_CNT) - 1);
+				comment.put(Comment.COMMENT_GOOD_CNT, comment.optInt(Comment.COMMENT_GOOD_CNT) + 1);
+			}
 
-            final double redditScore = redditCommentScore(ups, downs);
-            comment.put(Comment.COMMENT_SCORE, redditScore);
+			final int ups = comment.optInt(Comment.COMMENT_GOOD_CNT);
+			final int downs = comment.optInt(Comment.COMMENT_BAD_CNT);
 
-            commentRepository.update(dataId, comment);
-        } else {
-            LOGGER.warn("Wrong data type [" + dataType + "]");
-        }
+			final double redditScore = redditCommentScore(ups, downs);
+			comment.put(Comment.COMMENT_SCORE, redditScore);
 
-        final JSONObject vote = new JSONObject();
-        vote.put(Vote.USER_ID, userId);
-        vote.put(Vote.DATA_ID, dataId);
-        vote.put(Vote.TYPE, Vote.TYPE_C_UP);
-        vote.put(Vote.DATA_TYPE, dataType);
+			commentRepository.update(dataId, comment);
 
-        voteRepository.add(vote);
-    }
+		} else {
+			LOGGER.warn("Wrong data type [" + dataType + "]");
+		}
 
-    /**
-     * The specified user vote down the specified data entity with the specified data type.
-     *
-     * @param userId the specified user id
-     * @param dataId the specified data entity id
-     * @param dataType the specified data type
-     * @throws RepositoryException repository exception
-     */
-    private void down(final String userId, final String dataId, final int dataType) throws RepositoryException {
-        final int oldType = voteRepository.removeIfExists(userId, dataId, dataType);
+		final JSONObject vote = new JSONObject();
+		vote.put(Vote.USER_ID, userId);
+		vote.put(Vote.DATA_ID, dataId);
+		vote.put(Vote.TYPE, Vote.TYPE_C_UP);
+		vote.put(Vote.DATA_TYPE, dataType);
 
-        if (Vote.DATA_TYPE_C_ARTICLE == dataType) {
-            final JSONObject article = articleRepository.get(dataId);
-            if (null == article) {
-                LOGGER.log(Level.ERROR, "Not found article [id={0}] to vote down", dataId);
+		
 
-                return;
-            }
+		voteRepository.add(vote);
 
-            if (-1 == oldType) {
-                article.put(Article.ARTICLE_BAD_CNT, article.optInt(Article.ARTICLE_BAD_CNT) + 1);
-            } else if (Vote.TYPE_C_UP == oldType) {
-                article.put(Article.ARTICLE_GOOD_CNT, article.optInt(Article.ARTICLE_GOOD_CNT) - 1);
-                article.put(Article.ARTICLE_BAD_CNT, article.optInt(Article.ARTICLE_BAD_CNT) + 1);
-            }
+		transaction.commit();
+		
+//		if (Vote.DATA_TYPE_C_ARTICLE == dataType) {
+//			final JSONObject article = articleRepository.get(dataId);
+//			/** 50号 51号：点赞 +1 和被赞 +3 */
+//			final String articleAuthorId = article.optString(Article.ARTICLE_AUTHOR_ID);
+//			if (!articleAuthorId.equals(userId)) {
+//				pointacquireMgmtService.acquire(userId, articleAuthorId, Pointtransfer.TRANSFER_TYPE_C_VOTE_UP,
+//						Pointtransfer.TRANSFER_SUM_C_VOTE_UP, dataId, System.currentTimeMillis());
+//				pointacquireMgmtService.acquire(articleAuthorId, userId, Pointtransfer.TRANSFER_TYPE_C_TO_VOTE_UP,
+//						Pointtransfer.TRANSFER_SUM_C_TO_VOTE_UP, dataId, System.currentTimeMillis());
+//
+//				// liveness
+//				livenessMgmtService.incLiveness(userId, Pointtransfer.TRANSFER_SUM_C_VOTE_UP);
+//				livenessMgmtService.incLiveness(articleAuthorId, Pointtransfer.TRANSFER_SUM_C_TO_VOTE_UP);
+//			}
+//		}
 
-            final int ups = article.optInt(Article.ARTICLE_GOOD_CNT);
-            final int downs = article.optInt(Article.ARTICLE_BAD_CNT);
-            final long t = article.optLong(Keys.OBJECT_ID) / 1000;
+	}
 
-            final double redditScore = redditArticleScore(ups, downs, t);
-            article.put(Article.REDDIT_SCORE, redditScore);
+	/**
+	 * The specified user vote down the specified data entity with the specified
+	 * data type.
+	 *
+	 * @param userId
+	 *            the specified user id
+	 * @param dataId
+	 *            the specified data entity id
+	 * @param dataType
+	 *            the specified data type
+	 * @throws RepositoryException
+	 *             repository exception
+	 */
+	private void down(final String userId, final String dataId, final int dataType) throws RepositoryException {
+		final int oldType = voteRepository.removeIfExists(userId, dataId, dataType);
 
-            updateTagArticleScore(article);
+		if (Vote.DATA_TYPE_C_ARTICLE == dataType) {
+			final JSONObject article = articleRepository.get(dataId);
+			if (null == article) {
+				LOGGER.log(Level.ERROR, "Not found article [id={0}] to vote down", dataId);
 
-            articleRepository.update(dataId, article);
-        } else if (Vote.DATA_TYPE_C_COMMENT == dataType) {
-            final JSONObject comment = commentRepository.get(dataId);
-            if (null == comment) {
-                LOGGER.log(Level.ERROR, "Not found comment [id={0}] to vote up", dataId);
+				return;
+			}
 
-                return;
-            }
+			if (-1 == oldType) {
+				article.put(Article.ARTICLE_BAD_CNT, article.optInt(Article.ARTICLE_BAD_CNT) + 1);
+			} else if (Vote.TYPE_C_UP == oldType) {
+				article.put(Article.ARTICLE_GOOD_CNT, article.optInt(Article.ARTICLE_GOOD_CNT) - 1);
+				article.put(Article.ARTICLE_BAD_CNT, article.optInt(Article.ARTICLE_BAD_CNT) + 1);
+			}
+			
+			//update a perfect article.
+            if (article.optInt(Article.ARTICLE_GOOD_CNT) < 30) {
+				article.put("articlePerfect", 0);
+			}
 
-            if (-1 == oldType) {
-                comment.put(Comment.COMMENT_BAD_CNT, comment.optInt(Comment.COMMENT_BAD_CNT) + 1);
-            } else if (Vote.TYPE_C_UP == oldType) {
-                comment.put(Comment.COMMENT_GOOD_CNT, comment.optInt(Comment.COMMENT_GOOD_CNT) - 1);
-                comment.put(Comment.COMMENT_BAD_CNT, comment.optInt(Comment.COMMENT_BAD_CNT) + 1);
-            }
+			final int ups = article.optInt(Article.ARTICLE_GOOD_CNT);
+			final int downs = article.optInt(Article.ARTICLE_BAD_CNT);
+			final long t = article.optLong(Keys.OBJECT_ID) / 1000;
 
-            final int ups = comment.optInt(Comment.COMMENT_GOOD_CNT);
-            final int downs = comment.optInt(Comment.COMMENT_BAD_CNT);
+			final double redditScore = redditArticleScore(ups, downs, t);
+			article.put(Article.REDDIT_SCORE, redditScore);
 
-            final double redditScore = redditCommentScore(ups, downs);
-            comment.put(Comment.COMMENT_SCORE, redditScore);
+			updateTagArticleScore(article);
 
-            commentRepository.update(dataId, comment);
-        } else {
-            LOGGER.warn("Wrong data type [" + dataType + "]");
-        }
+			articleRepository.update(dataId, article);
+		} else if (Vote.DATA_TYPE_C_COMMENT == dataType) {
+			final JSONObject comment = commentRepository.get(dataId);
+			if (null == comment) {
+				LOGGER.log(Level.ERROR, "Not found comment [id={0}] to vote up", dataId);
 
-        final JSONObject vote = new JSONObject();
-        vote.put(Vote.USER_ID, userId);
-        vote.put(Vote.DATA_ID, dataId);
-        vote.put(Vote.TYPE, Vote.TYPE_C_DOWN);
-        vote.put(Vote.DATA_TYPE, dataType);
+				return;
+			}
 
-        voteRepository.add(vote);
-    }
+			if (-1 == oldType) {
+				comment.put(Comment.COMMENT_BAD_CNT, comment.optInt(Comment.COMMENT_BAD_CNT) + 1);
+			} else if (Vote.TYPE_C_UP == oldType) {
+				comment.put(Comment.COMMENT_GOOD_CNT, comment.optInt(Comment.COMMENT_GOOD_CNT) - 1);
+				comment.put(Comment.COMMENT_BAD_CNT, comment.optInt(Comment.COMMENT_BAD_CNT) + 1);
+			}
+			
+			
 
-    /**
-     * Gets Reddit article score.
-     *
-     * @param ups the specified vote up count
-     * @param downs the specified vote down count
-     * @param t time (epoch seconds)
-     * @return reddit score
-     */
-    private static double redditArticleScore(final int ups, final int downs, final long t) {
-        final int x = ups - downs;
-        final double z = Math.max(Math.abs(x), 1);
-        int y = 0;
-        if (x > 0) {
-            y = 1;
-        } else if (x < 0) {
-            y = -1;
-        }
+			final int ups = comment.optInt(Comment.COMMENT_GOOD_CNT);
+			final int downs = comment.optInt(Comment.COMMENT_BAD_CNT);
 
-        return Math.log10(z) + y * (t - 1353745196) / 45000;
-    }
+			final double redditScore = redditCommentScore(ups, downs);
+			comment.put(Comment.COMMENT_SCORE, redditScore);
 
-    private static double redditCommentScore(final int ups, final int downs) {
-        final int n = ups + downs;
-        if (0 == n) {
-            return 0;
-        }
+			commentRepository.update(dataId, comment);
+		} else {
+			LOGGER.warn("Wrong data type [" + dataType + "]");
+		}
 
-        final double z = 1.281551565545; // 1.0: 85%, 1.6: 95%, 1.281551565545: 80%
-        final double p = (double) ups / n;
+		final JSONObject vote = new JSONObject();
+		vote.put(Vote.USER_ID, userId);
+		vote.put(Vote.DATA_ID, dataId);
+		vote.put(Vote.TYPE, Vote.TYPE_C_DOWN);
+		vote.put(Vote.DATA_TYPE, dataType);
 
-        return (p + z * z / (2 * n) - z * Math.sqrt((p * (1 - p) + z * z / (4 * n)) / n)) / (1 + z * z / n);
-    }
+		voteRepository.add(vote);
+	}
 
-    private void updateTagArticleScore(final JSONObject article) throws RepositoryException {
-        final List<JSONObject> tagArticleRels = tagArticleRepository.getByArticleId(article.optString(Keys.OBJECT_ID));
-        for (final JSONObject tagArticleRel : tagArticleRels) {
-            tagArticleRel.put(Article.REDDIT_SCORE, article.optDouble(Article.REDDIT_SCORE, 0D));
+	/**
+	 * Gets Reddit article score.
+	 *
+	 * @param ups
+	 *            the specified vote up count
+	 * @param downs
+	 *            the specified vote down count
+	 * @param t
+	 *            time (epoch seconds)
+	 * @return reddit score
+	 */
+	private static double redditArticleScore(final int ups, final int downs, final long t) {
+		final int x = ups - downs;
+		final double z = Math.max(Math.abs(x), 1);
+		int y = 0;
+		if (x > 0) {
+			y = 1;
+		} else if (x < 0) {
+			y = -1;
+		}
 
-            tagArticleRepository.update(tagArticleRel.optString(Keys.OBJECT_ID), tagArticleRel);
-        }
-    }
+		return Math.log10(z) + y * (t - 1353745196) / 45000;
+	}
+
+	private static double redditCommentScore(final int ups, final int downs) {
+		final int n = ups + downs;
+		if (0 == n) {
+			return 0;
+		}
+
+		final double z = 1.281551565545; // 1.0: 85%, 1.6: 95%, 1.281551565545: 80%
+		final double p = (double) ups / n;
+
+		return (p + z * z / (2 * n) - z * Math.sqrt((p * (1 - p) + z * z / (4 * n)) / n)) / (1 + z * z / n);
+	}
+
+	private void updateTagArticleScore(final JSONObject article) throws RepositoryException {
+		final List<JSONObject> tagArticleRels = tagArticleRepository.getByArticleId(article.optString(Keys.OBJECT_ID));
+		for (final JSONObject tagArticleRel : tagArticleRels) {
+			tagArticleRel.put(Article.REDDIT_SCORE, article.optDouble(Article.REDDIT_SCORE, 0D));
+
+			tagArticleRepository.update(tagArticleRel.optString(Keys.OBJECT_ID), tagArticleRel);
+		}
+	}
 }

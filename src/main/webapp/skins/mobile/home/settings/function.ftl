@@ -34,7 +34,7 @@
         <div class="fn-clear"></div>
         <div id="functionTip" class="tip"></div>
         <div class="fn-hr5"></div>
-        <button class="green fn-right" onclick="Settings.update('function', '${csrfToken}')">${saveLabel}</button>
+        <button class="blue fn-right submitGreenBtn" onclick="Settings.update('function', '${csrfToken}')">${saveLabel}</button>
     </div>
 </div>
 
@@ -47,7 +47,7 @@
         <textarea id="emotionList" rows="3" placeholder="${setEmotionTipLabel}" >${emotions}</textarea>
         <br><br>
         <a href="${servePath}/emoji/index.html">EMOJI CHEAT SHEET</a>
-        <button class="green fn-right" onclick="Settings.update('emotionList', '${csrfToken}')">${saveLabel}</button>
+        <button class="blue fn-right submitGreenBtn" onclick="Settings.update('emotionList', '${csrfToken}')">${saveLabel}</button>
     </div>
 </div>
 </@home>

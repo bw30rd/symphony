@@ -7,7 +7,7 @@
         <form method="POST" action="${servePath}/admin/invitecodes/generate" class="form wrapper">
             <input name="quantity" type="number" placeholder="${quantityLabel}" style="width: 30%" />
             <input name="memo" type="text" placeholder="${memoLabel}" autocomplete="off" />
-            <button type="submit" class="green">${generateLabel}</button>
+            <button type="submit" class="blue">${generateLabel}</button>
         </form>
         </#if>
         <ul>

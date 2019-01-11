@@ -17,6 +17,8 @@
  */
 package org.b3log.symphony.event;
 
+import java.net.URL;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Latkes;
@@ -29,13 +31,15 @@ import org.b3log.latke.ioc.inject.Singleton;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
 import org.b3log.latke.servlet.HTTPRequestMethod;
-import org.b3log.latke.urlfetch.*;
+import org.b3log.latke.urlfetch.HTTPHeader;
+import org.b3log.latke.urlfetch.HTTPRequest;
+import org.b3log.latke.urlfetch.HTTPResponse;
+import org.b3log.latke.urlfetch.URLFetchService;
+import org.b3log.latke.urlfetch.URLFetchServiceFactory;
 import org.b3log.symphony.model.Article;
 import org.b3log.symphony.model.Common;
 import org.b3log.symphony.util.Symphonys;
 import org.json.JSONObject;
-
-import java.net.URL;
 
 /**
  * Sends an article URL to Baidu.

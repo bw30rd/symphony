@@ -17,8 +17,13 @@
  */
 package org.b3log.symphony.processor;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Map;
+import java.util.TimeZone;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.b3log.latke.Keys;
@@ -33,11 +38,8 @@ import org.b3log.symphony.util.Skins;
 import org.b3log.symphony.util.Symphonys;
 import org.json.JSONObject;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Map;
-import java.util.TimeZone;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 /**
  * Skin user-switchable FreeMarker Renderer.

@@ -17,6 +17,9 @@
  */
 package org.b3log.symphony.service;
 
+import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.b3log.latke.Keys;
 import org.b3log.latke.Latkes;
@@ -35,9 +38,6 @@ import org.b3log.symphony.model.sitemap.Sitemap;
 import org.b3log.symphony.repository.ArticleRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * Sitemap query service.

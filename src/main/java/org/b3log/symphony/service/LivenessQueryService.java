@@ -17,6 +17,8 @@
  */
 package org.b3log.symphony.service;
 
+import java.util.Date;
+
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.b3log.latke.ioc.inject.Inject;
@@ -28,8 +30,6 @@ import org.b3log.latke.util.Stopwatchs;
 import org.b3log.symphony.model.Liveness;
 import org.b3log.symphony.repository.LivenessRepository;
 import org.json.JSONObject;
-
-import java.util.Date;
 
 /**
  * Liveness query service.
@@ -81,7 +81,7 @@ public class LivenessQueryService {
     }
 
     /**
-     * Gets the yesterday's liveness.
+     * Gets the liveness of yesterday.
      *
      * @param userId the specified user id
      * @return yesterday's liveness, returns {@code null} if not found

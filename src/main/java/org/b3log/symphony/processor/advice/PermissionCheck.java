@@ -17,6 +17,15 @@
  */
 package org.b3log.symphony.processor.advice;
 
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.ioc.inject.Named;
@@ -37,10 +46,6 @@ import org.b3log.symphony.model.Role;
 import org.b3log.symphony.service.RoleQueryService;
 import org.b3log.symphony.util.Symphonys;
 import org.json.JSONObject;
-
-import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Method;
-import java.util.*;
 
 /**
  * Permission check.

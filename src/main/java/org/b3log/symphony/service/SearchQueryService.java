@@ -17,19 +17,23 @@
  */
 package org.b3log.symphony.service;
 
+import java.net.URL;
+import java.net.URLEncoder;
+import java.net.UnknownHostException;
+
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
 import org.b3log.latke.service.annotation.Service;
 import org.b3log.latke.servlet.HTTPRequestMethod;
-import org.b3log.latke.urlfetch.*;
+import org.b3log.latke.urlfetch.HTTPHeader;
+import org.b3log.latke.urlfetch.HTTPRequest;
+import org.b3log.latke.urlfetch.HTTPResponse;
+import org.b3log.latke.urlfetch.URLFetchService;
+import org.b3log.latke.urlfetch.URLFetchServiceFactory;
 import org.b3log.symphony.model.Article;
 import org.b3log.symphony.util.Symphonys;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.net.URL;
-import java.net.URLEncoder;
-import java.net.UnknownHostException;
 
 /**
  * Search query service.
@@ -53,6 +57,9 @@ public class SearchQueryService {
      * URL fetch service.
      */
     private static final URLFetchService URL_FETCH_SVC = URLFetchServiceFactory.getURLFetchService();
+    
+    private static final HTTPHeader jsonHeader = new HTTPHeader("Content-type", "application/json");
+
 
     /**
      * Searches by Elasticsearch.
@@ -73,29 +80,33 @@ public class SearchQueryService {
 
             final JSONObject reqData = new JSONObject();
             final JSONObject q = new JSONObject();
-            final JSONObject and = new JSONObject();
-            q.put("and", and);
-            final JSONArray query = new JSONArray();
-            and.put("query", query);
-            final JSONObject or = new JSONObject();
-            query.put(or);
-            final JSONArray orClause = new JSONArray();
-            or.put("or", orClause);
-
-            final JSONObject content = new JSONObject();
-            content.put(Article.ARTICLE_CONTENT, keyword);
-            final JSONObject matchContent = new JSONObject();
-            matchContent.put("match", content);
-            orClause.put(matchContent);
-
-            final JSONObject title = new JSONObject();
-            title.put(Article.ARTICLE_TITLE, keyword);
-            final JSONObject matchTitle = new JSONObject();
-            matchTitle.put("match", title);
-            orClause.put(matchTitle);
-
+            final JSONObject boolCond = new JSONObject();
+            q.put("bool", boolCond);
+            
+            final JSONObject mustCond = new JSONObject();
+            final JSONArray shouldCond = new JSONArray();
+            boolCond.put("must", mustCond);
+            boolCond.put("should", shouldCond);
+            boolCond.put("minimum_should_match", 1);
+            
+            final JSONObject termCond = new JSONObject();
+            termCond.put(Article.ARTICLE_STATUS, Article.ARTICLE_STATUS_C_VALID);
+            mustCond.put("term", termCond);
+            
+            
+            final JSONObject matchCond1 = new JSONObject();
+            final JSONObject matchCond2 = new JSONObject();
+            final JSONObject matchItem1 = new JSONObject();
+            final JSONObject matchItem2 = new JSONObject();
+            matchCond1.put("match", matchItem1);
+            matchCond2.put("match", matchItem2);
+            matchItem1.put(Article.ARTICLE_CONTENT, keyword);
+            matchItem2.put(Article.ARTICLE_TITLE, keyword);
+            shouldCond.put(matchCond1);
+            shouldCond.put(matchCond2);
+            
             reqData.put("query", q);
-            reqData.put("from", currentPage);
+            reqData.put("from", currentPage - 1);
             reqData.put("size", pageSize);
             final JSONArray sort = new JSONArray();
             final JSONObject sortField = new JSONObject();
@@ -113,19 +124,13 @@ public class SearchQueryService {
             final JSONObject contentField = new JSONObject();
             fields.put(Article.ARTICLE_CONTENT, contentField);
 
-            final JSONArray filter = new JSONArray();
-            and.put("filter", filter);
-            final JSONObject term = new JSONObject();
-            filter.put(term);
-            final JSONObject field = new JSONObject();
-            term.put("term", field);
-            field.put(Article.ARTICLE_STATUS, Article.ARTICLE_STATUS_C_VALID);
-
             LOGGER.debug(reqData.toString(4));
 
             request.setPayload(reqData.toString().getBytes("UTF-8"));
+            request.addHeader(jsonHeader);
 
             final HTTPResponse response = URL_FETCH_SVC.fetch(request);
+            String resp = new String(response.getContent());
 
             return new JSONObject(new String(response.getContent(), "UTF-8"));
         } catch (final Exception e) {

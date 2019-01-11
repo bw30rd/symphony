@@ -17,6 +17,10 @@
  */
 package org.b3log.symphony.processor.advice.validate;
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.ioc.inject.Named;
@@ -35,9 +39,6 @@ import org.b3log.symphony.model.UserExt;
 import org.b3log.symphony.service.ArticleQueryService;
 import org.b3log.symphony.service.UserQueryService;
 import org.json.JSONObject;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
  * Validates for comment adding remotely.

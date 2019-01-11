@@ -786,7 +786,7 @@ var Comment = {
 
                         window.localStorage[Label.articleOId] = JSON.stringify(emptyContent);
                     }
-
+                    
                     // 定为到回贴位置
                     if (Label.userCommentViewMode === 1) {
                         // 实时模式
@@ -939,7 +939,6 @@ var Article = {
 
                     return;
                 }
-
                 alert(result.msg);
             }
         });
@@ -1081,7 +1080,7 @@ var Article = {
             }
 
             if (currentScrollTop < $('.article-title').offset().top) {
-                $('.article-header').css('top', '-50px');
+                $('.article-header').css('top', '-62px');
                 $('.nav').show();
             } else {
                 $('.article-header').css('top', '0');
@@ -1143,7 +1142,8 @@ var Article = {
                     articleMR = ($(window).width() - articleToCW - $('.article-info').width() - 30) / 3 + articleToCW;
                 $('.article-body .wrapper, #articleCommentsPanel, .article-footer').css('margin-right', articleMR + 'px');
             }
-            $('.article-header > h2').css('margin-left', Math.max(20, ($('.article-footer').offset().left - 58)) + 'px');
+            //$('.article-header > h2').css('margin-left', Math.max(20, ($('.article-footer').offset().left - 58)) + 'px');
+            $('.article-header > h2').css('margin-left', '20px');
         });
     },
     /**
@@ -1323,7 +1323,7 @@ var Article = {
             $('#shareClipboard').attr('aria-label', Label.copiedLabel);
         });
     },
-    /*
+    /**
      * @description 解析语法高亮
      */
     parseLanguage: function () {
@@ -1567,7 +1567,7 @@ var Article = {
      */
     initToc: function () {
         if ($('#articleToC').length === 0) {
-            $('.article-header > h2').css('margin-left', Math.max(20, ($('.article-footer').offset().left - 58)) + 'px');
+//            $('.article-header > h2').css('margin-left', Math.max(20, ($('.article-footer').offset().left - 58)) + 'px');
             $('.article-body .wrapper, #articleCommentsPanel, .article-footer').css('margin-right', 'auto');
             return false;
         }
@@ -1576,7 +1576,8 @@ var Article = {
             articleMR = ($(window).width() - articleToCW - $('.article-info').width() - 30) / 3 + articleToCW;
         $('.article-body .wrapper, #articleCommentsPanel, .article-footer').css('margin-right', articleMR + 'px');
 
-        $('.article-header > h2').css('margin-left', Math.max(20, ($('.article-footer').offset().left - 58)) + 'px');
+//        $('.article-header > h2').css('margin-left', Math.max(20, ($('.article-footer').offset().left - 58)) + 'px');
+        $('.article-header > h2').css('margin-left', '20px');
         $('#articleToC > .module-panel').height($(window).height() - 48);
 
         // 样式

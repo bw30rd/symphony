@@ -17,6 +17,9 @@
  */
 package org.b3log.symphony.service;
 
+import java.net.URL;
+import java.net.URLEncoder;
+
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.logging.Level;
@@ -31,9 +34,6 @@ import org.b3log.latke.urlfetch.URLFetchServiceFactory;
 import org.b3log.symphony.util.Symphonys;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.net.URL;
-import java.net.URLEncoder;
 
 /**
  * Turing query service.

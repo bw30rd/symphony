@@ -67,7 +67,7 @@
   .article-body .wrapper,
   .main .wrapper {
     display: block;
-    max-width: 768px;
+    // max-width: 768px;
   }
 
   .main {
@@ -76,7 +76,8 @@
   }
 
   .article-body {
-    padding: 68px 0 20px;
+    padding: 8px 0 20px;
+    margin: 50px auto;
   }
 
   .article-info {
@@ -84,17 +85,18 @@
     line-height: 20px;
 
     .article-actions {
-      line-height: 60px;
+     // line-height: 60px;
       font-size: 13px;
     }
   }
 
   h1.article-title {
-    word-break: break-word;
+    // word-break: break-word;
+    word-break: break-all;
     font-size: 28px;
     font-weight: normal;
     padding-top: 15px;
-    text-align: center;
+    // text-align: center;
   }
 
   .article-content {
@@ -160,18 +162,18 @@
   }
 
   .article-header {
-    height: 48px;
+    height: 60px;
     width: 100%;
     position: fixed;
     z-index: 83;
     display: flex;
-    line-height: 38px;
+    line-height: 50px;
     padding: 0 10px;
-    background-color: #fff;
+    background-color: #FFF;
     box-sizing: border-box;
     box-shadow: $shadow-tip;
     font-size: 16px;
-    top: -50px;
+    top: -62px;
 
     svg {
       color: $black-text;
@@ -180,7 +182,7 @@
 
     h2 {
       font-size: 24px;
-      line-height: 48px;
+      line-height: 60px;
       font-weight: normal;
       flex: 1;
       margin: 0 20px;
@@ -208,8 +210,8 @@
 
   #articleToC {
     position: fixed;
-    top: 48px;
-    width: 20%;
+    top: 60px;
+    width: 15%;
     z-index: 79;
     right: 0;
     height: 100%;
@@ -237,17 +239,21 @@
       }
 
       a:hover {
-        border-left: 1px solid $blue;
-        background-color: #F7F7F7;
+        // border-left: 1px solid $blue;
+        border-left: 1px solid #007D99;
+        background-color: #F8F8F8;
         padding-left: 21px;
-        color: $blue;
+        // color: $blue;
+        color: #007D99;
         text-decoration: none;
       }
 
       &.current a {
-        border-left: 2px solid $blue;
+        // border-left: 2px solid $blue;
+        border-left: 2px solid #007D99;
         background-color: #f0f0f0;
-        color: $blue;
+        // color: $blue;
+        color: #007D99;
       }
 
       &.toc-h2 a,
@@ -587,7 +593,7 @@ label.cmt-anonymous {
     width: 180px;
     height: 135px;
     border-radius: 2px;
-    margin-left: 10px;
+    margin-right: 5px;
     background-size: cover;
     background-position: center center;
   }
@@ -703,16 +709,18 @@ label.cmt-anonymous {
 /* start verify */
 .verify {
   background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px #E5E6E8;
 
   .intro {
-    padding: 100px 50px;
-    background-color: $blue-lighter;
-    width: 40%;
+    padding: 100px 0px;
+    // background-color: $blue-lighter;
+    width: 50%;
     color: $theme-secondary;
   }
 
   .verify-wrap {
-    width: 60%;
+    width: 45%;
   }
 
   /* start register & login form */
@@ -1015,12 +1023,18 @@ code .dec {
   }
 
   .index-main {
-    width: 60%;
+    width: 2%;
+    background: #FFF;
+    border-radius: 3px;
+    box-shadow: 0px 0px 10px #E5E6E8;
+    position: relative;
+    flex:1;
+    margin-right: 20px;
   }
 
   .index-side {
-    margin-left: 2px;
-    width: 40%;
+    width: 28%;
+    position: relative;
   }
 
   .article-list .heat {
@@ -1072,7 +1086,7 @@ code .dec {
 
   .index-tabs > span.perfect {
     border-bottom-color: $theme-accent;
-    flex: 2;
+    // flex: 2;
   }
 
   .index-tabs > span.check {
@@ -1104,6 +1118,10 @@ code .dec {
   }
 
   .index-tabs > span.tags:before {
+    background-color: #00AACE;
+  }
+
+  .index-tabs > span.watch:before {
     background-color: $green;
   }
 
@@ -1112,7 +1130,7 @@ code .dec {
   }
 
   .index-tabs > span.perfect:before {
-    background-color: $theme-accent;
+    background-color: #FF8E14;
   }
 
   .index-tabs > span.check:before {
@@ -1315,3 +1333,49 @@ code .dec {
 }
 
 /* end timeline */
+
+/* loginiframe */
+.begeekLogo {
+  display: block;
+  border-radius: 50%;
+  width: 68px;
+  height: 68px;
+  background: url(../images/begeekLogo.png) no-repeat;
+  margin-top: 60px;
+  margin-left: 210px;
+  box-shadow: 0px 0px 10px #BCDFE3;
+}
+.ifr {
+  width: 400px;
+  height: 300px;
+  border: none;
+  display: block;
+  margin-top: 15px;
+  margin-left: 45px;
+}
+
+.articleShadow {
+  width: 984px;
+  background: #FFF;
+  padding: 20px!important;
+  border-radius: 3px;
+  box-shadow: 0px 0px 10px #E5E6E8;
+  position: relative;
+}
+.articleBackShadow {
+  width: 1024px;
+  background: #FFF!important;
+  border-radius: 3px;
+  box-shadow: 0px 0px 10px #E5E6E8;
+}
+.articleTop {
+  height: 60px;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 82;
+}
+.articleTopZq {
+  padding-top: 60px;
+}

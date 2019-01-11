@@ -17,9 +17,16 @@
  */
 package org.b3log.symphony.service;
 
-import com.qiniu.common.QiniuException;
-import com.qiniu.storage.UploadManager;
-import com.qiniu.util.Auth;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.RandomUtils;
@@ -30,14 +37,9 @@ import org.b3log.latke.service.annotation.Service;
 import org.b3log.symphony.util.Symphonys;
 import org.json.JSONObject;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.UUID;
+import com.qiniu.common.QiniuException;
+import com.qiniu.storage.UploadManager;
+import com.qiniu.util.Auth;
 
 /**
  * Audio management service.

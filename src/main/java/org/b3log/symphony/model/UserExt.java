@@ -414,7 +414,7 @@ public final class UserExt {
     /**
      * Default commenter email.
      */
-    public static final String DEFAULT_CMTER_EMAIL = "default_commenter@b3log.org";
+    public static final String DEFAULT_CMTER_EMAIL = "default_commenter@bw30.com";
 
     /**
      * Default commenter role.

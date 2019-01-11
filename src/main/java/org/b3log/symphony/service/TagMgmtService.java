@@ -17,6 +17,11 @@
  */
 package org.b3log.symphony.service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.logging.Level;
@@ -35,14 +40,15 @@ import org.b3log.symphony.model.Common;
 import org.b3log.symphony.model.Option;
 import org.b3log.symphony.model.Tag;
 import org.b3log.symphony.model.UserExt;
-import org.b3log.symphony.repository.*;
+import org.b3log.symphony.repository.DomainTagRepository;
+import org.b3log.symphony.repository.OptionRepository;
+import org.b3log.symphony.repository.TagRepository;
+import org.b3log.symphony.repository.TagTagRepository;
+import org.b3log.symphony.repository.TagUserLinkRepository;
+import org.b3log.symphony.repository.UserRepository;
+import org.b3log.symphony.repository.UserTagRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Tag management service.

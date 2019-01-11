@@ -75,6 +75,8 @@ var Comment = {
                 if (result.sc === 0) {
                     // doc.lineCount
                     Comment.editor.setValue(result.commentContent);
+                   // Comment.editor.focus();
+                    
                 }
             }
         });
@@ -700,7 +702,7 @@ var Comment = {
                         template += '</a>';
                     }
 
-                    template += '<span class="ft-fade"> • ' + data.timeAgo;
+//                    template += '<span class="ft-fade"> • ' + data.timeAgo;
                     if (data.rewardedCnt > 0) {
                         template += '<span aria-label="'
                                 + (data.rewarded ? Label.thankedLabel : Label.thankLabel + ' ' + data.rewardedCnt)
@@ -835,7 +837,7 @@ var Comment = {
      */
     reply: function (userName, id) {
         $('#replyUseName').data('commentOriginalCommentId', id);
-        Comment.editor.focus();
+       // Comment.editor.focus();
     }
 };
 
@@ -997,7 +999,8 @@ var Article = {
     previewImgAfterLoading : function () {
         $('.img-preview img').css('transform', 'translate3d(' +
             (Math.max(0, $(window).width() - $('.img-preview img').width()) / 2) + 'px, ' +
-            (Math.max(0, $(window).height() - $('.img-preview img').height()) / 2) + 'px, 0)');
+            // (Math.max(0, $(window).height() - $('.img-preview img').height()) / 2) + 'px, 0)');
+            '0px, 0)');
 
         // fixed chrome render transform bug
         setTimeout(function () {
@@ -1013,14 +1016,17 @@ var Article = {
 
         // img preview
         var fixDblclick = null;
-        $(".article").on('dblclick', '.content-reset img', function () {
+        // $(".article").on('dblclick', '.content-reset img', function () {
+        $("body")
+        .on('dblclick', '.content-reset img', function () {
             clearTimeout(fixDblclick);
             if ($(this).hasClass('emoji') || $(this).closest('.editor-panel').length === 1 ||
                 $(this).closest('.ad').length === 1) {
                 return;
             }
             window.open($(this).attr('src'));
-        }).on('click', '.content-reset img', function (event) {
+        })
+        .on('click', '.content-reset img', function (event) {
             clearTimeout(fixDblclick);
             if ($(this).hasClass('emoji') || $(this).closest('.editor-panel').length === 1 ||
                 $(this).closest('.ad').length === 1) {
@@ -1037,7 +1043,8 @@ var Article = {
                 }
 
                 $('body').append('<div class="img-preview" onclick="$(this).remove()"><img style="transform: translate3d(' +
-                Math.max(0, left) + 'px, ' + Math.max(0, (top - $(window).scrollTop())) + 'px, 0)" src="' +
+                // Math.max(0, left) + 'px, ' + Math.max(0, (top - $(window).scrollTop())) + 'px, 0)" src="' +
+                Math.max(0, left) + 'px, 0px, 0)" src="' +
                 ($it.attr('src').split('?imageView2')[0]) + '" onload="Article.previewImgAfterLoading()"></div>');
 
                 $('.img-preview').css({

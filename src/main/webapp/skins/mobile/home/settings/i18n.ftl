@@ -15,7 +15,7 @@
         </select>
         <br/><br/>
         <label>${timezoneLabel}</label>
-        <select id="userTimezone"">
+        <select id="userTimezone">
             <#list timezones as timezone>
             <option value="${timezone.id}" <#if timezone.id == user.userTimezone>selected</#if>>${timezone.name}</option>
             </#list>
@@ -24,7 +24,8 @@
         <br/><br/>
         <div class="fn-clear"></div>
         <div id="i18nTip" class="tip"></div><br/>
-        <button class="green fn-right" onclick="Settings.update('i18n', '${csrfToken}')">${saveLabel}</button>
+        <button class="blue fn-left submitGreenBtn" onclick="Settings.update('i18n', '${csrfToken}')">${saveLabel}</button>
+        <button class="blue fn-right backWhiteBtn" onclick="javascript:history.back(-1);">返回</button>
     </div>
 </div>
 </@home>

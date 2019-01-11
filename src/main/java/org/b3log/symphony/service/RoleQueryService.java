@@ -17,13 +17,27 @@
  */
 package org.b3log.symphony.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
 import org.b3log.latke.model.Pagination;
 import org.b3log.latke.model.User;
-import org.b3log.latke.repository.*;
+import org.b3log.latke.repository.FilterOperator;
+import org.b3log.latke.repository.PropertyFilter;
+import org.b3log.latke.repository.Query;
+import org.b3log.latke.repository.RepositoryException;
+import org.b3log.latke.repository.SortDirection;
 import org.b3log.latke.service.LangPropsService;
 import org.b3log.latke.service.ServiceException;
 import org.b3log.latke.service.annotation.Service;
@@ -40,8 +54,6 @@ import org.b3log.symphony.repository.UserRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.*;
-
 /**
  * Role query service.
  *
@@ -52,328 +64,394 @@ import java.util.*;
 @Service
 public class RoleQueryService {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOGGER = Logger.getLogger(RoleQueryService.class);
+	/**
+	 * Logger.
+	 */
+	private static final Logger LOGGER = Logger.getLogger(RoleQueryService.class);
 
-    /**
-     * Role repository.
-     */
-    @Inject
-    private RoleRepository roleRepository;
+	/**
+	 * Role repository.
+	 */
+	@Inject
+	private RoleRepository roleRepository;
 
-    /**
-     * Role-Permission repository.
-     */
-    @Inject
-    private RolePermissionRepository rolePermissionRepository;
+	/**
+	 * Role-Permission repository.
+	 */
+	@Inject
+	private RolePermissionRepository rolePermissionRepository;
 
-    /**
-     * Permission repository.
-     */
-    @Inject
-    private PermissionRepository permissionRepository;
+	/**
+	 * Permission repository.
+	 */
+	@Inject
+	private PermissionRepository permissionRepository;
 
-    /**
-     * User repository.
-     */
-    @Inject
-    private UserRepository userRepository;
+	/**
+	 * User repository.
+	 */
+	@Inject
+	private UserRepository userRepository;
 
-    /**
-     * Language service.
-     */
-    @Inject
-    private LangPropsService langPropsService;
+	/**
+	 * Language service.
+	 */
+	@Inject
+	private LangPropsService langPropsService;
 
-    /**
-     * Gets an role specified by the given role id.
-     *
-     * @param roleId the given role id
-     * @return an role, returns {@code null} if not found
-     */
-    public JSONObject getRole(final String roleId) {
-        if (UserExt.DEFAULT_CMTER_ROLE.equals(roleId)) { // virtual role
-            final JSONObject ret = new JSONObject();
+	/**
+	 * Gets an role specified by the given role id.
+	 *
+	 * @param roleId
+	 *            the given role id
+	 * @return an role, returns {@code null} if not found
+	 */
+	public JSONObject getRole(final String roleId) {
 
-            ret.put(Role.ROLE_NAME, langPropsService.get(UserExt.DEFAULT_CMTER_ROLE+ "NameLabel"));
-            ret.put(Role.ROLE_DESCRIPTION, langPropsService.get(UserExt.DEFAULT_CMTER_ROLE + "DescLabel"));
+		if (UserExt.DEFAULT_CMTER_ROLE.equals(roleId)) { // virtual role
+			final JSONObject ret = new JSONObject();
 
-            return ret;
-        }
+			ret.put(Role.ROLE_NAME, langPropsService.get(UserExt.DEFAULT_CMTER_ROLE + "NameLabel"));
+			ret.put(Role.ROLE_DESCRIPTION, langPropsService.get(UserExt.DEFAULT_CMTER_ROLE + "DescLabel"));
 
-        try {
-            final JSONObject ret = roleRepository.get(roleId);
+			return ret;
+		}
 
-            if (!Strings.isNumeric(roleId)) {
-                ret.put(Role.ROLE_NAME, langPropsService.get(roleId + "NameLabel"));
-            }
+		try {
+			final JSONObject ret = roleRepository.get(roleId);
 
-            return ret;
-        } catch (final RepositoryException e) {
-            LOGGER.log(Level.ERROR, "Gets role failed", e);
+			if (!Strings.isNumeric(roleId) && ret != null) {
+				ret.put(Role.ROLE_NAME, langPropsService.get(roleId + "NameLabel"));
+			}
 
-            return null;
-        }
-    }
+			return ret;
+		} catch (final RepositoryException e) {
+			LOGGER.log(Level.ERROR, "Gets role failed", e);
 
-    /**
-     * Gets all permissions and marks grant of a user specified by the given user id.
-     *
-     * @param userId the given user id
-     * @return a map of permissions&lt;permissionId, permission&gt;, returns an empty map if not found
-     */
-    public Map<String, JSONObject> getUserPermissionsGrantMap(final String userId) {
-        final List<JSONObject> permissions = getUserPermissionsGrant(userId);
-        if (permissions.isEmpty()) {
-            return Collections.emptyMap();
-        }
+			return null;
+		}
 
-        final Map<String, JSONObject> ret = new HashMap<>();
-        for (final JSONObject permission : permissions) {
-            ret.put(permission.optString(Keys.OBJECT_ID), permission);
-        }
+	}
 
-        return ret;
-    }
+	public List<JSONObject> getRoles(final String roleId) {
 
-    /**
-     * Gets all permissions and marks grant of a user specified by the given user id.
-     *
-     * @param userId the given user id
-     * @return a list of permissions, returns an empty list if not found
-     */
-    public List<JSONObject> getUserPermissionsGrant(final String userId) {
-        try {
-            final JSONObject user = userRepository.get(userId);
-            if (null == user) {
-                return getPermissionsGrant(Role.ROLE_ID_C_VISITOR);
-            }
+		List<String> roleIds = Arrays.asList(roleId.split(","));
+		List<JSONObject> roles = new ArrayList<JSONObject>();
 
-            final String roleId = user.optString(User.USER_ROLE);
+		for (String roleid : roleIds) {
+			roles.add(getRole(roleid));
+		}
+		return roles;
+	}
 
-            return getPermissionsGrant(roleId);
-        } catch (final Exception e) {
-            LOGGER.log(Level.ERROR, "Gets user permissions grant failed", e);
+	public String getRoleNames(final String roleId) {
+		List<JSONObject> roles = getRoles(roleId);
+		String roleNames = "";
+		for (JSONObject role : roles) {
+			roleNames += (","
+					+ (StringUtils.isBlank(role.optString(Role.ROLE_DESCRIPTION)) ? role.optString(Role.ROLE_NAME)
+							: role.optString(Role.ROLE_DESCRIPTION)));
+		}
+		return roleNames.substring(1);
+	}
 
-            return getPermissionsGrant(Role.ROLE_ID_C_VISITOR);
-        }
-    }
+	public List<JSONObject> getRoleByName(String roleName) {
+		try {
+			final List<JSONObject> role = roleRepository.select("SELECT * FROM symphony_role WHERE roleName like ?",
+					roleName);
+			return role;
+		} catch (RepositoryException e) {
+			LOGGER.log(Level.ERROR, "Gets role by name failed", e);
 
-    /**
-     * Gets grant permissions of a user specified by the given user id.
-     *
-     * @param userId the given user id
-     * @return a list of permissions, returns an empty set if not found
-     */
-    public Set<String> getUserPermissions(final String userId) {
-        try {
-            final JSONObject user = userRepository.get(userId);
-            if (null == user) {
-                return Collections.emptySet();
-            }
+			return null;
+		}
 
-            final String roleId = user.optString(User.USER_ROLE);
+	}
 
-            return getPermissions(roleId);
-        } catch (final RepositoryException e) {
-            LOGGER.log(Level.ERROR, "Gets grant permissions of user [id=" + userId + "] failed", e);
+	/**
+	 * Gets all permissions and marks grant of a user specified by the given user
+	 * id.
+	 *
+	 * @param userId
+	 *            the given user id
+	 * @return a map of permissions&lt;permissionId, permission&gt;, returns an
+	 *         empty map if not found
+	 */
+	public Map<String, JSONObject> getUserPermissionsGrantMap(final String userId) {
+		final List<JSONObject> permissions = getUserPermissionsGrant(userId);
+		if (permissions.isEmpty()) {
+			return Collections.emptyMap();
+		}
 
-            return Collections.emptySet();
-        }
-    }
+		final Map<String, JSONObject> ret = new HashMap<>();
+		for (final JSONObject permission : permissions) {
+			ret.put(permission.optString(Keys.OBJECT_ID), permission);
+		}
 
-    /**
-     * Gets all permissions and marks grant of an role specified by the given role id.
-     *
-     * @param roleId the given role id
-     * @return a map of permissions&lt;permissionId, permission&gt;, returns an empty map if not found
-     */
-    public Map<String, JSONObject> getPermissionsGrantMap(final String roleId) {
-        final List<JSONObject> permissions = getPermissionsGrant(roleId);
-        if (permissions.isEmpty()) {
-            return Collections.emptyMap();
-        }
+		return ret;
+	}
 
-        final Map<String, JSONObject> ret = new HashMap<>();
-        for (final JSONObject permission : permissions) {
-            ret.put(permission.optString(Keys.OBJECT_ID), permission);
-        }
+	/**
+	 * Gets all permissions and marks grant of a user specified by the given user
+	 * id.
+	 *
+	 * @param userId
+	 *            the given user id
+	 * @return a list of permissions, returns an empty list if not found
+	 */
+	public List<JSONObject> getUserPermissionsGrant(final String userId) {
+		try {
+			final JSONObject user = userRepository.get(userId);
+			if (null == user) {
+				return getPermissionsGrant(Role.ROLE_ID_C_VISITOR);
+			}
 
-        return ret;
-    }
+			final String roleId = user.optString(User.USER_ROLE);
 
-    /**
-     * Gets all permissions and marks grant of an role specified by the given role id.
-     *
-     * @param roleId the given role id
-     * @return a list of permissions, returns an empty list if not found
-     */
-    public List<JSONObject> getPermissionsGrant(final String roleId) {
-        final List<JSONObject> ret = new ArrayList<>();
+			return getPermissionsGrant(roleId);
+		} catch (final Exception e) {
+			LOGGER.log(Level.ERROR, "Gets user permissions grant failed", e);
 
-        try {
-            final List<JSONObject> permissions = CollectionUtils.jsonArrayToList(
-                    permissionRepository.get(new Query()).optJSONArray(Keys.RESULTS));
-            final List<JSONObject> rolePermissions = rolePermissionRepository.getByRoleId(roleId);
+			return getPermissionsGrant(Role.ROLE_ID_C_VISITOR);
+		}
+	}
 
-            for (final JSONObject permission : permissions) {
-                final String permissionId = permission.optString(Keys.OBJECT_ID);
-                permission.put(Permission.PERMISSION_T_GRANT, false);
-                ret.add(permission);
+	/**
+	 * Gets grant permissions of a user specified by the given user id.
+	 *
+	 * @param userId
+	 *            the given user id
+	 * @return a list of permissions, returns an empty set if not found
+	 */
+	public Set<String> getUserPermissions(final String userId) {
+		try {
+			final JSONObject user = userRepository.get(userId);
+			if (null == user) {
+				return Collections.emptySet();
+			}
 
-                for (final JSONObject rolePermission : rolePermissions) {
-                    final String grantPermissionId = rolePermission.optString(Permission.PERMISSION_ID);
+			final String roleId = user.optString(User.USER_ROLE);
 
-                    if (permissionId.equals(grantPermissionId)) {
-                        permission.put(Permission.PERMISSION_T_GRANT, true);
+			return getPermissions(roleId);
+		} catch (final RepositoryException e) {
+			LOGGER.log(Level.ERROR, "Gets grant permissions of user [id=" + userId + "] failed", e);
 
-                        break;
-                    }
-                }
-            }
-        } catch (final RepositoryException e) {
-            LOGGER.log(Level.ERROR, "Gets permissions grant of role [id=" + roleId + "] failed", e);
-        }
+			return Collections.emptySet();
+		}
+	}
 
-        return ret;
-    }
+	/**
+	 * Gets all permissions and marks grant of an role specified by the given role
+	 * id.
+	 *
+	 * @param roleId
+	 *            the given role id
+	 * @return a map of permissions&lt;permissionId, permission&gt;, returns an
+	 *         empty map if not found
+	 */
+	public Map<String, JSONObject> getPermissionsGrantMap(final String roleId) {
+		final List<JSONObject> permissions = getPermissionsGrant(roleId);
+		if (permissions.isEmpty()) {
+			return Collections.emptyMap();
+		}
 
-    /**
-     * Gets permissions of an role specified by the given role id.
-     *
-     * @param roleId the given role id
-     * @return a list of permissions, returns an empty list if not found
-     */
-    public Set<String> getPermissions(final String roleId) {
-        final Set<String> ret = new HashSet<>();
+		final Map<String, JSONObject> ret = new HashMap<>();
+		for (final JSONObject permission : permissions) {
+			ret.put(permission.optString(Keys.OBJECT_ID), permission);
+		}
 
-        try {
-            final List<JSONObject> rolePermissions = rolePermissionRepository.getByRoleId(roleId);
-            for (final JSONObject rolePermission : rolePermissions) {
-                final String permissionId = rolePermission.optString(Permission.PERMISSION_ID);
+		return ret;
+	}
 
-                ret.add(permissionId);
-            }
+	/**
+	 * Gets all permissions and marks grant of an role specified by the given role
+	 * id.
+	 *
+	 * @param roleId
+	 *            the given role id
+	 * @return a list of permissions, returns an empty list if not found
+	 */
+	public List<JSONObject> getPermissionsGrant(final String roleId) {
+		final List<JSONObject> ret = new ArrayList<>();
 
-            return ret;
-        } catch (final RepositoryException e) {
-            LOGGER.log(Level.ERROR, "Gets permissions of role [id=" + roleId + "] failed", e);
+		try {
+			final List<JSONObject> permissions = CollectionUtils
+					.jsonArrayToList(permissionRepository.get(new Query()).optJSONArray(Keys.RESULTS));
+			final List<JSONObject> rolePermissions = rolePermissionRepository.getByRoleId(roleId);
 
-            return Collections.emptySet();
-        }
-    }
+			for (final JSONObject permission : permissions) {
+				final String permissionId = permission.optString(Keys.OBJECT_ID);
+				permission.put(Permission.PERMISSION_T_GRANT, false);
+				ret.add(permission);
 
-    /**
-     * Gets roles by the specified request json object.
-     *
-     * @param currentPage the specified current page number
-     * @param pageSize    the specified page size
-     * @param windowSize  the specified window size
-     * @return for example, <pre>
-     * {
-     *     "pagination": {
-     *         "paginationPageCount": 100,
-     *         "paginationPageNums": [1, 2, 3, 4, 5]
-     *     },
-     *     "roles": [{
-     *         "oId": "",
-     *         "roleName": "",
-     *         "roleDescription": "",
-     *         "roleUserCount": int,
-     *         "permissions": [
-     *             {
-     *                 "oId": "adUpdateADSide",
-     *                 "permissionCategory": int
-     *             }, ....
-     *         ]
-     *     }, ....]
-     * }
-     * </pre>
-     * @throws ServiceException service exception
-     * @see Pagination
-     */
-    public JSONObject getRoles(final int currentPage, final int pageSize, final int windowSize)
-            throws ServiceException {
-        final JSONObject ret = new JSONObject();
+				for (final JSONObject rolePermission : rolePermissions) {
+					final String grantPermissionId = rolePermission.optString(Permission.PERMISSION_ID);
 
-        final Query query = new Query().setCurrentPageNum(currentPage).setPageSize(pageSize).
-                addSort(Keys.OBJECT_ID, SortDirection.DESCENDING);
+					if (permissionId.equals(grantPermissionId)) {
+						permission.put(Permission.PERMISSION_T_GRANT, true);
 
-        JSONObject result = null;
+						break;
+					}
+				}
+			}
+		} catch (final RepositoryException e) {
+			LOGGER.log(Level.ERROR, "Gets permissions grant of role [id=" + roleId + "] failed", e);
+		}
 
-        try {
-            result = roleRepository.get(query);
-        } catch (final RepositoryException e) {
-            LOGGER.log(Level.ERROR, "Gets roles failed", e);
+		return ret;
+	}
 
-            throw new ServiceException(e);
-        }
+	/**
+	 * Gets permissions of an role specified by the given role id.
+	 *
+	 * @param roleId
+	 *            the given role id
+	 * @return a list of permissions, returns an empty list if not found
+	 */
+	public Set<String> getPermissions(final String roleId) {
+		final Set<String> ret = new HashSet<>();
 
-        final int pageCount = result.optJSONObject(Pagination.PAGINATION).optInt(Pagination.PAGINATION_PAGE_COUNT);
+		try {
+			final List<JSONObject> rolePermissions = rolePermissionRepository.getByRoleId(roleId);
+			for (final JSONObject rolePermission : rolePermissions) {
+				final String permissionId = rolePermission.optString(Permission.PERMISSION_ID);
 
-        final JSONObject pagination = new JSONObject();
-        ret.put(Pagination.PAGINATION, pagination);
-        final List<Integer> pageNums = Paginator.paginate(currentPage, pageSize, pageCount, windowSize);
-        pagination.put(Pagination.PAGINATION_PAGE_COUNT, pageCount);
-        pagination.put(Pagination.PAGINATION_PAGE_NUMS, pageNums);
+				ret.add(permissionId);
+			}
 
-        final JSONArray data = result.optJSONArray(Keys.RESULTS);
-        final List<JSONObject> roles = CollectionUtils.<JSONObject>jsonArrayToList(data);
+			return ret;
+		} catch (final RepositoryException e) {
+			LOGGER.log(Level.ERROR, "Gets permissions of role [id=" + roleId + "] failed", e);
 
-        try {
-            for (final JSONObject role : roles) {
-                final List<JSONObject> permissions = new ArrayList<>();
-                role.put(Permission.PERMISSIONS, (Object) permissions);
+			return Collections.emptySet();
+		}
+	}
 
-                final String roleId = role.optString(Keys.OBJECT_ID);
-                final List<JSONObject> rolePermissions = rolePermissionRepository.getByRoleId(roleId);
-                for (final JSONObject rolePermission : rolePermissions) {
-                    final String permissionId = rolePermission.optString(Permission.PERMISSION_ID);
-                    final JSONObject permission = permissionRepository.get(permissionId);
+	/**
+	 * Gets roles by the specified request json object.
+	 *
+	 * @param currentPage
+	 *            the specified current page number
+	 * @param pageSize
+	 *            the specified page size
+	 * @param windowSize
+	 *            the specified window size
+	 * @return for example,
+	 * 
+	 *         <pre>
+	 * {
+	 *     "pagination": {
+	 *         "paginationPageCount": 100,
+	 *         "paginationPageNums": [1, 2, 3, 4, 5]
+	 *     },
+	 *     "roles": [{
+	 *         "oId": "",
+	 *         "roleName": "",
+	 *         "roleDescription": "",
+	 *         "roleUserCount": int,
+	 *         "permissions": [
+	 *             {
+	 *                 "oId": "adUpdateADSide",
+	 *                 "permissionCategory": int
+	 *             }, ....
+	 *         ]
+	 *     }, ....]
+	 * }
+	 *         </pre>
+	 * 
+	 * @throws ServiceException
+	 *             service exception
+	 * @see Pagination
+	 */
+	public JSONObject getRoles(final int currentPage, final int pageSize, final int windowSize)
+			throws ServiceException {
+		final JSONObject ret = new JSONObject();
 
-                    permissions.add(permission);
-                }
+		final Query query = new Query().setCurrentPageNum(currentPage).setPageSize(pageSize).addSort(Keys.OBJECT_ID,
+				SortDirection.DESCENDING);
 
-                final Query userCountQuery = new Query().
-                        setFilter(new PropertyFilter(User.USER_ROLE, FilterOperator.EQUAL, roleId));
-                final int count = (int) userRepository.count(userCountQuery);
-                role.put(Role.ROLE_T_USER_COUNT, count);
+		JSONObject result = null;
 
-                // fill description
-                if (Strings.isNumeric(roleId)) {
-                    continue;
-                }
+		try {
+			result = roleRepository.get(query);
+		} catch (final RepositoryException e) {
+			LOGGER.log(Level.ERROR, "Gets roles failed", e);
 
-                String roleName = role.optString(Role.ROLE_NAME);
-                try {
-                    roleName = langPropsService.get(roleId + "NameLabel");
-                } catch (final Exception e) {
-                    // ignored
-                }
+			throw new ServiceException(e);
+		}
 
-                String roleDesc = role.optString(Role.ROLE_DESCRIPTION);
-                try {
-                    roleDesc = langPropsService.get(roleId + "DescLabel");
-                } catch (final Exception e) {
-                    // ignored
-                }
+		final int pageCount = result.optJSONObject(Pagination.PAGINATION).optInt(Pagination.PAGINATION_PAGE_COUNT);
 
-                role.put(Role.ROLE_NAME, roleName);
-                role.put(Role.ROLE_DESCRIPTION, roleDesc);
-            }
-        } catch (final RepositoryException e) {
-            LOGGER.log(Level.ERROR, "Gets role permissions failed", e);
+		final JSONObject pagination = new JSONObject();
+		ret.put(Pagination.PAGINATION, pagination);
+		final List<Integer> pageNums = Paginator.paginate(currentPage, pageSize, pageCount, windowSize);
+		pagination.put(Pagination.PAGINATION_PAGE_COUNT, pageCount);
+		pagination.put(Pagination.PAGINATION_PAGE_NUMS, pageNums);
 
-            throw new ServiceException(e);
-        }
+		final JSONArray data = result.optJSONArray(Keys.RESULTS);
+		final List<JSONObject> roles = CollectionUtils.<JSONObject>jsonArrayToList(data);
 
-        Collections.sort(roles, (o1, o2) -> ((List) o2.opt(Permission.PERMISSIONS)).size()
-                - ((List) o1.opt(Permission.PERMISSIONS)).size());
+		try {
+			for (final JSONObject role : roles) {
+				final List<JSONObject> permissions = new ArrayList<>();
+				role.put(Permission.PERMISSIONS, (Object) permissions);
 
-        ret.put(Role.ROLES, (Object) roles);
+				final String roleId = role.optString(Keys.OBJECT_ID);
+				final List<JSONObject> rolePermissions = rolePermissionRepository.getByRoleId(roleId);
+				for (final JSONObject rolePermission : rolePermissions) {
+					final String permissionId = rolePermission.optString(Permission.PERMISSION_ID);
+					final JSONObject permission = permissionRepository.get(permissionId);
 
-        return ret;
-    }
+					permissions.add(permission);
+				}
+
+				final Query userCountQuery = new Query()
+						.setFilter(new PropertyFilter(User.USER_ROLE, FilterOperator.EQUAL, roleId));
+				final int count = (int) userRepository.count(userCountQuery);
+				role.put(Role.ROLE_T_USER_COUNT, count);
+
+				// fill description
+				// if (Strings.isNumeric(roleId)) {
+				// continue;
+				// }
+
+				String roleName = role.optString(Role.ROLE_NAME);
+				try {
+					if (roleName.equals("AEAdmin")) {
+						roleName = langPropsService.get("aeadminRoleNameLabel");
+					} else if (roleName.contains("DomainAdmin")) {
+						roleName = role.optString(Role.ROLE_DESCRIPTION);
+					} else {
+						roleName = langPropsService.get(roleId + "NameLabel");
+					}
+
+				} catch (final Exception e) {
+					// ignored
+				}
+
+				String roleDesc = role.optString(Role.ROLE_DESCRIPTION);
+				try {
+					if (StringUtils.isBlank(roleDesc)) {
+						roleDesc = langPropsService.get(roleId + "DescLabel");
+					}
+				} catch (final Exception e) {
+					// ignored
+				}
+
+				role.put(Role.ROLE_NAME, roleName);
+				role.put(Role.ROLE_DESCRIPTION, roleDesc);
+			}
+		} catch (final RepositoryException e) {
+			LOGGER.log(Level.ERROR, "Gets role permissions failed", e);
+
+			throw new ServiceException(e);
+		}
+
+		Collections.sort(roles, (o1, o2) -> ((List) o2.opt(Permission.PERMISSIONS)).size()
+				- ((List) o1.opt(Permission.PERMISSIONS)).size());
+
+		ret.put(Role.ROLES, (Object) roles);
+
+		return ret;
+	}
 }

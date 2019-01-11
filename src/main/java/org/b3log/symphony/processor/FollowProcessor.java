@@ -17,6 +17,12 @@
  */
 package org.b3log.symphony.processor;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.logging.Logger;
@@ -36,11 +42,6 @@ import org.b3log.symphony.service.ArticleQueryService;
 import org.b3log.symphony.service.FollowMgmtService;
 import org.b3log.symphony.service.NotificationMgmtService;
 import org.json.JSONObject;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Follow processor.

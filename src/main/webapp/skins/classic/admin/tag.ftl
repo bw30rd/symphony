@@ -26,7 +26,7 @@
         </div>
         <div class="module-panel form fn-clear">
             <form action="${servePath}/admin/tag/${tag.oId}" method="POST">
-                <label for="tagTitle">${tagLabel}${updateCaseOnlyLabel}</label>
+                <label for="tagTitle">${tagLabel}<#-- ${updateCaseOnlyLabel} --></label>
                 <input type="text" id="tagTitle" name="tagTitle" value="${tag.tagTitle}" />
 
                 <label for="tagURI">URI</label>
@@ -63,7 +63,7 @@
                 <textarea rows="20" id="tagCSS" name="tagCSS">${tag.tagCSS}</textarea>
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
     </div>

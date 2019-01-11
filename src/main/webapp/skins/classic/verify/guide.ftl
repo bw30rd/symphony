@@ -16,20 +16,20 @@
                     <dl>
                         <dt class="current"><span class="index">1</span>${guideUploadAvatarLabel}</dt>
                         <dd class="ft-gray ft-smaller">${guideUploadAvatarTipLabel}</dd>
-                        <dt><span class="index">2</span>${guideFollowTagLabel}</dt>
-                        <dd class="ft-gray ft-smaller">${guideFollowTagTipLabel}</dd>
-                        <dt><span class="index">3</span>${guideFollowUserLabel}</dt>
+                         <#--<dt><span class="index">2</span>${guideFollowTagLabel}</dt>
+                        <dd class="ft-gray ft-smaller">${guideFollowTagTipLabel}</dd> -->
+                        <dt><span class="index">2</span>${guideFollowUserLabel}</dt>
                         <dd class="ft-gray ft-smaller">${guideFollowUserTipLabel}</dd>
-                        <dt><span class="index">4</span>${guideStarProjectLabel}</dt>
-                        <dd class="ft-gray ft-smaller">${guideStarProjectTipLabel}</dd>
+                        <#-- <dt><span class="index">4</span>${guideStarProjectLabel}</dt>
+                        <dd class="ft-gray ft-smaller">${guideStarProjectTipLabel}</dd> -->
                     </dl>
-                    <div class="fn-none">
+                    <div class="fn-none" style="margin-left:80px;">
                         ${introLabel}
                     </div>
                 </div>
                 <div class="verify-wrap">
                     <div class="step-btn fn-clear">
-                        <button class="fn-right green">${nextStepLabel}</button>
+                        <button class="fn-right blue">${nextStepLabel}</button>
                         <span class="fn-right"> &nbsp; &nbsp;</span>
                         <button class="red fn-right fn-none">${preStepLabel}</button>
                     </div>
@@ -71,10 +71,11 @@
                         </div>
                         <div class="fn-none list">
                             <ul class="fn-clear">
+                            	<#if users ??>
                                 <#list users as follower>
                                     <li>
                                         <div class="fn-flex">
-                                            <a rel="nofollow" class="tooltipped tooltipped-se fn-left" aria-label="${follower.userName} <#if follower.userOnlineFlag>${onlineLabel}<#else>${offlineLabel}</#if>"
+                                            <a rel="nofollow" class="tooltipped tooltipped-se fn-left" aria-label="${follower.userName} <#--<#if follower.userOnlineFlag>${onlineLabel}<#else>${offlineLabel}</#if>-->"
                                                href="${servePath}/member/${follower.userName}" >
                                                 <div class="avatar" style="background-image:url('${follower.userAvatarURL}')"></div>
                                             </a>
@@ -83,7 +84,7 @@
                                                     <a rel="nofollow" href="${servePath}/member/${follower.userName}" ><#if follower.userNickname != ''>${follower.userNickname}<#else>${follower.userName}</#if></a>
                                                 </h2>
                                                 <#if follower.userNickname != ''>
-                                                    <a class='ft-fade' rel="nofollow" href="${servePath}/member/${follower.userName}" >${follower.userName}</a>
+                                                    <a class='ft-fade' rel="nofollow" href="${servePath}/member/${follower.userName}" >${follower.userNickname}</a>
                                                 </#if>
                                                 <button class="fn-right mid" onclick="Util.follow(this, '${follower.oId}', 'user')">
                                                     ${followLabel}
@@ -100,6 +101,7 @@
                                         </div>
                                     </li>
                                 </#list>
+                                </#if>
                             </ul>
                         </div>
                         <div class="fn-none ft-center">
@@ -109,16 +111,18 @@
                         </div>
                         <div class="fn-none list">
                             <br/><br/>
-                            <div class="ft-center">${logoIcon2}</div> <br/>
+                            <div class="ft-center"><a class="begeekTitle2"></a></div> <br/>
+                            <!-- <div class="ft-center">${logoIcon2}</div> <br/> -->
                             <ul>
-                                <li>
+                            
+                                <#--<li>
                                     <a href="${servePath}/about">${getStartLabel}</a>
                                     <span class="ft-gray">${getStartTipLabel}</span>
                                 </li>
                                 <li>
                                     <a href="${servePath}/tag/user_guide">${basicLabel}</a>
                                     <span class="ft-gray">${basicTipLabel}</span>
-                                </li>
+                                </li>-->
                                 <li>
                                     <a href="https://hacpai.com/article/1474030007391">${hotKeyLabel}</a>
                                     <span class="ft-gray">${hotKeyTipLabel}</span>
@@ -144,8 +148,10 @@
             Label.nextStepLabel = '${nextStepLabel}';
             Label.unfollowLabel = '${unfollowLabel}';
             Label.followLabel = '${followLabel}';
+            Label.subscribeToLabel = "${subscribeToLabel}";
+            Label.unsubscribeToLabel = "${unsubscribeToLabel}";
+            userName = '${currentUser.userName}';
             Verify.initGuide(${currentUser.userGuideStep?c}, ${tags?size});
-
             Settings.initUploadAvatar({
                 id: 'avatarUpload',
                 qiniuUploadToken: '${qiniuUploadToken}',

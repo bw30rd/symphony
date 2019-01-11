@@ -17,26 +17,32 @@
  */
 package org.b3log.symphony.service;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
-import org.b3log.latke.repository.*;
+import org.b3log.latke.repository.CompositeFilterOperator;
+import org.b3log.latke.repository.FilterOperator;
+import org.b3log.latke.repository.PropertyFilter;
+import org.b3log.latke.repository.Query;
+import org.b3log.latke.repository.RepositoryException;
 import org.b3log.latke.repository.annotation.Transactional;
+import org.b3log.latke.repository.impl.UserRepository;
 import org.b3log.latke.service.ServiceException;
 import org.b3log.latke.service.annotation.Service;
 import org.b3log.latke.util.CollectionUtils;
 import org.b3log.symphony.model.Common;
 import org.b3log.symphony.model.Notification;
+import org.b3log.symphony.processor.WechatProcessor;
 import org.b3log.symphony.processor.channel.UserChannel;
 import org.b3log.symphony.repository.NotificationRepository;
 import org.b3log.symphony.util.Symphonys;
 import org.json.JSONObject;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Notification management service.
@@ -58,7 +64,19 @@ public class NotificationMgmtService {
      */
     @Inject
     private NotificationRepository notificationRepository;
-
+    
+    /**
+     * User repository.
+     */
+    @Inject
+    private UserRepository userRepository;
+    
+    /***
+     * 
+     */
+    @Inject
+    private WechatProcessor wechatProcessor;
+	
     /**
      * Add a 'article vote down' type notification with the specified request json object.
      *
@@ -814,6 +832,28 @@ public class NotificationMgmtService {
             throw new ServiceException(msg);
         }
     }
+    
+    /**
+     * Adds a 'upgrade' type notification with the specified request json object.
+     *
+     * @param requestJSONObject the specified request json object, for example,
+     *                          "userId"; "",
+     *                          "dataId": ""
+     * @throws ServiceException service exception
+     */
+    @Transactional
+    public void addUpgradeNotification(final JSONObject requestJSONObject) throws ServiceException {
+        try {
+            requestJSONObject.put(Notification.NOTIFICATION_DATA_TYPE, Notification.DATA_TYPE_C_USER_TO_UPGRADE);
+
+            addNotification(requestJSONObject);
+        } catch (final RepositoryException e) {
+            final String msg = "Adds notification [type=reply] failed";
+            LOGGER.log(Level.ERROR, msg, e);
+
+            throw new ServiceException(msg);
+        }
+    }
 
     /**
      * Adds a notification with the specified request json object.
@@ -833,7 +873,13 @@ public class NotificationMgmtService {
         notification.put(Notification.NOTIFICATION_DATA_TYPE, requestJSONObject.optInt(Notification.NOTIFICATION_DATA_TYPE));
 
         notificationRepository.add(notification);
-
+        
+        try {
+			wechatProcessor.sendWechatMessageByNotification(notification);
+		} catch (Exception e) {
+			LOGGER.log(Level.ERROR, "send wechat message error", e);
+		}
+        
         Symphonys.EXECUTOR_SERVICE.submit(new Runnable() {
             @Override
             public void run() {
@@ -845,4 +891,5 @@ public class NotificationMgmtService {
             }
         });
     }
+    
 }

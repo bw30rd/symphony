@@ -17,17 +17,30 @@
  */
 package org.b3log.symphony.service;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
 import org.b3log.latke.model.Pagination;
-import org.b3log.latke.repository.*;
+import org.b3log.latke.repository.FilterOperator;
+import org.b3log.latke.repository.PropertyFilter;
+import org.b3log.latke.repository.Query;
+import org.b3log.latke.repository.RepositoryException;
+import org.b3log.latke.repository.SortDirection;
 import org.b3log.latke.repository.annotation.Transactional;
 import org.b3log.latke.service.ServiceException;
 import org.b3log.latke.service.annotation.Service;
-import org.b3log.latke.urlfetch.*;
+import org.b3log.latke.urlfetch.HTTPHeader;
+import org.b3log.latke.urlfetch.HTTPRequest;
+import org.b3log.latke.urlfetch.HTTPResponse;
+import org.b3log.latke.urlfetch.URLFetchService;
+import org.b3log.latke.urlfetch.URLFetchServiceFactory;
 import org.b3log.latke.util.CollectionUtils;
 import org.b3log.latke.util.Paginator;
 import org.b3log.symphony.model.Article;
@@ -40,11 +53,6 @@ import org.b3log.symphony.repository.UserBookArticleRepository;
 import org.b3log.symphony.util.Symphonys;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Book query service.

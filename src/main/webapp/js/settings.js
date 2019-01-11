@@ -406,6 +406,7 @@ var Settings = {
     update: function (type, csrfToken) {
         var requestJSONObject = {};
 
+        
         switch (type) {
             case "profiles":
                 requestJSONObject = this._validateProfiles();

@@ -17,11 +17,12 @@
         </div>
         <br/>
         <div class="fn-clear">
-            <form class="fn-right" id="avatarUpload" method="POST" enctype="multipart/form-data">
-                <label class="btn green">
-                    ${uploadLabel}<input type="file" name="file">
+            <form class="fn-left" id="avatarUpload" method="POST" enctype="multipart/form-data">
+                <label class="btn blue submitGreenBtn">
+                    本地${uploadLabel}<input type="file" name="file">
                 </label>
             </form>
+            <button class="blue fn-right backWhiteBtn" onclick="javascript:history.back(-1);">返回</button>
         </div>
     </div>
 </div>

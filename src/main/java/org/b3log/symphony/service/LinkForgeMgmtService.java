@@ -17,6 +17,8 @@
  */
 package org.b3log.symphony.service;
 
+import java.util.List;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.logging.Level;
@@ -42,8 +44,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-
-import java.util.List;
 
 ;
 

@@ -36,9 +36,9 @@
             </div>
             <#if isLoggedIn>
             <#if article.isFollowing>
-            <button class="green small fn-right" onclick="Util.unfollow(this, '${article.oId}', 'article')">${uncollectLabel}</button>
+            <button class="small fn-right followed" onclick="Util.unfollow(this, '${article.oId}', 'article')">${uncollectLabel}</button>
             <#else>
-            <button class="green small fn-right" onclick="Util.follow(this, '${article.oId}', 'article')">${followLabel}</button>
+            <button class="small fn-right follow" onclick="Util.follow(this, '${article.oId}', 'article')">${followLabel}</button>
             </#if>
             </#if>
         </li>

@@ -3,7 +3,7 @@
 <div class="fn-clear">
     <div class="pagination">
         <#if paginationCurrentPageNum!=1>
-        <a rel="prev" href="${url}?p=${paginationCurrentPageNum-1}"><</a>
+        <a rel="prev" onclick="window.location='${url}?p=${paginationCurrentPageNum-1}'" style="height:17px;"><</a>
         </#if>
 
         <select data-url="${url}">
@@ -13,7 +13,7 @@
         </select>
 
         <#if paginationLastPageNum gt paginationCurrentPageNum>
-        <a rel="next" href="${url}?p=${paginationCurrentPageNum+1}">></a>
+        <a rel="next" onclick="window.location='${url}?p=${paginationCurrentPageNum+1}'" style="height:17px;">></a>
         </#if>
     </div>
 </div>

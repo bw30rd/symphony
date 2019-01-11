@@ -17,7 +17,18 @@
  */
 package org.b3log.symphony.processor;
 
-import com.qiniu.util.Auth;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -39,7 +50,15 @@ import org.b3log.latke.servlet.renderer.freemarker.AbstractFreeMarkerRenderer;
 import org.b3log.latke.util.Locales;
 import org.b3log.latke.util.Requests;
 import org.b3log.latke.util.Strings;
-import org.b3log.symphony.model.*;
+import org.b3log.symphony.model.Common;
+import org.b3log.symphony.model.Invitecode;
+import org.b3log.symphony.model.Notification;
+import org.b3log.symphony.model.Option;
+import org.b3log.symphony.model.Permission;
+import org.b3log.symphony.model.Pointtransfer;
+import org.b3log.symphony.model.Tag;
+import org.b3log.symphony.model.UserExt;
+import org.b3log.symphony.model.Verifycode;
 import org.b3log.symphony.processor.advice.CSRFToken;
 import org.b3log.symphony.processor.advice.LoginCheck;
 import org.b3log.symphony.processor.advice.PermissionGrant;
@@ -48,17 +67,25 @@ import org.b3log.symphony.processor.advice.stopwatch.StopwatchStartAdvice;
 import org.b3log.symphony.processor.advice.validate.UserForgetPwdValidation;
 import org.b3log.symphony.processor.advice.validate.UserRegister2Validation;
 import org.b3log.symphony.processor.advice.validate.UserRegisterValidation;
-import org.b3log.symphony.service.*;
+import org.b3log.symphony.service.DataModelService;
+import org.b3log.symphony.service.InvitecodeMgmtService;
+import org.b3log.symphony.service.InvitecodeQueryService;
+import org.b3log.symphony.service.NotificationMgmtService;
+import org.b3log.symphony.service.OptionQueryService;
+import org.b3log.symphony.service.PointtransferMgmtService;
+import org.b3log.symphony.service.RoleQueryService;
+import org.b3log.symphony.service.TagQueryService;
+import org.b3log.symphony.service.TimelineMgmtService;
+import org.b3log.symphony.service.UserMgmtService;
+import org.b3log.symphony.service.UserQueryService;
+import org.b3log.symphony.service.VerifycodeMgmtService;
+import org.b3log.symphony.service.VerifycodeQueryService;
+import org.b3log.symphony.util.DateUtil;
 import org.b3log.symphony.util.Sessions;
 import org.b3log.symphony.util.Symphonys;
 import org.json.JSONObject;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import com.qiniu.util.Auth;
 
 /**
  * Login/Register processor.
@@ -206,7 +233,7 @@ public class LoginProcessor {
     }
 
     /**
-     * Shows login page.
+     * Shows guide page of new user.
      *
      * @param context  the specified context
      * @param request  the specified request
@@ -236,18 +263,28 @@ public class LoginProcessor {
         final List<JSONObject> tags = tagQueryService.getTags(32);
         dataModel.put(Tag.TAGS, tags);
 
-        final List<JSONObject> users = userQueryService.getNiceUsers(6);
-        final Iterator<JSONObject> iterator = users.iterator();
-        while (iterator.hasNext()) {
-            final JSONObject user = iterator.next();
-            if (user.optString(Keys.OBJECT_ID).equals(currentUser.optString(Keys.OBJECT_ID))) {
-                iterator.remove();
-
-                break;
+//      final List<JSONObject> users = userQueryService.getNiceUsers(6);
+        Map<String, String> dates = DateUtil.getDates(0);
+		String fromdate = dates.get("fromdate");
+		String todate = dates.get("todate");
+        List<JSONObject> users = userQueryService.getUsersByLiveness(6, fromdate, todate);
+       
+        if(users == null ) {
+        	users = userQueryService.getUsersByRank(6);
+        }
+        
+        if(users != null) {
+        	final Iterator<JSONObject> iterator = users.iterator();
+            while (iterator.hasNext()) {
+                final JSONObject user = iterator.next();
+                if (user.optString(Keys.OBJECT_ID).equals(currentUser.optString(Keys.OBJECT_ID))) {
+                    iterator.remove();
+                    break;
+                }
             }
         }
         dataModel.put(User.USERS, users);
-
+        
         // Qiniu file upload authenticate
         final Auth auth = Auth.create(Symphonys.get("qiniu.accessKey"), Symphonys.get("qiniu.secretKey"));
         final String uploadToken = auth.uploadToken(Symphonys.get("qiniu.bucket"));
@@ -305,7 +342,51 @@ public class LoginProcessor {
 
         dataModelService.fillHeaderAndFooter(request, response, dataModel);
     }
+    
+    /**
+     * Shows login page.
+     *
+     * @param context  the specified context
+     * @param request  the specified request
+     * @param response the specified response
+     * @throws Exception exception
+     */
+    @RequestProcessing(value = "/adminlogin", method = HTTPRequestMethod.GET)
+    @Before(adviceClass = StopwatchStartAdvice.class)
+    @After(adviceClass = {PermissionGrant.class, StopwatchEndAdvice.class})
+    public void showAdminLogin(final HTTPRequestContext context, final HttpServletRequest request, final HttpServletResponse response)
+            throws Exception {
+        if (null != userQueryService.getCurrentUser(request)
+                || userMgmtService.tryLogInWithCookie(request, response)) {
+            response.sendRedirect(Latkes.getServePath());
 
+            return;
+        }
+
+        final AbstractFreeMarkerRenderer renderer = new SkinRenderer(request);
+        context.setRenderer(renderer);
+
+//        String referer = request.getParameter(Common.GOTO);
+        String referer = String.format("%s://%s:%s/symphony", Latkes.getServerScheme(),
+				Latkes.getServerHost(), Latkes.getServerPort());
+        
+        if (StringUtils.isBlank(referer)) {
+            referer = request.getHeader("referer");
+        }
+
+        if (StringUtils.isBlank(referer)) {
+            referer = Latkes.getServePath();
+        }
+
+        renderer.setTemplateName("/verify/adminlogin.ftl");
+
+        final Map<String, Object> dataModel = renderer.getDataModel();
+        dataModel.put(Common.GOTO, referer);
+
+        dataModelService.fillHeaderAndFooter(request, response, dataModel);
+    }
+
+    
     /**
      * Shows forget password page.
      *
@@ -314,7 +395,7 @@ public class LoginProcessor {
      * @param response the specified response
      * @throws Exception exception
      */
-    @RequestProcessing(value = "/forget-pwd", method = HTTPRequestMethod.GET)
+//    @RequestProcessing(value = "/forget-pwd", method = HTTPRequestMethod.GET)
     @Before(adviceClass = StopwatchStartAdvice.class)
     @After(adviceClass = {PermissionGrant.class, StopwatchEndAdvice.class})
     public void showForgetPwd(final HTTPRequestContext context, final HttpServletRequest request, final HttpServletResponse response)
@@ -383,7 +464,7 @@ public class LoginProcessor {
      * @param response the specified response
      * @throws Exception exception
      */
-    @RequestProcessing(value = "/reset-pwd", method = HTTPRequestMethod.GET)
+//    @RequestProcessing(value = "/reset-pwd", method = HTTPRequestMethod.GET)
     @Before(adviceClass = StopwatchStartAdvice.class)
     @After(adviceClass = {PermissionGrant.class, StopwatchEndAdvice.class})
     public void showResetPwd(final HTTPRequestContext context, final HttpServletRequest request, final HttpServletResponse response)
@@ -457,7 +538,7 @@ public class LoginProcessor {
      * @param response the specified response
      * @throws Exception exception
      */
-    @RequestProcessing(value = "/register", method = HTTPRequestMethod.GET)
+//    @RequestProcessing(value = "/register", method = HTTPRequestMethod.GET)
     @Before(adviceClass = StopwatchStartAdvice.class)
     @After(adviceClass = {PermissionGrant.class, StopwatchEndAdvice.class})
     public void showRegister(final HTTPRequestContext context, final HttpServletRequest request, final HttpServletResponse response)

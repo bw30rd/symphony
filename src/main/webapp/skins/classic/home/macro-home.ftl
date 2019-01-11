@@ -4,52 +4,52 @@
 <html>
     <head>
         <#if type == "home">
-        <@head title="${articleLabel} - ${user.userName} - ${symphonyLabel}">
+        <@head title="${articleLabel} - ${user.userNickname} - ${symphonyLabel}">
         <meta name="description" content="<#list userHomeArticles as article><#if article_index<3>${article.articleTitle},</#if></#list>"/>
         </@head>
         <#elseif type == "comments">
-        <@head title="${cmtLabel} - ${user.userName} - ${symphonyLabel}">
-        <meta name="description" content="${user.userName}${deLabel}${cmtLabel}"/>
+        <@head title="${cmtLabel} - ${user.userNickname} - ${symphonyLabel}">
+        <meta name="description" content="${user.userNickname}${deLabel}${cmtLabel}"/>
         </@head>
         <#elseif type == "followingUsers">
-        <@head title="${followingUsersLabel} - ${user.userName} - ${symphonyLabel}">
-        <meta name="description" content="${user.userName}${deLabel}${followingUsersLabel}"/>
+        <@head title="${followingUsersLabel} - ${user.userNickname} - ${symphonyLabel}">
+        <meta name="description" content="${user.userNickname}${deLabel}${followingUsersLabel}"/>
         </@head>
         <#elseif type == "followingTags">
-        <@head title="${followingTagsLabel} - ${user.userName} - ${symphonyLabel}">
-        <meta name="description" content="${user.userName}${deLabel}${followingTagsLabel}"/>
+        <@head title="${followingTagsLabel} - ${user.userNickname} - ${symphonyLabel}">
+        <meta name="description" content="${user.userNickname}${deLabel}${followingTagsLabel}"/>
         </@head>
         <#elseif type == "followingArticles">
-        <@head title="${followingArticlesLabel} - ${user.userName} - ${symphonyLabel}">
-        <meta name="description" content="${user.userName}${deLabel}${followingArticlesLabel}"/>
+        <@head title="${followingArticlesLabel} - ${user.userNickname} - ${symphonyLabel}">
+        <meta name="description" content="${user.userNickname}${deLabel}${followingArticlesLabel}"/>
         </@head>
         <#elseif type == "watchingArticles">
-            <@head title="${watchingArticlesLabel} - ${user.userName} - ${symphonyLabel}">
-            <meta name="description" content="${user.userName}${deLabel}${watchingArticlesLabel}"/>
+            <@head title="${watchingArticlesLabel} - ${user.userNickname} - ${symphonyLabel}">
+            <meta name="description" content="${user.userNickname}${deLabel}${watchingArticlesLabel}"/>
         </@head>
         <#elseif type == "followers">
-        <@head title="${followersLabel} - ${user.userName} - ${symphonyLabel}">
-        <meta name="description" content="${user.userName}${deLabel}${followersLabel}"/>
+        <@head title="${followersLabel} - ${user.userNickname} - ${symphonyLabel}">
+        <meta name="description" content="${user.userNickname}${deLabel}${followersLabel}"/>
         </@head>
         <#elseif type == "points">
-        <@head title="${pointLabel} - ${user.userName} - ${symphonyLabel}">
-        <meta name="description" content="${user.userName}${deLabel}${pointLabel}"/>
+        <@head title="${pointLabel} - ${user.userNickname} - ${symphonyLabel}">
+        <meta name="description" content="${user.userNickname}${deLabel}${pointLabel}"/>
         </@head>
         <#elseif type == "settings">
-        <@head title="${settingsLabel} - ${user.userName} - ${symphonyLabel}">
-        <meta name="description" content="${user.userName}${deLabel}${settingsLabel}"/>
+        <@head title="${settingsLabel} - ${user.userNickname} - ${symphonyLabel}">
+        <meta name="description" content="${user.userNickname}${deLabel}${settingsLabel}"/>
         </@head>
         <#elseif type == "articlesAnonymous">
-        <@head title="${anonymousArticleLabel} - ${user.userName} - ${symphonyLabel}">
-        <meta name="description" content="${user.userName}${deLabel}${anonymousArticleLabel}"/>
+        <@head title="${anonymousArticleLabel} - ${user.userNickname} - ${symphonyLabel}">
+        <meta name="description" content="${user.userNickname}${deLabel}${anonymousArticleLabel}"/>
         </@head>
         <#elseif type == "commentsAnonymous">
-        <@head title="${anonymousCommentLabel} - ${user.userName} - ${symphonyLabel}">
-        <meta name="description" content="${user.userName}${deLabel}${anonymousCommentLabel}"/>
+        <@head title="${anonymousCommentLabel} - ${user.userNickname} - ${symphonyLabel}">
+        <meta name="description" content="${user.userNickname}${deLabel}${anonymousCommentLabel}"/>
         </@head>
         <#elseif type == "linkForge">
-        <@head title="${linkForgeLabel} - ${user.userName} - ${symphonyLabel}">
-        <meta name="description" content="${user.userName}${deLabel}${linkForgeLabel}"/>
+        <@head title="${linkForgeLabel} - ${user.userNickname} - ${symphonyLabel}">
+        <meta name="description" content="${user.userNickname}${deLabel}${linkForgeLabel}"/>
         </@head>
         </#if>
         <link rel="stylesheet" href="${staticServePath}/css/home.css?${staticResourceVersion}" />
@@ -59,37 +59,43 @@
         <#include "../header.ftl">
         <div class="main">
             <div class="wrapper">
-                <div class="content" id="home-pjax-container">
+                <div class="content contentUserHome" id="home-pjax-container">
                     <#if pjax><!---- pjax {#home-pjax-container} start ----></#if><div<#if type != "linkForge"> class="module"</#if>>
                     <#nested>
                     </div><#if pjax><!---- pjax {#home-pjax-container} end ----></#if>
                 </div>
-                <div class="side">
+                <div class="side contentUserHome">
                     <#include "home-side.ftl">
                     <div class="module fn-none">
                         <div class="module-header"><h2>${goHomeLabel}</h2></div>
                         <div class="module-panel fn-oh">
                             <nav class="home-menu">
-                                <a pjax-title="${articleLabel} - ${user.userName} - ${symphonyLabel}" <#if type == "home" || type == "comments" || type == "articlesAnonymous" || type == "commentsAnonymous">
+                                <a pjax-title="${articleLabel} - ${user.userNickname} - ${symphonyLabel}" <#if type == "home" || type == "comments" || type == "articlesAnonymous" || type == "commentsAnonymous">
                                     class="current"</#if>
                                     href="${servePath}/member/${user.userName}"><svg height="18" viewBox="0 1 16 16" width="16">${boolIcon}</svg> ${postLabel}</a>
-                                <a pjax-title="${watchingArticlesLabel} - ${user.userName} - ${symphonyLabel}" <#if type == "watchingArticles" || type == "followingUsers" || type == "followingTags" || type == "followingArticles" || type == "followers"> class="current"</#if>
+                                <a pjax-title="${watchingArticlesLabel} - ${user.userNickname} - ${symphonyLabel}" <#if type == "watchingArticles" || type == "followingUsers" || type == "followingTags" || type == "followingArticles" || type == "followers"> class="current"</#if>
                                     href="${servePath}/member/${user.userName}/watching/articles"><svg height="18" viewBox="0 1 14 16" width="14">${starIcon}</svg> ${followLabel}</a>
+                                
+                                <#if isLoggedIn && (currentUser.userName == user.userName)>
                                 <a pjax-title="${pointLabel} - ${user.userName} - ${symphonyLabel}" <#if type == "points"> class="current"</#if> href="${servePath}/member/${user.userName}/points">
                                     <svg height="18" viewBox="0 1 14 16" width="14">${giftIcon}</svg> ${pointLabel}</a>
-                                <a pjax-title="${linkForgeLabel} - ${user.userName} - ${symphonyLabel}" <#if type == "linkForge"> class="current"</#if> href="${servePath}/member/${user.userName}/forge/link">
-                                    <svg height="18" viewBox="0 1 16 16" width="16">${baguaIcon}</svg>  ${forgeLabel}</a>
+                                 </#if>   
+                               <#-- <a pjax-title="${linkForgeLabel} - ${user.userName} - ${symphonyLabel}" <#if type == "linkForge"> class="current"</#if> href="${servePath}/member/${user.userName}/forge/link">
+                                    <svg height="18" viewBox="0 1 16 16" width="16">${baguaIcon}</svg>  ${forgeLabel}</a> -->
                             </nav>
                         </div>
                     </div>
                 </div>
+        	</div>
         </div>
-            </div>
         <#include "../footer.ftl">
         <script src="${staticServePath}/js/settings${miniPostfix}.js?${staticResourceVersion}"></script>
+        <script src="${staticServePath}/js/begeek${miniPostfix}.js?${staticResourceVersion}"></script>
         <script>
             Label.followLabel = "${followLabel}";
             Label.unfollowLabel = "${unfollowLabel}";
+            Label.subscribeToLabel = "${subscribeToLabel}";
+            Label.unsubscribeToLabel = "${unsubscribeToLabel}";
             Label.invalidPasswordLabel = "${invalidPasswordLabel}";
             Label.amountNotEmpty = "${amountNotEmpty}";
             Label.invalidUserNameLabel = "${invalidUserNameLabel}";
@@ -109,6 +115,7 @@
             Label.userName = '${user.userName}';
 
             Settings.initHome();
+
         </script>
     </body>
 </html>

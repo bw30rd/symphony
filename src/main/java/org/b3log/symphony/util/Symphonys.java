@@ -17,6 +17,25 @@
  */
 package org.b3log.symphony.util;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import java.util.Collections;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import org.apache.commons.io.IOUtils;
 import org.b3log.latke.Keys;
 import org.b3log.latke.Latkes;
@@ -34,20 +53,6 @@ import org.b3log.symphony.model.Common;
 import org.b3log.symphony.model.Option;
 import org.b3log.symphony.service.OptionQueryService;
 import org.json.JSONObject;
-
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Symphony utilities.
@@ -275,6 +280,24 @@ public final class Symphonys {
      * @return string property value corresponding to the specified key, returns {@code null} if not found
      */
     public static String get(final String key) {
+        if ("es.server".equals(key)) {
+            String aeEnvType = System.getenv("AE_ENV_TYPE");
+            String esHost = null;
+            if (aeEnvType != null && (!aeEnvType.isEmpty())) {
+                if (aeEnvType.equals("PRODUCT")) {
+                    esHost = System.getenv("ES_PRODUCT_PORT_9200_TCP");
+                } else if (aeEnvType.equals("TEST")) {
+                    esHost = System.getenv("ES_TEST_PORT_9200_TCP");
+                }
+                if (esHost == null) {
+                    esHost = System.getenv("ES_PORT_9200_TCP");
+                }
+                if (esHost != null) {
+                    esHost = esHost.replaceFirst("^tcp", "http");
+                    return esHost;
+                }
+            }
+        }
         return CFG.getString(key);
     }
 

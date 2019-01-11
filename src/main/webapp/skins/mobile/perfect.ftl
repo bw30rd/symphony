@@ -13,10 +13,16 @@
         <#include "header.ftl">
         <div class="main">
             <@subNav 'perfect' ''/>
-            <div class="content fn-clear">
-                <@list listData=perfectArticles/>
+            <div class="content fn-clear" style="background:#FFF; margin:10px;">
+                <ul class="module-list">
+                <#-- <@list listData=perfectArticles/> -->
+	                 <#list perfectArticles as article>
+		                <#include "common/list-item.ftl">
+		             </#list> 
+	            </ul>
+                
                 <@pagination url="${servePath}/perfect"/>
-                <#if domains?size != 0>
+                <#-- <#if domains?size != 0>
                 <div class="wrapper">
                     <div class="module">
                         <div class="module-header">
@@ -41,11 +47,11 @@
                         </div>
                     </div>
                 </div>
-                </#if>
+                </#if> -->
             </div>
-            <div class="side wrapper">
+            <#-- <div class="side wrapper">
                 <#include "side.ftl">
-            </div>
+            </div> -->
         </div>
         <#include "footer.ftl">
         <@listScript/>

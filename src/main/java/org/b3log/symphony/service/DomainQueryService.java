@@ -17,13 +17,23 @@
  */
 package org.b3log.symphony.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
 import org.b3log.latke.model.Pagination;
-import org.b3log.latke.repository.*;
+import org.b3log.latke.repository.CompositeFilterOperator;
+import org.b3log.latke.repository.FilterOperator;
+import org.b3log.latke.repository.PropertyFilter;
+import org.b3log.latke.repository.Query;
+import org.b3log.latke.repository.RepositoryException;
+import org.b3log.latke.repository.SortDirection;
 import org.b3log.latke.service.ServiceException;
 import org.b3log.latke.service.annotation.Service;
 import org.b3log.latke.util.CollectionUtils;
@@ -37,11 +47,6 @@ import org.b3log.symphony.util.Markdowns;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Domain query service.
@@ -151,9 +156,9 @@ public class DomainQueryService {
                 return null;
             }
 
-            if (Domain.DOMAIN_STATUS_C_VALID != ret.optInt(Domain.DOMAIN_STATUS)) {
-                return null;
-            }
+//            if (Domain.DOMAIN_STATUS_C_VALID != ret.optInt(Domain.DOMAIN_STATUS)) {
+//                return null;
+//            }
 
             String description = ret.optString(Domain.DOMAIN_DESCRIPTION);
             String descriptionText = ret.optString(Domain.DOMAIN_TITLE);

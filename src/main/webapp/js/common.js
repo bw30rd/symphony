@@ -30,21 +30,47 @@
  */
 var Util = {
     /**
-     * @description 前置快捷键
-     */
+	 * @description 前置快捷键
+	 */
     prevKey: undefined,
     /**
-     * 粘贴
-     * @param {jQuery} $click 点击触发复制事件的元素
-     * @param {jQuery} $text 包含复制内容的元素
-     * @param {function} cb 复制成功的回调函数
-     */
+	 * @description 推送帖子到企业微信
+	 * @param {string}
+	 *            articleId 帖子ID
+	 */
+    sendArticleToWechat: function(articleId){
+    	url = Label.servePath + '/domainAdmin/send-wechat-article/' + articleId;
+        type = 'PUT';
+        
+        $.ajax({
+            url: url,
+            type: type,
+            cache: false,
+            success: function (result, textStatus) {
+            	Util.alert("推送成功");
+            },
+            error: function (result) {
+            	Util.alert("推送失败");
+            }
+        });
+    },
+    /**
+	 * 粘贴
+	 * 
+	 * @param {jQuery}
+	 *            $click 点击触发复制事件的元素
+	 * @param {jQuery}
+	 *            $text 包含复制内容的元素
+	 * @param {function}
+	 *            cb 复制成功的回调函数
+	 */
     clipboard: function ($click, $text, cb) {
         $click.click(function(event) {
               $text[0].select();
 
               try {
-                // Now that we've selected the anchor text, execute the copy command
+                // Now that we've selected the anchor text, execute the copy
+				// command
                 var successful = document.execCommand('copy');
                 if (successful) {
                     cb();
@@ -61,24 +87,27 @@ var Util = {
         });
     },
     /**
-     * @description 关闭 alert
-     */
+	 * @description 关闭 alert
+	 */
     closeAlert: function () {
         var $alert = $('#alertDialogPanel');
         $alert.prev().remove();
         $alert.remove();
     },
     /**
-     * @description alert
-     * @param {String} content alert 内容
-     */
+	 * @description alert
+	 * @param {String}
+	 *            content alert 内容
+	 */
     alert: function (content) {
         var alertHTML = '',
          alertBgHTML = '<div onclick="Util.closeAlert(this)" style="height: ' +  document.documentElement.scrollHeight
          + 'px;display: block;" class="dialog-background"></div>',
          alertContentHTML = '<div class="dialog-panel" id="alertDialogPanel" tabindex="0" onkeyup="Util.closeAlert()">'
          + '<div class="fn-clear dialog-header-bg"><a href="javascript:void(0);" onclick="Util.closeAlert()" class="icon-close"></a></div>'
-         + '<div class="dialog-main" style="text-align:center;padding: 30px 10px 40px">' + content + '</div></div>';
+         + '<div class="dialog-main" style="text-align:center;padding: 30px 10px 20px">' + content
+         + '<center><button class="mid follow" style="margin-top:20px" href="javascript:void(0);" onclick="Util.closeAlert()" >确定</button></center></div>'
+         + '</div>';
 
          alertHTML = alertBgHTML + alertContentHTML;
 
@@ -91,9 +120,10 @@ var Util = {
         }).show().focus();
     },
     /**
-     * @description 标记指定类型的消息通知为已读状态.
-     * @param {String} type 指定类型："commented"/"at"/"following"/"reply"
-     */
+	 * @description 标记指定类型的消息通知为已读状态.
+	 * @param {String}
+	 *            type 指定类型："commented"/"at"/"following"/"reply"
+	 */
     makeNotificationRead: function (type) {
         $.ajax({
             url: Label.servePath + "/notification/read/" + type,
@@ -107,19 +137,22 @@ var Util = {
         });
     },
     /**
-     * 初始化全局快捷键
-     * @returns {undefined}
-     */
+	 * 初始化全局快捷键
+	 * 
+	 * @returns {undefined}
+	 */
     _initCommonHotKey: function () {
         if (!Label.userKeyboardShortcutsStatus || Label.userKeyboardShortcutsStatus === '1') {
             return false;
         }
 
         /**
-         * go to focus
-         * @param {string} type 滚动方式: 'top'/'bottom'/'up'/'down'.
-         * @returns {undefined}
-         */
+		 * go to focus
+		 * 
+		 * @param {string}
+		 *            type 滚动方式: 'top'/'bottom'/'up'/'down'.
+		 * @returns {undefined}
+		 */
         var goFocus = function (type) {
             var $focus = $('.list > ul > li.focus'),
             offsetHeight = $('.radio-btn').length === 0 ? 0 : 48;
@@ -296,10 +329,12 @@ var Util = {
         });
     },
     /**
-     * 消息通知
-     * @param {type} count 现有消息数目
-     * @returns {Boolean}
-     */
+	 * 消息通知
+	 * 
+	 * @param {type}
+	 *            count 现有消息数目
+	 * @returns {Boolean}
+	 */
     notifyMsg: function (count) {
         // Let's check if the browser supports notifications
         if (!("Notification" in window)) {
@@ -309,7 +344,7 @@ var Util = {
         var initNogification = function (c) {
             var notification = new Notification(Label.visionLabel, {
                 body: Label.desktopNotificationTemplateLabel.replace("${count}", c),
-                icon: Label.staticServePath + '/images/faviconH.png'
+                icon: Label.staticServePath + '/images/begeekLogo.png'
             });
             notification.onclick = notification.onerror = function () {
                 window.location = Label.servePath + '/notifications';
@@ -336,9 +371,10 @@ var Util = {
         // want to be respectful there is no need to bother them any more.
     },
     /**
-     * 链接熔炉
-     * @returns {undefined}
-     */
+	 * 链接熔炉
+	 * 
+	 * @returns {undefined}
+	 */
     linkForge: function () {
         $('.link-forge .module-header > a').click(function () {
             var $panel = $(this).closest('.module').find('.module-panel');
@@ -410,11 +446,14 @@ var Util = {
         });
     },
     /**
-     * 粘贴中包含图片和文案时，需要处理为 markdown 语法
-     * @param {object} clipboardData
-     * @param {object} cm
-     * @returns {String}
-     */
+	 * 粘贴中包含图片和文案时，需要处理为 markdown 语法
+	 * 
+	 * @param {object}
+	 *            clipboardData
+	 * @param {object}
+	 *            cm
+	 * @returns {String}
+	 */
     processClipBoard: function (clipboardData, cm) {
         if (clipboardData.getData("text/html") === '' && clipboardData.items.length === 2) {
             return '';
@@ -471,10 +510,11 @@ var Util = {
         return $.trim(text);
     },
     /**
-     * @description 根据 url search 获取值
-     * @param {type} name
-     * @returns {String}
-     */
+	 * @description 根据 url search 获取值
+	 * @param {type}
+	 *            name
+	 * @returns {String}
+	 */
     getParameterByName: function (name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -483,10 +523,12 @@ var Util = {
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     },
     /**
-     * 通过 UA 获取设备
-     * @param {String} ua user agent
-     * @returns {String} 设备
-     */
+	 * 通过 UA 获取设备
+	 * 
+	 * @param {String}
+	 *            ua user agent
+	 * @returns {String} 设备
+	 */
     getDeviceByUa: function (ua) {
         $.ua.set(ua);
         var name = $.ua.device.model ? $.ua.device.model : $.ua.os.name;
@@ -497,9 +539,10 @@ var Util = {
         return name;
     },
     /**
-     * 初始化 algolia 搜索
-     * @returns {undefined}
-     */
+	 * 初始化 algolia 搜索
+	 * 
+	 * @returns {undefined}
+	 */
     initSearch: function (algoliaAppId, algoliaSearchKey, algoliaIndex) {
         var client = algoliasearch(algoliaAppId, algoliaSearchKey);
         var index = client.initIndex(algoliaIndex);
@@ -650,7 +693,7 @@ var Util = {
                 }
 
                 $.ajax({
-                    url: Label.servePath + "/users/names?name=" + tok.string.substring(1),
+                    url: Label.servePath + "/users/names?name=" +encodeURI(encodeURI(tok.string.substring(1))),
                     type: "GET",
                     success: function (result) {
                         if (!result.sc || !result.userNames) {
@@ -660,11 +703,12 @@ var Util = {
                         for (var i = 0; i < result.userNames.length; i++) {
                             var user = result.userNames[i];
                             var name = user.userName;
+                            var nickname = user.userNickname;
                             var avatar = user.userAvatarURL;
 
                             autocompleteHints.push({
                                 displayText: "<span style='font-size: 1rem;line-height:22px'><img style='width: 1rem;height: 1rem;margin:3px 0;float:left' src='" + avatar
-                                + "'> " + name + "</span>",
+                                + "'> " + nickname + "</span>",
                                 text: name + " "
                             });
                         }
@@ -785,8 +829,8 @@ var Util = {
         };
     },
     /**
-     * @description 设置当前登录用户的未读提醒计数.
-     */
+	 * @description 设置当前登录用户的未读提醒计数.
+	 */
     setUnreadNotificationCount: function () {
         $.ajax({
             url: Label.servePath + "/notification/unread/count",
@@ -867,7 +911,9 @@ var Util = {
                 var count = result.unreadNotificationCnt;
                 // mobile
                 $.ua.set(navigator.userAgent);
-                if ($.ua.device.type && $.ua.device.type === 'mobile') {
+                // alert(navigator.userAgent);
+                // alert($.ua.device.type);
+                if (navigator.userAgent.indexOf('WindowsWechat')>1) {
                     if (0 < count) {
                         $("#aNotifications").removeClass("no-msg").addClass("msg").text(count).attr('href', 'javascript:void(0)');
                         if (0 === result.userNotifyStatus && window.localStorage.hadNotificate !== count.toString()) {
@@ -881,7 +927,33 @@ var Util = {
                             $('#notificationsPanel ul').html(notiHTML);
                             return false;
                         }
-                        $(".main:first").prepend('<div id="notificationsPanel" class="tab-current fn-clear fn-none"><ul class="tab fn-clear">' +
+                        $(".main:first").prepend('<div id="notificationsPanel" class="tab-current fn-clear fn-none"><ul class="tab fn-clear topTabZq">' +
+                                notiHTML + '</ul></div>');
+
+                        $("#aNotifications").click(function () {
+                            $('#notificationsPanel').slideToggle();
+                        });
+                    } else {
+                        window.localStorage.hadNotificate = 'false';
+                        $("#aNotifications").removeClass("msg").addClass("no-msg").text(count).attr('href', Label.servePath + '/notifications');
+                    }
+                    return false;
+                }
+                if ($.ua.device.type && ($.ua.device.type === 'mobile' || $.ua.device.type === 'tablet')) {
+                    if (0 < count) {
+                        $("#aNotifications").removeClass("no-msg").addClass("msg").text(count).attr('href', 'javascript:void(0)');
+                        if (0 === result.userNotifyStatus && window.localStorage.hadNotificate !== count.toString()) {
+                            Util.notifyMsg(count);
+                            window.localStorage.hadNotificate = count;
+                        }
+
+                        var notiHTML = genLiHTML(result);
+
+                        if ($('#notificationsPanel').length === 1) {
+                            $('#notificationsPanel ul').html(notiHTML);
+                            return false;
+                        }
+                        $(".main:first").prepend('<div id="notificationsPanel" class="tab-current fn-clear fn-none"><ul class="tab fn-clear topTabZq">' +
                                 notiHTML + '</ul></div>');
 
                         $("#aNotifications").click(function () {
@@ -931,12 +1003,16 @@ var Util = {
         });
     },
     /**
-     * @description 关注
-     * @param {BOM} it 触发事件的元素
-     * @param {String} id 关注 id
-     * @param {String} type 关注的类型
-     * @param {String} index 为数字时表示关注数，String 时表示来源
-     */
+	 * @description 关注
+	 * @param {BOM}
+	 *            it 触发事件的元素
+	 * @param {String}
+	 *            id 关注 id
+	 * @param {String}
+	 *            type 关注的类型
+	 * @param {String}
+	 *            index 为数字时表示关注数，String 时表示来源
+	 */
     follow: function (it, id, type, index) {
         if (!Label.isLoggedIn) {
             Util.needLogin();
@@ -960,18 +1036,38 @@ var Util = {
                 if (result.sc) {
                     $(it).removeClass("disabled");
                     if (typeof (index) !== 'undefined') {
-                        if ('article' === type || 'tag' === type) {
-                            $(it).html('<span class="icon-star"></span> ' + (index + 1)).
+                        if ('article' === type) {
+// if(txt!=undefined){
+// $(it).html('<span class="icon-star"></span> ' + (index + 1) + '<br>收藏').
+// attr("onclick", "Util.unfollow(this, '" + id + "', '" + type + "', " + (index
+// + 1) + ", 'm')")
+// .attr("aria-label", Label.uncollectLabel).addClass('ft-red');
+// }else{
+                                $(it).html('<span class="icon-star"></span> ' + (index + 1)).
+                                    attr("onclick", "Util.unfollow(this, '" + id + "', '" + type + "', " + (index + 1) + ")")
+                                    .attr("aria-label", Label.uncollectLabel).addClass('ft-red');
+// }
+                        }else if ('tag' === type){
+                            $(it).html('- 已订阅 ').
                                 attr("onclick", "Util.unfollow(this, '" + id + "', '" + type + "', " + (index + 1) + ")")
-                                .attr("aria-label", Label.uncollectLabel).addClass('ft-red');
+                                .attr("aria-label", Label.unsubscribeToLabel).addClass('ft-red').removeClass('tag-follow').addClass('tag-followed');
                         } else if ('article-watch' === type) {
-                            $(it).html('<span class="icon-view"></span> ' + (index + 1)).
+// if(txt!=undefined){
+// $(it).html('<span class="icon-view"></span> ' + (index + 1) + '<br>订阅').
+// attr("onclick", "Util.unfollow(this, '" + id + "', '" + type + "', " + (index
+// + 1) + ", 'm')")
+// .attr("aria-label", Label.unfollowLabel).addClass('ft-red');
+// }else{
+                                $(it).html('<span class="icon-view"></span> ' + (index + 1)).
                                 attr("onclick", "Util.unfollow(this, '" + id + "', '" + type + "', " + (index + 1) + ")")
                                 .attr("aria-label", Label.unfollowLabel).addClass('ft-red');
+// }
                         }
                     } else {
                         $(it).attr("onclick", "Util.unfollow(this, '" + id + "', '" + type + "')")
-                                .text("article" === type ? Label.uncollectLabel : Label.unfollowLabel);
+                            // .css("background","hsl(192, 8%, 75%)")
+                            .removeClass('follow').addClass('followed')
+                            .text("article" === type ? Label.uncollectLabel : Label.unfollowLabel);
                     }
                 }
             },
@@ -981,17 +1077,21 @@ var Util = {
         });
     },
     /**
-     * @description 取消关注
-     * @param {BOM} it 触发事件的元素
-     * @param {String} id 关注 id
-     * @param {String} type 取消关注的类型
-     * @param {String} index 为数字时表示关注数，String 时表示来源
-     */
-    unfollow: function (it, id, type, index) {
-        if ($(it).hasClass("disabled")) {
+	 * @description 取消关注
+	 * @param {BOM}
+	 *            it 触发事件的元素
+	 * @param {String}
+	 *            id 关注 id
+	 * @param {String}
+	 *            type 取消关注的类型
+	 * @param {String}
+	 *            index 为数字时表示关注数，String 时表示来源
+	 */
+    unfollow: function (it, id, type, index, txt) {
+    	if ($(it).hasClass("disabled")) {
             return false;
         }
-
+        
         var requestJSONObject = {
             followingId: id
         };
@@ -1004,18 +1104,40 @@ var Util = {
             success: function (result, textStatus) {
                 if (result.sc) {
                     if (typeof (index) !== 'undefined') {
-                        if ('article' === type || 'tag' === type) {
-                            $(it).removeClass('ft-red').html('<span class="icon-star"></span> ' + (index - 1))
+                        if ('article' === type) {
+// if(txt!=undefined){
+// $(it).removeClass('ft-red').html('<span class="icon-star"></span> ' + (index
+// - 1) + '<br>收藏')
+// .attr("onclick", "Util.follow(this, '" + id + "', '" + type + "'," + (index -
+// 1) + ", 'm')")
+// .attr("aria-label", Label.collectLabel);
+// }else{
+                                $(it).removeClass('ft-red').html('<span class="icon-star"></span> ' + (index - 1))
                                 .attr("onclick", "Util.follow(this, '" + id + "', '" + type + "'," + (index - 1) + ")")
                                 .attr("aria-label", Label.collectLabel);
+// }
+                        } else if ('tag' === type){
+                            $(it).removeClass('ft-red').html('+ 订阅 ')
+                                .attr("onclick", "Util.follow(this, '" + id + "', '" + type + "'," + (index - 1) + ")")
+                                .attr("aria-label", Label.subscribeToLabel).removeClass('tag-followed').addClass('tag-follow');
                         } else if ('article-watch' === type) {
-                            $(it).removeClass('ft-red').html('<span class="icon-view"></span> ' + (index - 1))
+// if(txt!=undefined){
+// $(it).removeClass('ft-red').html('<span class="icon-view"></span> ' + (index
+// - 1) + '<br>订阅')
+// .attr("onclick", "Util.follow(this, '" + id + "', '" + type + "'," + (index -
+// 1) + ", 'm')")
+// .attr("aria-label", Label.followLabel);
+// }else{
+                                $(it).removeClass('ft-red').html('<span class="icon-view"></span> ' + (index - 1))
                                 .attr("onclick", "Util.follow(this, '" + id + "', '" + type + "'," + (index - 1) + ")")
                                 .attr("aria-label", Label.followLabel);
+// }
                         }
                     } else {
                         $(it).attr("onclick", "Util.follow(this, '" + id + "', '" + type + "')")
-                                .text("article" === type ? Label.collectLabel : Label.followLabel);
+                            // .css("background","hsl(191, 100%, 27%)")
+                            .removeClass('followed').addClass('follow')
+                            .text("article" === type ? Label.collectLabel : Label.followLabel);
                     }
                 }
             },
@@ -1025,14 +1147,14 @@ var Util = {
         });
     },
     /**
-     * @description 回到顶部
-     */
+	 * @description 回到顶部
+	 */
     goTop: function () {
         $('html, body').animate({scrollTop: 0}, 800);
     },
     /**
-     * @description 跳转到登录界面
-     */
+	 * @description 跳转到登录界面
+	 */
     goLogin: function () {
          if (-1 !== location.href.indexOf("/login")) {
             return;
@@ -1043,17 +1165,18 @@ var Util = {
             gotoURL = location.href.replace(location.search, '');
         }
         window.location.href = Label.servePath + "/login?goto=" + encodeURIComponent(gotoURL);
+// window.location.href = Label.servePath + "/begeek";
     },
     /**
-     *
-     * @returns {undefined}
-     */
+	 * 
+	 * @returns {undefined}
+	 */
     needLogin: function () {
         Util.goLogin();
     },
     /**
-     * @description 跳转到注册页面
-     */
+	 * @description 跳转到注册页面
+	 */
     goRegister: function () {
         if (-1 !== location.href.indexOf("/register")) {
             return;
@@ -1065,8 +1188,8 @@ var Util = {
         window.location.href = Label.servePath + "/register?goto=" + encodeURIComponent(gotoURL);
     },
     /**
-     * @description 禁止 IE7 以下浏览器访问
-     */
+	 * @description 禁止 IE7 以下浏览器访问
+	 */
     _kill: function () {
         if ($.ua.browser.name === 'IE' && parseInt($.ua.browser.version) < 10) {
             $.ajax({
@@ -1087,9 +1210,10 @@ var Util = {
         }
     },
     /**
-     * 每日活跃样式
-     * @returns {undefined}
-     */
+	 * 每日活跃样式
+	 * 
+	 * @returns {undefined}
+	 */
     _initActivity: function () {
         var $percent = $('.person-info'),
                 percent = $percent.data('percent'),
@@ -1133,10 +1257,10 @@ var Util = {
         });
     },
     /**
-     * @description 初识化前台页面
-     */
+	 * @description 初识化前台页面
+	 */
     init: function (isLoggedIn) {
-        //禁止 IE7 以下浏览器访问
+        // 禁止 IE7 以下浏览器访问
         this._kill();
         // 导航
         this._initNav();
@@ -1175,16 +1299,14 @@ var Util = {
             if (!window.localStorage.hadNotificate) {
                 window.localStorage.hadNotificate = 'false';
             }
-
+            window.localStorage.loginX = 1 ;
             Util.setUnreadNotificationCount();
         }
 
         this._initCommonHotKey();
-        console.log("%cCopyright \xa9 2012-%s, b3log.org & hacpai.com\n\n%cHacPai%c 平等、自由、奔放\n\n%cFeel easy about trust.",
-                'font-size:12px;color:#999999;', (new Date).getFullYear(),
-                'font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", "Microsoft Yahei", sans-serif;font-size:64px;color:#404040;-webkit-text-fill-color:#404040;-webkit-text-stroke: 1px #777;',
-                'font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", "Microsoft Yahei", sans-serif;font-size:12px;color:#999999; font-style:italic;',
-                'font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", "Microsoft Yahei", sans-serif;font-size:12px;color:#999999;'
+        console.log("%cCopyright \xa9 2012-%s, b3log.org & hacpai.com\n",
+                'font-size:12px;color:#999999;',
+                (new Date).getFullYear()
                 );
         if (isLoggedIn) {
             return false;
@@ -1198,9 +1320,9 @@ var Util = {
         });
     },
     /**
-     * @description 用户状态 channel.
-     * @static
-     */
+	 * @description 用户状态 channel.
+	 * @static
+	 */
     initUserChannel: function (channelServer) {
         var userChannel = new ReconnectingWebSocket(channelServer);
         userChannel.reconnectInterval = 10000;
@@ -1230,8 +1352,8 @@ var Util = {
         };
     },
     /**
-     * @description 设置导航状态
-     */
+	 * @description 设置导航状态
+	 */
     _initNav: function () {
         var href = location.href;
         $(".user-nav > a").each(function () {
@@ -1270,35 +1392,45 @@ var Util = {
         }
     },
     /**
-     * @description 登出
-     */
+	 * @description 登出
+	 */
     logout: function () {
         if (window.localStorage) {
             // Clear localStorage
             window.localStorage.clear();
             window.localStorage.hadNotificate = 'false';
+            document.cookie=null;
         }
         window.location.href = Label.servePath + '/logout?goto=' + Label.servePath;
     },
     /**
-     * @description 获取字符串开始位置
-     * @param {String} string 需要匹配的字符串
-     * @param {String} prefix 匹配字符
-     * @return {Integer} 以匹配字符开头的位置
-     */
+	 * @description 获取字符串开始位置
+	 * @param {String}
+	 *            string 需要匹配的字符串
+	 * @param {String}
+	 *            prefix 匹配字符
+	 * @return {Integer} 以匹配字符开头的位置
+	 */
     startsWith: function (string, prefix) {
         return (string.match("^" + prefix) == prefix);
     },
     /**
-     * @description 文件上传
-     * @param {Obj} obj  文件上传参数
-     * @param {String} obj.id 上传组件 id
-     * @param {jQuery} obj.pasteZone 粘贴区域
-     * @param {String} obj.qiniuUploadToken 七牛 Token，如果这个 token 是空，说明是上传本地服务器
-     * @param {Obj} obj.editor 编辑器对象
-     * @param {Obj} obj.uploadingLabel 上传中标签
-     * @param {Strng} obj.qiniuDomain 七牛 Domain
-     */
+	 * @description 文件上传
+	 * @param {Obj}
+	 *            obj 文件上传参数
+	 * @param {String}
+	 *            obj.id 上传组件 id
+	 * @param {jQuery}
+	 *            obj.pasteZone 粘贴区域
+	 * @param {String}
+	 *            obj.qiniuUploadToken 七牛 Token，如果这个 token 是空，说明是上传本地服务器
+	 * @param {Obj}
+	 *            obj.editor 编辑器对象
+	 * @param {Obj}
+	 *            obj.uploadingLabel 上传中标签
+	 * @param {Strng}
+	 *            obj.qiniuDomain 七牛 Domain
+	 */
     uploadFile: function (obj) {
         var filename = "", fileIndex = 0,
             filenames = [];
@@ -1509,8 +1641,8 @@ var Util = {
         });
     },
     /**
-     * @description Mouse click special effects.
-     */
+	 * @description Mouse click special effects.
+	 */
     mouseClickEffects: function () {
         var click_cnt = 0;
         jQuery(document).ready(function ($) {
@@ -1572,10 +1704,11 @@ var Util = {
  */
 var Validate = {
     /**
-     * @description 提交时对数据进行统一验证。
-     * @param {array} data 验证数据
-     * @returns 验证通过返回 true，否则为 false。
-     */
+	 * @description 提交时对数据进行统一验证。
+	 * @param {array}
+	 *            data 验证数据
+	 * @returns 验证通过返回 true，否则为 false。
+	 */
     goValidate: function (obj) {
         var tipHTML = '<ul>';
         for (var i = 0; i < obj.data.length; i++) {
@@ -1595,14 +1728,19 @@ var Validate = {
         }
     },
     /**
-     * @description 数据验证。
-     * @param {object} data 验证数据
-     * @param {string} data.type 验证类型
-     * @param {object} data.target 验证对象
-     * @param {number} [data.min] 最小值
-     * @param {number} [data.max] 最大值
-     * @returns 验证通过返回 true，否则为 false。
-     */
+	 * @description 数据验证。
+	 * @param {object}
+	 *            data 验证数据
+	 * @param {string}
+	 *            data.type 验证类型
+	 * @param {object}
+	 *            data.target 验证对象
+	 * @param {number}
+	 *            [data.min] 最小值
+	 * @param {number}
+	 *            [data.max] 最大值
+	 * @returns 验证通过返回 true，否则为 false。
+	 */
     validate: function (data) {
         var isValidate = true,
                 val = '';
@@ -1774,34 +1912,38 @@ function isAudio(buf) {
 
 
 /**
- * @param data first 6 bytes of file
+ * @param data
+ *            first 6 bytes of file
  * @return gif image file true, other false
  */
 function isGif(data) {
-    //console.log('GIF')
+    // console.log('GIF')
     return arrayEquals(data, gifMagic0) || arrayEquals(data, getGifMagic1);
 }
 
 /**
- * @param data first 4 bytes of file
+ * @param data
+ *            first 4 bytes of file
  * @return jpeg image file true, other false
  */
 function isJpeg(data) {
-    //console.log('JPEG')
+    // console.log('JPEG')
     return arrayEquals(data, jpegMagic) || arrayEquals(data, jpeg_jfif) || arrayEquals(data, jpeg_exif);
 }
 
 /**
- * @param data first 8 bytes of file
+ * @param data
+ *            first 8 bytes of file
  * @return png image file true, other false
  */
 function isPng(data) {
-    //console.log('PNG')
+    // console.log('PNG')
     return arrayEquals(data, pngMagic);
 }
 
 /**
- * @param data first 12 bytes of file
+ * @param data
+ *            first 12 bytes of file
  * @return wav file true, other false
  */
 function isWav(data1, data2) {
@@ -1832,12 +1974,12 @@ var Audio = {
     wavFileBlob: null,
     recorderObj: null,
     /**
-     * @description 初识化音频
-     */
+	 * @description 初识化音频
+	 */
     init: function (succCB) {
         var detectGetUserMedia = new BrowserGetUserMediaDetection();
 
-        //First, check to see if get user media is supported:
+        // First, check to see if get user media is supported:
 
         if (detectGetUserMedia.getUserMediaSupported()) {
             navigator.getUserMedia = detectGetUserMedia.getUserMediaMethod();
@@ -1846,7 +1988,7 @@ var Audio = {
             console.log("ERROR: getUserMedia not supported by browser.");
         }
 
-        //Get user media failure callback function:
+        // Get user media failure callback function:
         function failure(e) {
             console.log("getUserMedia->failure(): ERROR: Microphone access request failed!");
 
@@ -1867,10 +2009,12 @@ var Audio = {
             }
         }
 
-        //Get user media success callback function:
+        // Get user media success callback function:
         function success(e) {
             var BUFFER_SIZE = 2048;
-            var RECORDING_MODE = PredefinedRecordingModes.MONO_5_KHZ; // 单声道 5kHz 最低的采样率
+            var RECORDING_MODE = PredefinedRecordingModes.MONO_5_KHZ; // 单声道
+																		// 5kHz
+																		// 最低的采样率
             var SAMPLE_RATE = RECORDING_MODE.getSampleRate();
             var OUTPUT_CHANNEL_COUNT = RECORDING_MODE.getChannelCount();
 
@@ -1885,7 +2029,7 @@ var Audio = {
 
                 Audio.recorderObj.recorder.onaudioprocess = function (e)
                 {
-                    //Do nothing if not recording:
+                    // Do nothing if not recording:
                     if (!Audio.recorderObj.isRecording()) {
                         return;
                     }
@@ -1906,18 +2050,20 @@ var Audio = {
         }
     },
     /**
-     * @description 开始录音
-     */
+	 * @description 开始录音
+	 */
     handleStartRecording: function () {
         Audio.recorderObj.startRecordingNewWavFile();
     },
     /**
-     * @description 结束录音
-     */
+	 * @description 结束录音
+	 */
     handleStopRecording: function () {
         Audio.recorderObj.stopRecording();
 
-        //Save the recording by building the wav file blob and send it to the client:
+        // Save the recording by building the wav file blob and send it to the
+		// client:
         Audio.wavFileBlob = Audio.recorderObj.buildWavFileBlob();
     }
+    
 };

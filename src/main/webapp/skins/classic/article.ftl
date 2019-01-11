@@ -36,32 +36,71 @@
         <meta name="twitter:site" content="@DL88250" />
         <meta name="twitter:creator" content="@DL88250" />
     </head>
-    <body itemscope itemtype="http://schema.org/Product" class="article">
+    <body itemscope itemtype="https://schema.org/Product" class="article articleTopZq">
         <img itemprop="image" class="fn-none"  src="${article.articleAuthorThumbnailURL210}" />
         <p itemprop="description" class="fn-none">"${article.articlePreviewContent}"</p>
-        <#include "header.ftl">
-        <div class="article-body">
+        <div class="articleTop">
+            <#include "header.ftl">
+        </div>
+        <div class="article-body articleShadow">
+            <#if discussionViewable>
+            <span class="tooltipped tooltipped-w radio-btn" onclick="Comment._toggleReply()"
+                data-hasPermission="${permissions['commonAddComment'].permissionGrant?c}"
+                aria-label="${cmtLabel}"></span>
+            </#if>
             <div class="wrapper">
                 <div class="article-info fn-flex">
-                    <#if article.articleAnonymous == 0>
+                    <#-- <#if article.articleAnonymous == 0>
                         <a rel="author" href="${servePath}/member/${article.articleAuthorName}"></#if><div
-                        class="avatar-mid tooltipped tooltipped-se" aria-label="${article.articleAuthorName}" style="background-image:url('${article.articleAuthorThumbnailURL48}')"></div><#if article.articleAnonymous == 0></a></#if>
+                        class="avatar-mid tooltipped-se" aria-label="${article.articleAuthorName}" 
+                        style="background-image:url('${article.articleAuthorThumbnailURL48}')"></div>
+                        <#if article.articleAnonymous == 0></a></#if> -->
+                    
+                    <#if article.articleAnonymous == 1 && (!isLoggedIn || article.articleAuthorId != currentUser.oId)>
+                    <div class="avatar-mid tooltipped-se" aria-label="${article.articleAuthorName}" 
+                    	style="background-image:url('${article.articleAuthorThumbnailURL48}')"></div>
+                    <#else>
+                		<#if article.articleAnonymous == 1 && isLoggedIn && article.articleAuthorId == currentUser.oId>
+                     		<a rel="author" href="${servePath}/member/${article.articleAuthorName}">
+                     		<div class="avatar-mid tooltipped-se" aria-label="${article.articleAuthorName}" 
+                    			style="background-image:url('${currentUser.userAvatarURL48}')"></div>
+                    		</a>
+                     	<#else>
+                     		<a rel="author" href="${servePath}/member/${article.articleAuthorName}">
+                     		<div class="avatar-mid tooltipped-se" aria-label="${article.articleAuthorName}" 
+                    			style="background-image:url('${article.articleAuthorThumbnailURL48}')"></div>
+                    		</a>
+                     	</#if>
+           			</#if>
+           			
                     <div class="fn-flex-1 fn-ellipsis">
-                        <#if article.articleAnonymous == 0>
-                            <a rel="author" href="${servePath}/member/${article.articleAuthorName}" class="ft-gray"></#if><strong class="ft-gray">${article.articleAuthorName}</strong><#if article.articleAnonymous == 0></a></#if>
+                      <#--    <#if article.articleAnonymous == 0>
+                            <a rel="author" href="${servePath}/member/${article.articleAuthorName}" class="ft-gray"></#if>
+                            <strong class="ft-gray">${article.articleAuthor.userNickname}</strong><#if article.articleAnonymous == 0></a></#if> 
+							<#if article.articleAnonymous == 0>	<a class="${article.articleAuthorLevelType}"> ${article.articleAuthorLevel}</a></#if>
+						-->
+						<#if article.articleAnonymous == 1 && (!isLoggedIn || article.articleAuthorId != currentUser.oId)>
+		                    <strong class="ft-gray">匿名用户</strong>
+	                    <#else>
+	                    	<a rel="author" href="${servePath}/member/${article.articleAuthorName}" class="ft-gray">
+	                     		<strong class="ft-gray">${article.articleAuthor.userNickname}
+	                     			<#if article.articleAnonymous == 1 && isLoggedIn && article.articleAuthorId == currentUser.oId>（已匿名）</#if>
+	                     		</strong></a>
+                    		<a class="${article.articleAuthorLevelType}"> ${article.articleAuthorLevel}</a>
+	           			</#if>
 
                         <#if 0 == article.articleAuthor.userUAStatus>
                             <span id="articltVia" class="ft-fade" data-ua="${article.articleUA}"></span>
                         </#if>
                         <br/>
-                        <#if "" != article.articleAuthorIntro>
+                        <#--<#if "" != article.articleAuthorIntro>-->
                             <span class="ft-gray">${article.articleAuthorIntro}</span>
-                        <#else>
+                       <#-- <#else>
                             <span class="ft-gray">${symphonyLabel} <#if article.articleAnonymous == 0>${article.articleAuthor.userNo?c}<#else>?</#if> ${numVIPLabel}</span>
-                        </#if>
+                        </#if>-->
                         <br/>
                         <#list article.articleTagObjs as articleTag>
-                            <a rel="tag" class="tag" href="${servePath}/tag/${articleTag.tagURI}">${articleTag.tagTitle}</a>&nbsp;
+                            <a rel="tag" class="tag" href="${servePath}/tag/${articleTag.tagURI}">#${articleTag.tagTitle}</a>&nbsp;
                         </#list>
                         <span class="ft-gray">
                                 •&nbsp;
@@ -77,19 +116,27 @@
                                 </span>
                                 ${viewLabel}
                                 &nbsp;•&nbsp;
-                                ${article.timeAgo}
+                                ${article.articleCreateTime?string('yyyy-MM-dd HH:mm')}
                                 <#if article.clientArticlePermalink?? && 0 < article.clientArticlePermalink?length>
                                 &nbsp;•&nbsp; <a href="${article.clientArticlePermalink}" target="_blank" rel="nofollow"><span class="ft-green">${sourceLabel}</span></a>
                             </#if>
                             </span>
                     </div>
-
+					
+					
                     <div class="article-actions action-btns">
                         <#if "" != article.articleToC>
                             <span onclick="Article.toggleToc()" aria-label="${ToCLabel}"
                                   class="tooltipped tooltipped-n"><span class="icon-unordered-list ft-red"></span></span> &nbsp;
                         </#if>
-
+						<#if article.articleStatus?? && article.articleStatus == 0>
+						<#if isArticleAdmin ?? && isArticleAdmin>
+							<span onclick="Util.sendArticleToWechat('${article.oId}')<#-- window.location ='${servePath}/domainAdmin/send-wechat-article/${article.oId}' -->"
+							  aria-label="推送到微信" class="tooltipped tooltipped-n ft-red tag-follow">推送</span> &nbsp;
+		        			<#-- <span onclick="window.location ='${servePath}/domainAdmin/send-wechat-article/${article.oId}'" aria-label="推送到微信"
+                                  class="tooltipped tooltipped-n"><span class="icon-wechat"></span></span> &nbsp; -->
+		        		</#if>
+						</#if>
                         <#if permissions["commonViewArticleHistory"].permissionGrant && article.articleRevisionCount &gt; 1>
                             <span onclick="Article.revision('${article.oId}')" aria-label="${historyLabel}"
                                   class="tooltipped tooltipped-n"><span class="icon-history"></span></span> &nbsp;
@@ -100,14 +147,18 @@
                               onclick="Article.voteUp('${article.oId}', 'article', this)"
                         <#else>
                               onclick="Article.permissionTip(Label.noPermissionLabel)"
-                        </#if>><span class="icon-thumbs-up"></span> ${article.articleGoodCnt}</span> &nbsp;
+                        </#if>>
+                        
+                        <span class="icon-thumbs-up"></span> ${article.articleGoodCnt}</span> &nbsp;
 
                         <span  class="tooltipped tooltipped-n<#if isLoggedIn && 1 == article.articleVote> ft-red</#if>" aria-label="${downLabel}"
-                        <#if permissions["commonBadArticle"].permissionGrant>
+                       <#if permissions["commonBadArticle"].permissionGrant>
                                onclick="Article.voteDown('${article.oId}', 'article', this)"
                         <#else>
                                onclick="Article.permissionTip(Label.noPermissionLabel)"
-                        </#if>><span class="icon-thumbs-down"></span> ${article.articleBadCnt}</span> &nbsp;
+                        </#if>>
+                        		
+                        <span class="icon-thumbs-down"></span> ${article.articleBadCnt}</span> &nbsp;
 
                         <#if isLoggedIn && isFollowing>
                             <span class="tooltipped tooltipped-n ft-red" aria-label="${uncollectLabel}"
@@ -150,7 +201,7 @@
                                class="tooltipped tooltipped-n"><span class="icon-edit"></span></a> &nbsp;
                         </#if>
                         <#if permissions["articleUpdateArticleBasic"].permissionGrant>
-                            <a class="tooltipped tooltipped-n" href="${servePath}/admin/article/${article.oId}" aria-label="${adminLabel}"><span class="icon-setting"></span></a> &nbsp;
+                            <a class="tooltipped tooltipped-n" href="${servePath}/<#if isArticleAdmin ?? && isArticleAdmin>domainAdmin<#else>admin</#if>/article/${article.oId}" aria-label="${adminLabel}"><span class="icon-setting"></span></a> &nbsp;
                         </#if>
                     </div>
                 </div>
@@ -169,10 +220,10 @@
                     ${article.articleTitleEmoj}
                 </h1>
 
-                <#if "" != article.articleAudioURL>
+               <#-- <#if "" != article.articleAudioURL>
                     <div id="articleAudio" data-url="${article.articleAudioURL}"
                          data-author="${article.articleAuthorName}" class="aplayer"></div>
-                </#if>
+                </#if>-->
                 <#if 3 != article.articleType>
                     <div class="content-reset article-content">
                         ${article.articleContent}
@@ -201,7 +252,7 @@
                 </#if>
             </div>
         </div>
-        <div class="main <#if article.articleComments?size == 0> fn-none</#if>">
+        <div class="main <#if article.articleComments?size == 0> fn-none</#if> articleBackShadow">
             <div class="wrapper" id="articleCommentsPanel">
                 <#if article.articleNiceComments?size != 0>
                 <div class="module nice">
@@ -215,25 +266,54 @@
                             <li>
                                 <div class="fn-flex">
                                     <#if !comment.fromClient>
-                                    <#if comment.commentAnonymous == 0>
-                                    <a rel="nofollow" href="${servePath}/member/${comment.commentAuthorName}"></#if>
-                                        <div class="avatar tooltipped tooltipped-se"
-                                             aria-label="${comment.commentAuthorName}" style="background-image:url('${comment.commentAuthorThumbnailURL}')"></div>
-                                    <#if comment.commentAnonymous == 0></a></#if>
-                                    <#else>
-                                    <div class="avatar tooltipped tooltipped-se"
-                                         aria-label="${comment.commentAuthorName}" style="background-image:url('${comment.commentAuthorThumbnailURL}')"></div>
-                                    </#if>
+							            <#if comment.commentAnonymous == 1 && (!isLoggedIn || comment.commentAuthorId != currentUser.oId)>
+							            	<div class="avatar tooltipped tooltipped-se"  aria-label="匿名用户" 
+									                 style="background-image:url('${comment.commentAuthorThumbnailURL}')"></div>
+							            <#else>
+							                <#if comment.commentAnonymous == 1 && isLoggedIn && comment.commentAuthorId == currentUser.oId>
+							                    <a rel="nofollow" href="${servePath}/member/${currentUser.userName}">
+							                    <div class="avatar tooltipped tooltipped-se"  
+							                    	aria-label="${currentUser.userName}" 
+									                style="background-image:url('${currentUser.userAvatarURL48}')">
+								                </div></a>
+							                <#else>
+							                    <a rel="nofollow" href="${servePath}/member/${comment.commentAuthorName}">
+									            <div class="avatar tooltipped tooltipped-se"
+									                 aria-label="${comment.commentAuthorName}" 
+									                 style="background-image:url('${comment.commentAuthorThumbnailURL}')">
+								                 </div></a>
+							                </#if>
+							            </#if>
+							        <#else>
+							            <span class="ft-gray">${comment.commenter.userNickname}</span>
+							            <a class="${comment.commenter.userLevelType}">${comment.commenter.userLevel}</a>
+							        </#if>
+                                    
                                     <div class="fn-flex-1">
                                         <div class="fn-clear comment-info ft-smaller">
                                             <span class="fn-left">
                                                 <#if !comment.fromClient>
-                                                <#if comment.commentAnonymous == 0><a rel="nofollow" href="${servePath}/member/${comment.commentAuthorName}" class="ft-gray"></#if><span class="ft-gray">${comment.commentAuthorName}</span><#if comment.commentAnonymous == 0></a></#if>
-                                                <#else><span class="ft-gray">${comment.commentAuthorName}</span>
-                                                <span class="ft-fade"> • </span>
-                                                <a rel="nofollow" class="ft-green" href="https://hacpai.com/article/1457158841475">API</a>
-                                                </#if>
-                                                <span class="ft-fade">• ${comment.timeAgo}</span>
+								                    <#if comment.commentAnonymous == 1 && (!isLoggedIn || comment.commentAuthorId != currentUser.oId)>
+								                    	<span class="ft-gray">匿名用户</span>
+								                    <#else>
+									                    <#if comment.commentAnonymous == 1 && isLoggedIn && comment.commentAuthorId == currentUser.oId>
+										                    <a rel="nofollow" href="${servePath}/member/${currentUser.userName}" class="ft-gray">
+										                    	<span class="ft-gray">${comment.commenter.userNickname} (已匿名)</span>
+										                    </a>
+									                    <#else>
+										                    <a rel="nofollow" href="${servePath}/member/${comment.commentAuthorName}" class="ft-gray">
+										                    	<span class="ft-gray">${comment.commenter.userNickname}</span>
+										                    </a>
+									                    </#if>
+								                    	<a class="${comment.commenter.userLevelType}">${comment.commenter.userLevel}</a>
+								                    </#if>
+							                    
+							                    <#else>
+								                    <span class="ft-gray">${comment.commenter.userNickname}</span>
+								                    <a class="${comment.commenter.userLevelType}">${comment.commenter.userLevel}</a>
+							                    </#if>
+                   								 
+                                                	<span class="ft-fade">• ${comment.timeAgo}</span>
 
                                                 <#if comment.rewardedCnt gt 0>
                                                 <#assign hasRewarded = isLoggedIn && comment.commentAuthorId != currentUser.oId && comment.rewarded>
@@ -285,7 +365,7 @@
                 <#if pjax><!---- pjax {#comments} end ----></#if>
             </div>
         </div>
-        <div class="wrapper article-footer">
+        <#--<div class="wrapper article-footer">
             <#if sideRelevantArticles?size != 0>
                 <div class="module">
                     <div class="module-header">
@@ -351,14 +431,15 @@
                     </div>
                 </div>
             </#if>
-        </div>
+        </div>-->
 
-        <div id="heatBar" class="tooltipped tooltipped-s" aria-label="${postActivityLabel}">
+       <#-- <div id="heatBar" class="tooltipped tooltipped-s" aria-label="${postActivityLabel}">
             <i class="heat" style="width:${article.articleHeat*3}px"></i>
-        </div>
+        </div>-->
         <div id="revision"><div id="revisions"></div></div>
         <#include "footer.ftl">
-        <div class="share fn-none">
+        
+      <#--  <div class="share fn-none">
             <span id="thankArticle" aria-label="${thankLabel}"
                   class="tooltipped tooltipped-e<#if article.thanked> ft-red<#else> ft-blue</#if>"
             <#if permissions["commonThankArticle"].permissionGrant>
@@ -380,11 +461,12 @@
                     class="icon-link"></span></span>
             <input type="text" class="article-clipboard"
                    value="${servePath}${article.articlePermalink}<#if isLoggedIn>?r=${currentUser.userName}</#if>"/>
-        </div>
+        </div>-->
+
         <div class="article-header">
-            <h1>
-                ${logoIcon}
-            </h1>
+            <#--<h1>
+                <a href="${servePath}" class="begeekTitle"><img src="${staticServePath}/images/begeekTitle.png"></a>
+            </h1>-->
             <h2 class="fn-ellipsis fn-pointer" onclick="Util.goTop()">
                 ${article.articleTitleEmojUnicode}
             </h2>
@@ -467,11 +549,11 @@
             </div>
         </#if>
 
-        <#if discussionViewable>
+        <!-- <#if discussionViewable>
         <span class="tooltipped tooltipped-w radio-btn" onclick="Comment._toggleReply()"
               data-hasPermission="${permissions['commonAddComment'].permissionGrant?c}"
-              aria-label="${cmtLabel}"><span class="icon-reply"></span></span>
-        </#if>
+              aria-label="${cmtLabel}"></span>
+        </#if> -->
 
         <#if isLoggedIn && discussionViewable && article.articleCommentable>
         <div class="editor-panel">
@@ -485,11 +567,11 @@
                     <div class="article-comment-content">
                         <textarea id="commentContent" placeholder="${commentEditorPlaceholderLabel}"></textarea>
                         <div class="comment-submit">
-                            <#if permissions["commonAddCommentAnonymous"].permissionGrant>
-                                <label class="cmt-anonymous">${anonymousLabel}<input type="checkbox" id="commentAnonymous"></label>
+                            <#if commonAddCommentAnonymous == 1 || permissions["commonAddCommentAnonymous"].permissionGrant>
+                                <label class="cmt-anonymous">${anonymousLabel}<input type="checkbox" id="commentAnonymous" style="vertical-align:middle;"></label>
                             </#if>
-                            <button class="green" onclick="Comment.add('${article.oId}', '${csrfToken}')">${submitLabel}</button> &nbsp; &nbsp;
-                            <a class="fn-pointer ft-a-title" href="javascript:Comment._toggleReply()">${cancelLabel}</a>
+                            <button class="blue" onclick="Comment.add('${article.oId}', '${csrfToken}')" style="background:hsl(191, 100%, 30%); border:none;">${submitLabel}</button> &nbsp; &nbsp;
+                            <button class="fn-pointer" onclick="Comment._toggleReply()">${cancelLabel}</button>
                             <div class="tip fn-right" id="addCommentTip"></div>
                         </div>
                     </div>
@@ -500,6 +582,7 @@
         <script src="${staticServePath}/js/lib/compress/article-libs.min.js?${staticResourceVersion}"></script>
         <script src="${staticServePath}/js/channel${miniPostfix}.js?${staticResourceVersion}"></script>
         <script src="${staticServePath}/js/article${miniPostfix}.js?${staticResourceVersion}"></script>
+        
         <script>
             Label.commentErrorLabel = "${commentErrorLabel}";
             Label.symphonyLabel = "${symphonyLabel}";
@@ -562,6 +645,7 @@
             <#if 3 == article.articleType>
                 Article.playThought('${article.articleContent}');
             </#if>
+
         </script>
     </body>
 </html>

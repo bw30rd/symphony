@@ -3,6 +3,7 @@
     <ul>
         <#assign articleIds = "">
         <#list listData as article>
+        <#if article.articleStatus == 0>
         <#assign articleIds = articleIds + article.oId>
         <#if article_has_next><#assign articleIds = articleIds + ","></#if>
         <li<#if article.articleStickRemains gt 0 && articleStickCheck??> class="stick"</#if>>
@@ -47,6 +48,7 @@
             </#if>
             <i class="heat" style="width:${article.articleHeat*3}px"></i>
         </li>
+        </#if>
         </#list>
     </ul>
 </div>

@@ -17,12 +17,12 @@
  */
 package org.b3log.symphony.util;
 
-import org.testng.annotations.Test;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
+import org.testng.annotations.Test;
 
 /**
  * Reddit score algorithm test.

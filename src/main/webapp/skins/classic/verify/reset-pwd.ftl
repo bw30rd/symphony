@@ -32,7 +32,7 @@
                             <input type="password" id="rpwdConfirmPassword" placeholder="${userPasswordLabel2}" />
                         </div>
                          <div id="rpwdTip" class="tip"></div>
-                        <button class="green" onclick="Verify.resetPwd()">${resetPwdLabel}</button>
+                        <button class="blue" onclick="Verify.resetPwd()">${resetPwdLabel}</button>
                         <input id="rpwdUserId" type="hidden" value="${user.oId}">
                     </div>
                 </div>

@@ -17,6 +17,9 @@
  */
 package org.b3log.symphony.api;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.logging.Logger;
@@ -32,9 +35,6 @@ import org.b3log.symphony.service.VoteMgmtService;
 import org.b3log.symphony.service.VoteQueryService;
 import org.b3log.symphony.util.Results;
 import org.json.JSONObject;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Vote processor.

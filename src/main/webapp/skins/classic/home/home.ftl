@@ -2,12 +2,13 @@
 <#include "../macro-pagination.ftl">
 <@home "${type}">
 <div class="tabs-sub fn-clear">
-    <a pjax-title="${articleLabel} - ${user.userName} - ${symphonyLabel}" href="${servePath}/member/${user.userName}"<#if type == "home"> class="current"</#if>>${articleLabel}<#if type == "home"> &nbsp;<span class="count">${paginationRecordCount?c}</span></#if></a>
-    <a pjax-title="${cmtLabel} - ${user.userName} - ${symphonyLabel}" href="${servePath}/member/${user.userName}/comments"<#if type == "comments"> class="current"</#if>>${cmtLabel}</a>
-    <#if currentUser?? && currentUser.userName == user.userName>
+    <a pjax-title="${articleLabel} - ${user.userNickname} - ${symphonyLabel}" href="${servePath}/member/${user.userName}"<#if type == "home"> class="current"</#if>>${articleLabel}<#if type == "home"> &nbsp;<span class="count">${paginationRecordCount?c}</span></#if></a>
+    <a pjax-title="${cmtLabel} - ${user.userNickname} - ${symphonyLabel}" href="${servePath}/member/${user.userName}/comments"<#if type == "comments"> class="current"</#if>>${cmtLabel}</a>
+    
+    <#--<#if currentUser?? && currentUser.userName == user.userName>
     <a pjax-title="${anonymousArticleLabel} - ${user.userName} - ${symphonyLabel}"<#if type == "articlesAnonymous"> class="current"</#if> href="${servePath}/member/${user.userName}/articles/anonymous">${anonymousArticleLabel}<#if type == "articlesAnonymous"> &nbsp;<span class="count">${paginationRecordCount?c}</span></#if></a>
     <a pjax-title="${anonymousCommentLabel} - ${user.userName} - ${symphonyLabel}"<#if type == "commentsAnonymous"> class="current"</#if> href="${servePath}/member/${user.userName}/comments/anonymous">${anonymousCommentLabel}</a>
-    </#if>
+    </#if>-->
 </div>
 <#if 0 == user.userArticleStatus || (isLoggedIn && ("adminRole" == currentUser.userRole || currentUser.userName == user.userName))>
 <div class="list">
@@ -31,7 +32,7 @@
                     <#elseif 3 == article.articleType>
                     <span class="tooltipped tooltipped-e" aria-label="${thoughtLabel}"><span class="icon-video"></span></span>
                     </#if>
-                    <a rel="bookmark" href="${servePath}${article.articlePermalink}">${article.articleTitleEmoj}</a>
+                    <a rel="bookmark" href="${servePath}${article.articlePermalink}" class="articleTitleBlod">${article.articleTitleEmoj}</a>
                 </h2>
                 <span class="ft-fade ft-smaller">
                     <#list article.articleTagObjs as articleTag>

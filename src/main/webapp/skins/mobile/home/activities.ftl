@@ -10,7 +10,8 @@
         <div class="main">
             <div class="wrapper">
                 <div class="fn-hr10"></div>
-                <div class="module">
+                
+                <#--<div class="module">
                     <div class="module-header">
                         <h2>${activityLabel}</h2>
                     </div>
@@ -72,7 +73,7 @@
                             </li>
                         </ul>
                     </div>
-                </div>
+                </div>-->
                 <div class="side">
                     <#include "../side.ftl">
                 </div>

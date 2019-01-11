@@ -28,7 +28,7 @@
     <listener>
         <listener-class>org.b3log.symphony.SymphonyServletListener</listener-class>
     </listener>
-    
+     
     <filter>
         <filter-name>EncodingFilter</filter-name>
         <filter-class>org.b3log.latke.servlet.filter.EncodingFilter</filter-class>
@@ -40,7 +40,7 @@
             <param-name>responseEncoding</param-name>
             <param-value>UTF-8</param-value>
         </init-param>
-    </filter>
+    </filter> 
     <filter-mapping>
         <filter-name>EncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>

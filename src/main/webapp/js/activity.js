@@ -161,7 +161,7 @@ var Activity = {
             cache: false,
             data: JSON.stringify(requestJSONObject),
             beforeSend: function () {
-                var $btn = $("button.green");
+                var $btn = $("button.blue");
                 $btn.attr("disabled", "disabled").css("opacity", "0.3").text($btn.text() + 'ing');
             },
             success: function (result, textStatus) {
@@ -172,7 +172,7 @@ var Activity = {
                 }
             },
             complete: function () {
-                var $btn = $("button.green");
+                var $btn = $("button.blue");
                 $btn.removeAttr("disabled").css("opacity", "1").text($btn.text().substr(0, $btn.text().length - 3));
             }
         });
@@ -206,6 +206,36 @@ var Activity = {
             var event = event || window.event;
             EatingSnake.input(event.keyCode);
         };
+    },
+    /**
+     * daily-checkin
+     */
+    checkin: function (csrfToken,deviceType) {
+    	var  url = Label.servePath + "/activity/daily-checkin", type = "POST";
+    	$.ajax({
+            url: url,
+            type: type,
+            headers: {"csrfToken": csrfToken},
+            cache: false,
+            success: function (result, textStatus) {
+                if (0 === result.sc) {
+                	if(deviceType == "pc"){
+                        // window.location.href = Label.servePath;
+                        $('#signBtn').hide();
+                        $('#plusCent').html('+' + (result.userPoint - result.usedPoint)).addClass('plusplus');
+                        $('#uPoint,#uPoint2,#upCount').html(result.userPoint);
+                        $('#downCount').html((parseInt(result.userPoint) + parseInt(result.upgradePoints)));
+                        $('#uupgradePoints').html(result.upgradePoints);
+                        $('#uRank').html(result.userRank);
+                        $('#ucurrentUserLevel').html(result.currentUserLevel).removeClass().addClass(result.currentUserLevelType);
+                        $('#signLi').show().html('已连续签到 <span style="color:#FF9933">'+ result.checkedinStreak +'</span> 天');
+                        $('.progressIn_zq').width(((parseInt($('#upCount').html())/parseInt($('#downCount').html())).toFixed(2)*100)+'%');
+                	}else{
+                		window.location.href = Label.servePath + "/member/" + result.userName;
+                	}
+                }
+            }
+        });
     }
 };
 

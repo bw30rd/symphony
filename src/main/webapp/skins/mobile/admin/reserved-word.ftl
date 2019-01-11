@@ -22,7 +22,7 @@
                 <input type="text" id="optionValue" name="optionValue" value="${word.optionValue}" />
 
                 <br/><br/>
-                <button type="submit" class="green fn-right">${submitLabel}</button>
+                <button type="submit" class="blue fn-right">${submitLabel}</button>
             </form>
         </div>
     </div>
@@ -39,7 +39,7 @@
                 <input type="text" id="id" name="id" value="${word.oId}" readonly="readonly"/>
 
                 <br/><br/>
-                <button type="submit" class="green fn-right" >${submitLabel}</button>
+                <button type="submit" class="blue fn-right" >${submitLabel}</button>
             </form>
         </div>
     </div>

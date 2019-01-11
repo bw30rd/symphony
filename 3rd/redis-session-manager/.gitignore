@@ -1,0 +1,12 @@
+/target/
+*.log
+**/.DS_store
+.idea/
+symphony.iml
+nb-configuration.xml
+/bin/
+/.settings/
+/.classpath
+/.project
+/.externalToolBuilders/
+/.vscode/

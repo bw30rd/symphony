@@ -5,7 +5,7 @@
     <div class="module list">
         <form method="GET" action="${servePath}/admin/tags" class="form">
             <input name="title" type="text" placeholder="${tagLabel}"/>
-            <button type="submit" class="green">${searchLabel}</button>  &nbsp;
+            <button type="submit" class="blue">${searchLabel}</button>  &nbsp;
             <button type="button" class="btn red" onclick="window.location = '${servePath}/admin/add-tag'">${addTagLabel}</button>
             <button type="button" class="btn red" onclick="removeUnusedTags();">${removeUnusedTagsLabel}</button>
         </form>
@@ -43,7 +43,7 @@
 <script>
     function removeUnusedTags() {
         $.ajax({
-            url: "/admin/tags/remove-unused",
+            url: "${servePath}/admin/tags/remove-unused",
             type: "POST",
             cache: false,
             success: function (result, textStatus) {

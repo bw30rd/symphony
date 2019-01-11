@@ -17,6 +17,17 @@
  */
 package org.b3log.symphony.api;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Date;
+import java.util.Set;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.b3log.latke.Keys;
@@ -39,16 +50,6 @@ import org.b3log.symphony.service.CommentQueryService;
 import org.b3log.symphony.service.UserQueryService;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Date;
-import java.util.Set;
 
 /**
  * Comment processor.

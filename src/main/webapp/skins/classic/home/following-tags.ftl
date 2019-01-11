@@ -9,7 +9,7 @@
     <a pjax-title="${followersLabel} - ${user.userName} - ${symphonyLabel}"  href="${servePath}/member/${user.userName}/followers"<#if type == "followers"> class="current"</#if>>${followersLabel}</a>
 </div>
 <#if 0 == user.userFollowingTagStatus || (isLoggedIn && ("adminRole" == currentUser.userRole || currentUser.userName == user.userName))>
-<div class="follow list">
+<div class="list">
     <#if userHomeFollowingTags?size == 0>
         <p class="ft-center ft-gray home-invisible">${chickenEggLabel}</p>
     </#if>
@@ -34,18 +34,18 @@
                     &nbsp;
                     <#if isLoggedIn> 
                     <#if followingTag.isFollowing>
-                    <button class="fn-right mid" onclick="Util.unfollow(this, '${followingTag.oId}', 'tag')"> 
+                    <button class="fn-right mid followed" onclick="Util.unfollow(this, '${followingTag.oId}', 'tag')"> 
                         ${unfollowLabel}
                     </button>
                     <#else> 
-                    <button class="fn-right mid" onclick="Util.follow(this, '${followingTag.oId}', 'tag')"> 
+                    <button class="fn-right mid follow" onclick="Util.follow(this, '${followingTag.oId}', 'tag')"> 
                         ${followLabel}
                     </button>
                     </#if>
                     </#if>
                     <div>
                         <span class="ft-gray">${referenceLabel}</span> ${followingTag.tagReferenceCount?c} &nbsp;
-                        <span class="ft-gray">${cmtLabel}</span> ${followingTag.tagCommentCount?c} 
+                        <span class="ft-gray">${followLabel}</span> ${followingTag.tagFollowerCount?c} 
                     </div>
                 </div>
             </div>

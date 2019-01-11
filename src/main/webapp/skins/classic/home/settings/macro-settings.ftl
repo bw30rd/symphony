@@ -12,7 +12,7 @@
         <#include "../../header.ftl">
         <div class="main">
             <div class="wrapper">
-                <div class="content">
+                <div class="content contentUserHome">
                     <#nested>
                 </div>
                 <div class="side">
@@ -24,22 +24,26 @@
                     <div class="module">
                         <div class="module-panel fn-oh">
                             <nav class="home-menu">
-                                <a href="${servePath}/settings"<#if 'profile' == type> class="current"</#if>>${profilesLabel}</a>
+                                <a href="${servePath}/settings/profile"<#if 'profile' == type> class="current"</#if>>${profilesLabel}</a>
                                 <a href="${servePath}/settings/avatar"<#if 'avatar' == type> class="current"</#if>>
                                 ${avatarLabel}
                                 <#if !currentUser.userAvatarURL?contains('_')><span class="todo tooltipped tooltipped-w" aria-label="${todoAvatarLabel}"></span></#if>
                                 </a>
-                                <a href="${servePath}/settings/invite"<#if 'invite' == type> class="current"</#if>>
+                                
+                              <#-- <a href="${servePath}/settings/invite"<#if 'invite' == type> class="current"</#if>>
                                 ${inviteLabel}
                                 <#if invitedUserCnt < 1><span class="todo tooltipped tooltipped-w" aria-label="${todoInviteLabel}"></span></#if>
-                                </a>
+                                </a>-->
+
                                 <a href="${servePath}/settings/function"<#if 'function' == type> class="current"</#if>>${functionLabel}</a>
-                                <a href="${servePath}/settings/point"<#if 'point' == type> class="current"</#if>>${pointLabel}</a>
-                                <a href="${servePath}/settings/location"<#if 'location' == type> class="current"</#if>>${geoLabel}</a>
-                                <a href="${servePath}/settings/privacy"<#if 'privacy' == type> class="current"</#if>>${privacyLabel}</a>
-                                <a href="${servePath}/settings/password"<#if 'password' == type> class="current"</#if>>${passwordLabel}</a>
-                                <a href="${servePath}/settings/b3"<#if 'b3' == type> class="current"</#if>>B3</a>
-                                <a href="${servePath}/settings/data"<#if 'data' == type> class="current"</#if>>${dataLabel}</a>
+                                <#--<a href="${servePath}/settings/point"<#if 'point' == type> class="current"</#if>>${pointLabel}</a>-->
+                                <#--<a href="${servePath}/settings/location"<#if 'location' == type> class="current"</#if>>${geoLabel}</a>-->
+                                <#--<a href="${servePath}/settings/privacy"<#if 'privacy' == type> class="current"</#if>>${privacyLabel}</a>-->
+                                <#if currentUser.userName == "admin">
+                                	<a href="${servePath}/settings/password"<#if 'password' == type> class="current"</#if>>${passwordLabel}</a>
+								</#if>
+                                <#--<a href="${servePath}/settings/b3"<#if 'b3' == type> class="current"</#if>>B3</a>-->
+                                <#--<a href="${servePath}/settings/data"<#if 'data' == type> class="current"</#if>>${dataLabel}</a>-->
                                 <a href="${servePath}/settings/i18n"<#if 'i18n' == type> class="current"</#if>>${i18nLabel}</a>
                                 <a href="${servePath}/settings/help"<#if 'help' == type> class="current"</#if>>${helpLabel}</a>
                             </nav>
@@ -53,6 +57,8 @@
         <script>
             Label.followLabel = "${followLabel}";
             Label.unfollowLabel = "${unfollowLabel}";
+            Label.subscribeToLabel = "${subscribeToLabel}";
+            Label.unsubscribeToLabel = "${unsubscribeToLabel}";
             Label.invalidPasswordLabel = "${invalidPasswordLabel}";
             Label.amountNotEmpty = "${amountNotEmpty}";
             Label.invalidUserNameLabel = "${invalidUserNameLabel}";

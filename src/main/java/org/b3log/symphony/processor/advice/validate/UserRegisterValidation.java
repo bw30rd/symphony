@@ -17,6 +17,10 @@
  */
 package org.b3log.symphony.processor.advice.validate;
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.inject.Inject;
@@ -31,16 +35,17 @@ import org.b3log.latke.servlet.advice.BeforeRequestProcessAdvice;
 import org.b3log.latke.servlet.advice.RequestProcessAdviceException;
 import org.b3log.latke.util.Requests;
 import org.b3log.latke.util.Strings;
-import org.b3log.symphony.model.*;
+import org.b3log.symphony.model.Common;
+import org.b3log.symphony.model.Invitecode;
+import org.b3log.symphony.model.Option;
+import org.b3log.symphony.model.Permission;
+import org.b3log.symphony.model.UserExt;
 import org.b3log.symphony.processor.CaptchaProcessor;
 import org.b3log.symphony.service.InvitecodeQueryService;
 import org.b3log.symphony.service.OptionQueryService;
 import org.b3log.symphony.service.RoleQueryService;
 import org.b3log.symphony.service.UserQueryService;
 import org.json.JSONObject;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
  * UserRegisterValidation for validate {@link org.b3log.symphony.processor.LoginProcessor} register(Type POST) method.

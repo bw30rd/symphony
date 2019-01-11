@@ -17,7 +17,20 @@
  */
 package org.b3log.symphony.service;
 
-import com.vdurmont.emoji.EmojiParser;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -28,17 +41,42 @@ import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
 import org.b3log.latke.model.Pagination;
 import org.b3log.latke.model.User;
-import org.b3log.latke.repository.*;
+import org.b3log.latke.repository.CompositeFilter;
+import org.b3log.latke.repository.CompositeFilterOperator;
+import org.b3log.latke.repository.Filter;
+import org.b3log.latke.repository.FilterOperator;
+import org.b3log.latke.repository.PropertyFilter;
+import org.b3log.latke.repository.Query;
+import org.b3log.latke.repository.RepositoryException;
+import org.b3log.latke.repository.SortDirection;
 import org.b3log.latke.service.LangPropsService;
 import org.b3log.latke.service.ServiceException;
 import org.b3log.latke.service.annotation.Service;
-import org.b3log.latke.util.*;
+import org.b3log.latke.util.CollectionUtils;
+import org.b3log.latke.util.Locales;
+import org.b3log.latke.util.Paginator;
+import org.b3log.latke.util.Stopwatchs;
+import org.b3log.latke.util.Strings;
 import org.b3log.symphony.cache.ArticleCache;
-import org.b3log.symphony.model.*;
+import org.b3log.symphony.model.Article;
+import org.b3log.symphony.model.Comment;
+import org.b3log.symphony.model.Common;
+import org.b3log.symphony.model.Role;
+import org.b3log.symphony.model.Tag;
+import org.b3log.symphony.model.UserExt;
 import org.b3log.symphony.processor.advice.validate.UserRegisterValidation;
 import org.b3log.symphony.processor.channel.ArticleChannel;
-import org.b3log.symphony.repository.*;
-import org.b3log.symphony.util.*;
+import org.b3log.symphony.repository.ArticleRepository;
+import org.b3log.symphony.repository.CommentRepository;
+import org.b3log.symphony.repository.DomainTagRepository;
+import org.b3log.symphony.repository.TagArticleRepository;
+import org.b3log.symphony.repository.TagRepository;
+import org.b3log.symphony.repository.UserRepository;
+import org.b3log.symphony.util.Emotions;
+import org.b3log.symphony.util.MP3Players;
+import org.b3log.symphony.util.Markdowns;
+import org.b3log.symphony.util.Symphonys;
+import org.b3log.symphony.util.Times;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,9 +87,7 @@ import org.jsoup.parser.Parser;
 import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
 
-import javax.servlet.http.HttpServletRequest;
-import java.text.DecimalFormat;
-import java.util.*;
+import com.vdurmont.emoji.EmojiParser;
 
 /**
  * Article query service.
@@ -151,6 +187,12 @@ public class ArticleQueryService {
      */
     @Inject
     private ArticleCache articleCache;
+    
+    /**
+	 * User Level service.
+	 */
+	@Inject
+	private UserLevelService userLevelService;
 
     /**
      * Gets following user articles.
@@ -1040,6 +1082,15 @@ public class ArticleQueryService {
         }
     }
 
+    public List<JSONObject> getArticlesByTag(String articleTag){
+		try {
+			return articleRepository.select("SELECT * FROM symphony_article WHERE articleTags LIKE ?", articleTag);
+		} catch (RepositoryException e) {
+			LOGGER.log(Level.ERROR, "get articles by tag error", e);
+		}
+    	return null;	
+    }
+    
     /**
      * Gets an article by the specified client article id.
      *
@@ -1305,7 +1356,7 @@ public class ArticleQueryService {
      */
     private CompositeFilter makeRecentArticleShowingFilter() {
         final List<Filter> filters = new ArrayList<>();
-        filters.add(new PropertyFilter(Article.ARTICLE_STATUS, FilterOperator.EQUAL, Article.ARTICLE_STATUS_C_VALID));
+//        filters.add(new PropertyFilter(Article.ARTICLE_STATUS, FilterOperator.EQUAL, Article.ARTICLE_STATUS_C_VALID));
         filters.add(new PropertyFilter(Article.ARTICLE_TYPE, FilterOperator.NOT_EQUAL, Article.ARTICLE_TYPE_C_DISCUSSION));
         filters.add(new PropertyFilter(Article.ARTICLE_TAGS, FilterOperator.NOT_LIKE, "B3log%"));
         filters.add(new PropertyFilter(Article.ARTICLE_TAGS, FilterOperator.NOT_LIKE, Tag.TAG_TITLE_C_SANDBOX + "%"));
@@ -1634,7 +1685,8 @@ public class ArticleQueryService {
                         + "END AS flag\n"
                         + "FROM\n"
                         + "	`" + articleRepository.getName() + "`\n"
-                        + " WHERE `articleType` != 1 AND `articleStatus` = 0 AND `articleTags` != '" + Tag.TAG_TITLE_C_SANDBOX + "'\n"
+//                        + " WHERE `articleType` != 1 AND `articleStatus` = 0 AND `articleTags` != '" + Tag.TAG_TITLE_C_SANDBOX + "'\n"
+                        + " WHERE `articleType` != 1 AND `articleTags` != '" + Tag.TAG_TITLE_C_SANDBOX + "'\n"
                         + " ORDER BY\n"
                         + "	articleStick DESC,\n"
                         + "	flag DESC\n"
@@ -1644,7 +1696,7 @@ public class ArticleQueryService {
             }
 
             organizeArticles(avatarViewMode, ret);
-
+ 
             return ret;
         } catch (final RepositoryException e) {
             LOGGER.log(Level.ERROR, "Gets index recent articles failed", e);
@@ -2067,6 +2119,7 @@ public class ArticleQueryService {
             article.put(Article.ARTICLE_T_TITLE_EMOJI, langPropsService.get("articleTitleBlockLabel"));
             article.put(Article.ARTICLE_T_TITLE_EMOJI_UNICODE, langPropsService.get("articleTitleBlockLabel"));
             article.put(Article.ARTICLE_CONTENT, langPropsService.get("articleContentBlockLabel"));
+            article.put(Article.ARTICLE_T_PREVIEW_CONTENT, langPropsService.get("articleContentBlockLabel"));
         }
 
         final String articleId = article.optString(Keys.OBJECT_ID);
@@ -2237,6 +2290,8 @@ public class ArticleQueryService {
         final String authorId = article.optString(Article.ARTICLE_AUTHOR_ID);
 
         final JSONObject author = userRepository.get(authorId);
+        author.put("userLevel", userLevelService.getUserLevel(author.optInt("userPoint")));
+        author.put("userLevelType", userLevelService.getUserLevelType(author.optInt("userPoint")));
         article.put(Article.ARTICLE_T_AUTHOR, author);
 
         if (Article.ARTICLE_ANONYMOUS_C_ANONYMOUS == article.optInt(Article.ARTICLE_ANONYMOUS)) {
@@ -2768,4 +2823,6 @@ public class ArticleQueryService {
             Stopwatchs.end();
         }
     }
+    
+    
 }

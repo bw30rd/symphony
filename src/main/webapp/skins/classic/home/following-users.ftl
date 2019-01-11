@@ -4,12 +4,14 @@
 <div class="tabs-sub fn-clear">
     <a pjax-title="${watchingArticlesLabel} - ${user.userName} - ${symphonyLabel}" href="${servePath}/member/${user.userName}/watching/articles"<#if type == "watchingUsers"> class="current"</#if>>${watchingArticlesLabel}</a>
     <a pjax-title="${followingUsersLabel} - ${user.userName} - ${symphonyLabel}" href="${servePath}/member/${user.userName}/following/users"<#if type == "followingUsers"> class="current"</#if>>${followingUsersLabel} &nbsp;<span class="count">${paginationRecordCount}</span></a>
+    
     <a pjax-title="${followingTagsLabel} - ${user.userName} - ${symphonyLabel}" href="${servePath}/member/${user.userName}/following/tags"<#if type == "followingTags"> class="current"</#if>>${followingTagsLabel}</a>
+    
     <a pjax-title="${followingArticlesLabel} - ${user.userName} - ${symphonyLabel}" href="${servePath}/member/${user.userName}/following/articles"<#if type == "followingArticles"> class="current"</#if>>${followingArticlesLabel}</a>
     <a pjax-title="${followersLabel} - ${user.userName} - ${symphonyLabel}" href="${servePath}/member/${user.userName}/followers"<#if type == "followers"> class="current"</#if>>${followersLabel}</a>
 </div>
 <#if 0 == user.userFollowingUserStatus || (isLoggedIn && ("adminRole" == currentUser.userRole || currentUser.userName == user.userName))>
-<div class="follow list">
+<div class="list">
     <#if userHomeFollowingUsers?size == 0>
         <p class="ft-center ft-gray home-invisible">${chickenEggLabel}</p>
     </#if>
@@ -26,35 +28,38 @@
                 </a>
                 <div class="fn-flex-1">
                     <h2 class="fn-inline">
-                        <a rel="nofollow" href="${servePath}/member/${followingUser.userName}" ><#if followingUser.userNickname != ''>${followingUser.userNickname}<#else>${followingUser.userName}</#if></a>
+                        <a rel="nofollow" href="${servePath}/member/${followingUser.userName}" ><#if followingUser.userNickname != ''>${followingUser.userNickname}<#else>${followingUser.userName}</#if></a>  
+						<a class="${followingUser.userLevelType}">${followingUser.userLevel}</a>
                     </h2>
                     <#if followingUser.userNickname != ''>
                     <a class='ft-fade' rel="nofollow" href="${servePath}/member/${followingUser.userName}" >${followingUser.userName}</a>
                     </#if>
                     <#if isLoggedIn && (currentUser.userName != followingUser.userName)>
                     <#if followingUser.isFollowing>
-                    <button class="fn-right mid" onclick="Util.unfollow(this, '${followingUser.oId}', 'user')"> 
+                    <button class="fn-right mid followed" onclick="Util.unfollow(this, '${followingUser.oId}', 'user')"> 
                         ${unfollowLabel}
                     </button>
                     <#else>
-                    <button class="fn-right mid" onclick="Util.follow(this, '${followingUser.oId}', 'user')"> 
+                    <button class="fn-right mid follow" onclick="Util.follow(this, '${followingUser.oId}', 'user')"> 
                         ${followLabel}
                     </button>
                     </#if>
                     </#if>
                     <div>
-                        <#if followingUser.userArticleCount == 0>
-                        <#if followingUser.userURL != "">
-                        <a class="ft-gray" target="_blank" rel="friend" href="${followingUser.userURL?html}">${followingUser.userURL?html}</a>
-                        <#else>
-                        <span class="ft-gray">${symphonyLabel}</span>
-                        ${followingUser.userNo?c}
-                        <span class="ft-gray">${numVIPLabel}</span>
-                        </#if>
-                        <#else>
+                      
+                       <#-- <#if followingUser.userArticleCount == 0>
+	                        <#if followingUser.userURL != "">
+	                        	<a class="ft-gray" target="_blank" rel="friend" href="${followingUser.userURL?html}">${followingUser.userURL?html}</a>
+	                        <#else>
+		                        <span class="ft-gray">${symphonyLabel}</span>
+		                        ${followingUser.userNo?c}
+		                        <span class="ft-gray">${numVIPLabel}</span>
+	                        </#if>
+                        <#else>-->
+                        
                         <span class="ft-gray">${articleLabel}</span> ${followingUser.userArticleCount?c} &nbsp;
-                        <span class="ft-gray">${tagLabel}</span> ${followingUser.userTagCount?c}
-                        </#if>
+                        <span class="ft-gray">${followersLabel}</span> ${followingUser.followerCnt?c}
+                       <#-- </#if>-->
                     </div>
                 </div>
             </div>

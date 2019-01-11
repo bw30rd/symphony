@@ -17,6 +17,12 @@
  */
 package org.b3log.symphony.api.v2;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.b3log.latke.Keys;
 import org.b3log.latke.ioc.inject.Inject;
 import org.b3log.latke.logging.Level;
@@ -39,11 +45,6 @@ import org.b3log.symphony.processor.advice.stopwatch.StopwatchStartAdvice;
 import org.b3log.symphony.service.DomainQueryService;
 import org.b3log.symphony.util.StatusCodes;
 import org.json.JSONObject;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Domain API v2.

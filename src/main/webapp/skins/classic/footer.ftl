@@ -1,5 +1,8 @@
 <div class="footer">
-    <div class="wrapper">
+
+	<div style="text-align:center;">Copyright &COPY; ${year}&nbsp;<a rel="copyright" href="http://www.bisp.com" target="_blank">北京北纬通信科技股份有限公司</a>&nbsp;版权所有</div>
+	
+    <#--<div class="wrapper">
         <div class="slogan">
             ${indexIntroLabel} &nbsp; &nbsp;
             <a href="https://github.com/b3log/symphony" target="_blank" class="tooltipped tooltipped-n" aria-label="${siteCodeLabel}">
@@ -33,11 +36,12 @@
                     </div>
                 </div>
         </div>
-    </div>
+    </div>-->
 </div>
 
 <script src="${staticServePath}/js/lib/compress/libs.min.js?${staticResourceVersion}"></script>
 <script src="${staticServePath}/js/common${miniPostfix}.js?${staticResourceVersion}"></script>
+
 <script>
     var Label = {
         invalidPasswordLabel: "${invalidPasswordLabel}",
@@ -45,6 +49,8 @@
         followLabel: "${followLabel}",
         unfollowLabel: "${unfollowLabel}",
         symphonyLabel: "${symphonyLabel}",
+        subscribeToLabel: "${subscribeToLabel}",
+        unsubscribeToLabel: "${unsubscribeToLabel}",
         visionLabel: "${visionLabel}",
         cmtLabel: "${cmtLabel}",
         collectLabel: "${collectLabel}",
@@ -66,7 +72,7 @@
         checkIcon: '${checkIcon}'<#if isLoggedIn>,
         currentUserName: '${currentUser.userName}'</#if>
     };
-
+    
     <#if isLoggedIn>
     Label.userKeyboardShortcutsStatus = '${currentUser.userKeyboardShortcutsStatus}';
     </#if>

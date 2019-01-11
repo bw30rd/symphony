@@ -17,6 +17,14 @@
  */
 package org.b3log.symphony.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -26,14 +34,6 @@ import org.b3log.latke.service.annotation.Service;
 import org.b3log.symphony.model.Common;
 import org.b3log.symphony.util.Markdowns;
 import org.json.JSONObject;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Manual query service.

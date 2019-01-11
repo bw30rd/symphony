@@ -1,19 +1,20 @@
 <#include "../macro-head.ftl">
 <!DOCTYPE html>
-<html>
+<html style="height:100%;">
     <head>
         <@head title="403 Forbidden! - ${symphonyLabel}">
         <meta name="robots" content="none" />
         </@head>
     </head>
-    <body class="error error-403">
+    <body class="error error-403" style="height:100%;">
         <#include "../header.ftl">
-        <div class="slogan">
+        <div class="for403"></div>
+        <!-- <div class="slogan">
             <div class="wrapper block">
                 <h2>${reloginLabel}</h2>
                 <div class="slogan-border fn-clear">
                     <div class="slogan-register">
-                        <button onclick="Util.goRegister()" class="green">${nowLabel}${registerLabel}</button>
+                        <button onclick="Util.goLogin()" class="blue">${nowLabel}${loginLabel}</button>
                     </div>
                     <div class="slogan-text">
                         ${indexIntroLabel} &nbsp; &nbsp;
@@ -27,8 +28,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="main">
+        </div> -->
+        <!-- <div class="main">
             <div class="wrapper">
                 <div class="content">
                 <#if timelines?size <= 0>
@@ -47,7 +48,7 @@
                     <#include "../side.ftl">
                 </div>
             </div>
-        </div> 
+        </div>  -->
 
         <#include '../footer.ftl'/>
         <script src="${staticServePath}/js/channel${miniPostfix}.js?${staticResourceVersion}"></script>

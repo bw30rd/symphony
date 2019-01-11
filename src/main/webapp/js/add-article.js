@@ -29,14 +29,17 @@
  * @description Add article function.
  * @static
  */
+
+
+
 var AddArticle = {
     editor: undefined,
     rewardEditor: undefined,
     /**
-     * @description 删除文章
-     * @csrfToken [string] CSRF 令牌
-     * @it [bom] 调用事件的元素
-     */
+	 * @description 删除文章
+	 * @csrfToken [string] CSRF 令牌
+	 * @it [bom] 调用事件的元素
+	 */
     remove: function (csrfToken, it) {
         if (!confirm(Label.confirmRemoveLabel)) {
             return;
@@ -67,11 +70,12 @@ var AddArticle = {
         });
     },
     /**
-     * @description 发布文章
-     * @csrfToken [string] CSRF 令牌
-     * @it [Bom] 触发事件的元素
-     */
+	 * @description 发布文章
+	 * @csrfToken [string] CSRF 令牌
+	 * @it [Bom] 触发事件的元素
+	 */
     add: function (csrfToken, it) {
+    	
         if (Validate.goValidate({
                 target: $('#addArticleTip'),
                 data: [{
@@ -88,12 +92,13 @@ var AddArticle = {
                 }]
             })) {
             // 打赏区启用后积分不能为空
-            if ($('#articleRewardPoint').data('orval')
-                && !/^\+?[1-9][0-9]*$/.test($('#articleRewardPoint').val())) {
-                $("#addArticleTip").addClass('error').html('<ul><li>'
-                    + Label.articleRewardPointErrorLabel + '</li></ul>');
-                return false;
-            }
+            /*
+			 * if ($('#articleRewardPoint').data('orval') &&
+			 * !/^\+?[1-9][0-9]*$/.test($('#articleRewardPoint').val())) {
+			 * $("#addArticleTip").addClass('error').html('<ul><li>' +
+			 * Label.articleRewardPointErrorLabel + '</li></ul>'); return
+			 * false; }
+			 */
 
             var articleTags = '';
             $('.tags-input .tag .text').each(function () {
@@ -120,7 +125,7 @@ var AddArticle = {
                 url = url + "/" + Label.articleOId;
                 type = "PUT";
             }
-
+            
             $.ajax({
                 url: url,
                 type: type,
@@ -132,6 +137,7 @@ var AddArticle = {
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     $("#addArticleTip").addClass('error').html('<ul><li>' + errorThrown + '</li></ul>');
+                   
                 },
                 success: function (result, textStatus) {
                     $(it).removeAttr("disabled").css("opacity", "1");
@@ -149,8 +155,8 @@ var AddArticle = {
         }
     },
     /**
-     * @description 初始化发文
-     */
+	 * @description 初始化发文
+	 */
     init: function () {
         $.ua.set(navigator.userAgent);
 
@@ -301,6 +307,7 @@ var AddArticle = {
             AddArticle.editor.on('changes', function (cm, changes) {
                 var postData = JSON.parse(localStorage.postData);
                 postData.content = cm.getValue();
+                postData.content.replace(/[^\u4e00-\u9fa5]/g,"");
 
                 if (thoughtTime === '') {
                     thoughtTime = (new Date()).getTime();
@@ -314,7 +321,8 @@ var AddArticle = {
                 }
 
                 var change = "",
-                    unitSep = String.fromCharCode(31), // Unit Separator (单元分隔符)
+                    unitSep = String.fromCharCode(31), // Unit Separator
+														// (单元分隔符)
                     time = (new Date()).getTime() - thoughtTime;
 
                 switch (changes[0].origin) {
@@ -322,7 +330,8 @@ var AddArticle = {
                         change = String.fromCharCode(24) + unitSep + time // cancel
                             + unitSep + changes[0].from.ch + '-' + changes[0].from.line
                             + unitSep + changes[0].to.ch + '-' + changes[0].to.line
-                            + String.fromCharCode(30);  // Record Separator (记录分隔符)
+                            + String.fromCharCode(30);  // Record Separator
+														// (记录分隔符)
                         break;
                     case "*compose":
                     case "+input":
@@ -332,19 +341,22 @@ var AddArticle = {
                             if (i === changes[0].text.length - 1) {
                                 change += changes[0].text[i];
                             } else {
-                                change += changes[0].text[i] + String.fromCharCode(10); // New Line
+                                change += changes[0].text[i] + String.fromCharCode(10); // New
+																						// Line
                             }
                         }
                         for (var j = 0; j < changes[0].removed.length; j++) {
                             if (j === 0) {
-                                change += String.fromCharCode(29); // group separator
+                                change += String.fromCharCode(29); // group
+																	// separator
                                 break;
                             }
                         }
                         change += unitSep + time
                             + unitSep + changes[0].from.ch + '-' + changes[0].from.line
                             + unitSep + changes[0].to.ch + '-' + changes[0].to.line
-                            + String.fromCharCode(30);  // Record Separator (记录分隔符)
+                            + String.fromCharCode(30);  // Record Separator
+														// (记录分隔符)
                         break;
                 }
 
@@ -533,9 +545,9 @@ var AddArticle = {
 
     },
     /**
-     * @description 初始化标签编辑器
-     * @returns {undefined}
-     */
+	 * @description 初始化标签编辑器
+	 * @returns {undefined}
+	 */
     _initTag: function () {
         $.ua.set(navigator.userAgent);
 
@@ -565,7 +577,7 @@ var AddArticle = {
             }
 
             // 长度处理
-            if ($('.tags-input .tag').length >= 4) {
+            if ($('.tags-input .tag').length >= 1) {
                 $('#articleTags').prop('disabled', true).val('').data('val', '');
                 return false;
             }
@@ -586,17 +598,39 @@ var AddArticle = {
                 localStorage.postData = JSON.stringify(postData);
             }
 
-            if ($('.tags-input .tag').length >= 4) {
+            if ($('.tags-input .tag').length >= 1) {
                 $('#articleTags').prop('disabled', true).val('').data('val', '');
+                $('#articleTags').attr("placeholder", "");
+                
             }
         };
 
         // domains 切换
         $('.domains-tags .btn').click(function () {
-            $('.domains-tags .btn.current').removeClass('current green');
-            $(this).addClass('current').addClass('green');
-            $('.domains-tags .domain-tags').hide();
-            $('#tags' + $(this).data('id')).show();
+            $('.domains-tags .btn.current').removeClass('current blue');
+            $(this).addClass('current').addClass('blue');
+            
+            var articleTags = '';
+            addTag($(this).text());
+            $('.post .domains-tags').hide();
+            
+            if(Label.commonAddArticleAnonymous == 'false'){
+            	// 查看该领域是否具有匿名发帖权限
+                for(i = 0,len = Label.domains.length; i < len; i++){
+                	if(Label.domains[i].domainTitle == $(this).text()){
+                		if(Label.domains[i].domainStatus == 0){
+                			$('.anonymous .article-anonymous').hide();
+                			$(".anonymous .article-anonymous input[type='checkbox']").prop("checked",false);
+                		}else{
+                			$('.anonymous .article-anonymous').show();
+                			//$(".anonymous .article-anonymous").attr("style", "display: block;");
+                		}
+                	}
+                }
+            }
+            
+		// $('.domains-tags .domain-tags').hide();
+		// $('#tags' + $(this).data('id')).show();
         });
 
         // tag 初始化渲染
@@ -615,7 +649,8 @@ var AddArticle = {
             $(this).parent().remove();
             $('#articleTags').width($('.tags-input').width() - $('.post .tags-selected').width() - 10);
             $('#articleTags').prop('disabled', false);
-
+            $('#articleTags').attr("placeholder", Label.tagSeparatorTipLabel);
+            
             // set tags to localStorage
             if (location.search.indexOf('?id=') === -1) {
                 var articleTags = '';
@@ -715,5 +750,7 @@ var AddArticle = {
         });
     }
 };
+
+
 
 AddArticle.init();

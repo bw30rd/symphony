@@ -269,8 +269,9 @@ var Verify = {
      * @param {int} tagSize 标签数
      */
     initGuide: function (currentStep, tagSize) {
-        if (currentStep === 0) {
+    	if (currentStep === 0) {
             window.location.href = Label.servePath;
+    		
             return false;
         }
 
@@ -281,7 +282,7 @@ var Verify = {
                 $('.intro dt').removeClass('current');
                 $('.guide-tab > div').hide();
             }
-
+            
             if (currentStep < 6 && currentStep > 0) {
                 $.ajax({
                     url: Label.servePath + "/guide/next",
@@ -315,26 +316,30 @@ var Verify = {
                     $('.intro dt:eq(1)').addClass('current');
 
                     // sort
-                    $('.step-btn .green, .step-btn .red').prop('disabled', true);
+                    //$('.step-btn .green, .step-btn .red').prop('disabled', true);
                     $('.tag-desc').isotope({
                         sortBy: step2Sort
                     });
                     step2Sort = (step2Sort === 'random' ? 'original-order' : 'random');
                     $('.tag-desc').on( 'arrangeComplete', function () {
-                        $('.step-btn .green, .step-btn .red').prop('disabled', false);
+                        //$('.step-btn .green, .step-btn .red').prop('disabled', false);
                     });
                     break;
                 case 3:
                     $('.guide-tab > div:eq(2)').show();
-                    $('.intro dt:eq(2)').addClass('current');
+                    $('.intro dt:eq(1)').addClass('current');
                     $('.step-btn .red').show();
+                    
+                    $('.step-btn .blue').text(Label.nextStepLabel);
+                    $('.intro > div').hide();
+                    $('.intro > dl').show();
                     break;
                 case 4:
                     $('.guide-tab > div:eq(3)').show();
                     $('.intro dt:eq(3)').addClass('current');
 
                      $('.step-btn .red').show();
-                     $('.step-btn .green').text(Label.nextStepLabel);
+                     $('.step-btn .blue').text(Label.nextStepLabel);
 
                      $('.intro > div').hide();
                      $('.intro > dl').show();
@@ -343,14 +348,14 @@ var Verify = {
                     $('.guide-tab > div:eq(4)').show();
 
                     $('.step-btn .red').show();
-                    $('.step-btn .green').text(Label.finshLabel);
+                    $('.step-btn .blue').text(Label.finshLabel);
 
                     $('.intro > div').show();
                     $('.intro > dl').hide();
                     break;
                 case 6:
                     // finished
-                    window.location.href = '/';
+                    window.location.href = '/symphony';
                     break;
                 default:
                     break;
@@ -358,16 +363,24 @@ var Verify = {
             }
         };
 
-        $('.step-btn .green').click(function () {
+        $('.step-btn .blue').click(function () {
             if (currentStep > 5) {
                 return false;
             }
-            currentStep++;
+            if(currentStep == 5){
+            	currentStep++;
+            }else{
+            	currentStep+=2;
+            }
             step();
         });
 
         $('.step-btn .red').click(function () {
-            currentStep--;
+        	if(currentStep == 6){
+            	currentStep--;
+            }else{
+            	currentStep-=2;
+            }
             step();
         });
 

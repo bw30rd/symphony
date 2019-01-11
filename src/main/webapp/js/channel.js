@@ -50,11 +50,10 @@ var ArticleChannel = {
 
         ArticleChannel.ws.onmessage = function (evt) {
             var data = JSON.parse(evt.data);
-
+            
             if (Label.articleOId !== data.articleId) { // It's not the current article
                 return;
             }
-
             switch (data.type) {
                 case "comment":
                     var cmtCount = parseInt($(".comments-header .article-cmt-cnt").text()) + 1;
@@ -70,7 +69,7 @@ var ArticleChannel = {
                         $("#articleCommentsPanel").parent().show();
                     }
 
-                    if (0 === Label.userCommentViewMode) { // tranditional view mode
+                    if (0 === Label.userCommentViewMode) { // traditional view mode
                         $("#comments > .list > ul").append(data.cmtTpl);
                     } else {
                         $("#comments > .list > ul").prepend(data.cmtTpl);
